@@ -1,0 +1,2038 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Trailer Nelcyr-Nardelli RL — 3D Studio</title>
+<style>
+  /* ============ DESIGN TOKENS ============ */
+  :root {
+    --ink: #1f2430;
+    --ink-2: #4a5366;
+    --ink-3: #8b93a7;
+    --line: #d9dee8;
+    --line-2: #ebeef5;
+    --panel: rgba(255,255,255,0.97);
+    --panel-2: #f5f7fb;
+    --panel-3: #eef2f9;
+    --head: #20262e;
+    --head-2: #2c333d;
+    --accent: #2f6df6;
+    --accent-soft: #eaf1ff;
+    --accent-ink: #1b4fc0;
+    --ok: #15a05a;
+    --warn: #e08600;
+    --danger: #e5484d;
+    --danger-soft: #fdeced;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-xs: 5px;
+    --shadow: 0 8px 24px rgba(18,24,40,0.16), 0 1px 3px rgba(18,24,40,0.08);
+    --shadow-sm: 0 2px 8px rgba(18,24,40,0.10);
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:100%; height:100%; overflow:hidden; }
+  body {
+    background:#e8e6e0; color:var(--ink);
+    font-family:var(--sans); font-size:13px; -webkit-font-smoothing:antialiased;
+  }
+  #app { position:relative; width:100vw; height:100vh; }
+  #canvas-wrap { position:absolute; inset:0; }
+  canvas { display:block; }
+
+  /* ============ JANELAS FLOTANTES (ui-win / drag) ============ */
+  .ui-win {
+    position:absolute; z-index:80;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .ui-win .drag-bar {
+    cursor:move; user-select:none;
+    display:flex; align-items:center; gap:8px;
+    background:linear-gradient(180deg, var(--head), var(--head-2));
+    color:#fff; font-size:11px; font-weight:600;
+    letter-spacing:0.5px; text-transform:uppercase;
+    padding:7px 12px; min-height:30px;
+  }
+  .ui-win .drag-bar::before {
+    content:""; width:14px; height:6px; border-radius:3px;
+    background:repeating-linear-gradient(90deg, rgba(255,255,255,0.5) 0 2px, transparent 2px 4px);
+    flex:0 0 auto; margin-right:2px; opacity:0.7;
+  }
+  .ui-win.dragging { opacity:0.92; z-index:200; box-shadow:0 16px 40px rgba(18,24,40,0.28); }
+
+  /* Botão de fechar (X) nas janelas flutuantes */
+  .ui-win-close {
+    margin-left:auto;
+    background:rgba(255,255,255,0.12);
+    border:0;
+    color:#fff;
+    width:22px; height:22px;
+    border-radius:4px;
+    font-size:15px; line-height:1;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--sans);
+    padding:0;
+    transition:background .14s;
+  }
+  .ui-win-close:hover { background:rgba(255,255,255,0.28); }
+  .ui-win.drag-bar { cursor:move; }
+  .ui-win.closed { display:none !important; }
+
+  /* ============ HUD ============ */
+  #hud {
+    top:16px; left:16px; width:372px; max-width:calc(100vw - 32px);
+  }
+  #hud .drag-bar { font-size:12px; }
+  #hud .drag-bar .sub { margin-left:auto; font-size:9px; opacity:0.6; font-weight:500; letter-spacing:0.3px; }
+  .hud-body { padding:11px 12px 12px; }
+  #hud > p {
+    font-size:11px; line-height:1.55; color:var(--ink-2);
+    margin:2px 1px 10px; padding-bottom:9px; border-bottom:1px solid var(--line-2);
+  }
+  .hud-sec { margin-bottom:10px; }
+  .hud-sec:last-child { margin-bottom:2px; }
+  .hud-sec-label {
+    font-size:9px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase;
+    color:var(--ink-3); margin:0 1px 5px; display:flex; align-items:center; gap:5px;
+  }
+  .hud-sec-label::after { content:""; height:1px; flex:1; background:var(--line-2); }
+
+  /* Botões do HUD */
+  .btn-row { display:flex; gap:6px; flex-wrap:wrap; }
+  #hud button {
+    background:#fff; color:var(--ink);
+    border:1px solid var(--line); border-radius:var(--radius-xs);
+    padding:6px 10px; font-size:11px; font-family:var(--sans);
+    cursor:pointer; line-height:1; display:inline-flex; align-items:center; gap:5px;
+    transition:background .14s, border-color .14s, color .14s, box-shadow .14s, transform .05s;
+    text-transform:none; font-weight:500;
+  }
+  #hud button::before {
+    font-size:12px; line-height:1; opacity:0.9; font-family:var(--sans);
+  }
+  #hud button:hover { background:var(--panel-3); border-color:#c4cdda; }
+  #hud button:active { transform:translateY(1px); }
+  #hud button.active {
+    background:var(--accent); color:#fff; border-color:var(--accent);
+    box-shadow:0 1px 3px rgba(47,109,246,0.4);
+  }
+  #hud button.active::before { opacity:1; }
+  #btn-mezz {
+    background:#e9eef9; color:var(--accent-ink); border-color:#c4cfe6; font-weight:600;
+  }
+  #btn-mezz::before { content:"🛏️"; }
+  #btn-mezz:hover { background:#dce6fb; border-color:var(--accent); }
+  #btn-mezz.active { background:var(--accent); color:#fff; }
+
+  #btn-walls::before   { content:"▦"; }
+  #btn-roof::before    { content:"⌂"; }
+  #btn-cotas::before   { content:"📏"; }
+  #btn-labels::before  { content:"🏷️"; }
+  #btn-rotate::before  { content:"⟳"; }
+  #btn-top::before     { content:"⊤"; }
+  #btn-iso::before     { content:"◇"; }
+  #btn-enter::before   { content:"🚪"; }
+  #btn-reset::before   { content:"↺"; }
+  #btn-save::before    { content:"💾"; }
+  #hud .btn-row.split { gap:4px; }
+
+  /* Categorias (camadas) */
+  #cat-row { display:flex; gap:5px; flex-wrap:wrap; margin-top:3px; }
+  #cat-row .cat-btn {
+    font-size:9.5px; padding:4px 8px; border-radius:20px;
+    background:transparent; border:1px solid var(--line); color:var(--ink-2);
+    text-transform:none; font-family:var(--sans); cursor:pointer; font-weight:500;
+    transition:all .14s;
+  }
+  #cat-row .cat-btn:hover { background:var(--panel-3); border-color:#c4cdda; }
+  #cat-row .cat-btn.active {
+    background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); font-weight:600;
+  }
+
+  /* ============ PALETA ============ */
+  #palette {
+    left:16px; top:300px; width:236px;
+    max-height:calc(100vh - 320px); display:flex; flex-direction:column;
+  }
+  #palette .grid {
+    display:grid; grid-template-columns:1fr 1fr; gap:7px;
+    padding:9px; overflow-y:auto; flex:1;
+  }
+  #palette .pi {
+    display:flex; flex-direction:column; align-items:center; gap:5px;
+    width:100%; margin:0; padding:8px 5px 7px;
+    background:#fff; border:1px solid var(--line); border-radius:var(--radius-xs);
+    cursor:grab; transition:all .14s; text-align:center;
+    font-size:9.5px; color:var(--ink-2); line-height:1.25; font-family:var(--sans);
+  }
+  #palette .pi:active { cursor:grabbing; }
+  #palette .pi:hover { background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); transform:translateY(-1px); box-shadow:var(--shadow-sm); }
+  #palette .pi:active { transform:translateY(0); }
+  #palette .pi .thumb {
+    width:78px; height:56px; display:block;
+    background:var(--panel-3); border:1px solid var(--line-2); border-radius:6px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  #palette .pi .thumb svg { width:100%; height:100%; display:block; }
+  #palette .hint {
+    font-size:9px; color:var(--ink-3); line-height:1.4; margin-top:4px; padding:6px 8px;
+    background:var(--panel-2); border-top:1px solid var(--line-2); text-align:center;
+  }
+  .pal-search {
+    padding:8px 9px 0; display:flex; gap:6px; align-items:center;
+    border-bottom:1px solid var(--line-2);
+  }
+  .pal-search input {
+    flex:1; width:100%; font-size:11px; font-family:var(--sans);
+    border:1px solid var(--line); border-radius:20px; padding:5px 10px; color:var(--ink);
+    background:var(--panel-2);
+  }
+  .pal-search input:focus { outline:none; border-color:var(--accent); background:#fff; box-shadow:0 0 0 3px var(--accent-soft); }
+  .pal-search input::placeholder { color:var(--ink-3); }
+  .pal-cat {
+    grid-column:1 / -1; font-size:9px; font-weight:700; letter-spacing:0.7px;
+    text-transform:uppercase; color:var(--ink-3); margin:8px 1px 2px; padding-top:6px;
+    border-top:1px dashed var(--line-2);
+  }
+  .pal-cat:first-child { margin-top:2px; border-top:0; padding-top:0; }
+  .pal-count {
+    font-size:8px; color:var(--ink-3); font-weight:500; margin-left:auto;
+  }
+  #palette .pi.hidden { display:none; }
+
+  /* ============ ESPECS (Dimensões) ============ */
+  #specs { top:16px; right:16px; min-width:248px; }
+  #specs .drag-bar { }
+  .specs-body { padding:9px 12px 10px; }
+  #specs .s {
+    display:flex; justify-content:space-between; gap:10px; align-items:baseline;
+    padding:4px 0; font-size:11px; border-bottom:1px dotted var(--line-2);
+  }
+  #specs .s:last-child { border-bottom:0; }
+  #specs .s span { color:var(--ink-2); }
+  #specs .s strong { color:var(--accent-ink); font-family:var(--mono); font-weight:600; font-size:10.5px; text-align:right; }
+
+  /* ============ AUTH + USER FILES ============ */
+  #auth-section { padding:8px 12px 10px; border-top:1px solid var(--line-2); }
+  #auth-section .auth-user { display:flex; align-items:center; gap:8px; }
+  #auth-section .auth-avatar { width:28px; height:28px; border-radius:50%; background:var(--panel-3); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  #auth-section .auth-avatar img { width:100%; height:100%; object-fit:cover; }
+  #auth-section .auth-info { flex:1; min-width:0; }
+  #auth-section .auth-name { font-size:11.5px; font-weight:600; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #auth-section .auth-email { font-size:10px; color:var(--ink-3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #auth-section .auth-actions { display:flex; gap:4px; }
+  #auth-section .auth-actions button { padding:3px 8px; font-size:10px; }
+  #auth-section .auth-login { display:flex; flex-direction:column; gap:6px; }
+  #auth-section .auth-login input { width:100%; padding:5px 8px; font-size:11px; border:1px solid var(--line); border-radius:5px; background:#fff; color:var(--ink); }
+  #auth-section .auth-login input:focus { outline:none; border-color:var(--accent); }
+  #auth-section .auth-login .row-buttons { display:flex; gap:4px; }
+  #auth-section .auth-login .row-buttons button { flex:1; padding:5px 8px; font-size:10.5px; }
+  #auth-section .google-btn { width:100%; display:flex; justify-content:center; }
+  #auth-section .auth-divider { text-align:center; font-size:9px; color:var(--ink-3); margin:2px 0; text-transform:uppercase; letter-spacing:0.5px; }
+  #auth-section .auth-error { color:var(--danger); font-size:10px; margin-top:4px; }
+
+  #files-section { padding:8px 12px 10px; border-top:1px solid var(--line-2); max-height:200px; overflow-y:auto; }
+  #files-section .files-list { display:flex; flex-direction:column; gap:3px; }
+  #files-section .file-item { display:flex; align-items:center; gap:6px; padding:4px 6px; background:var(--panel-2); border-radius:5px; font-size:10.5px; }
+  #files-section .file-item:hover { background:var(--accent-soft); }
+  #files-section .file-name { flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--ink); }
+  #files-section .file-date { font-size:9px; color:var(--ink-3); }
+  #files-section .file-actions { display:flex; gap:2px; }
+  #files-section .file-actions button { padding:2px 5px; font-size:9px; background:transparent; border:1px solid var(--line); border-radius:3px; color:var(--ink-2); cursor:pointer; }
+  #files-section .file-actions button:hover { background:var(--panel-3); color:var(--ink); }
+  #files-section .file-empty { text-align:center; color:var(--ink-3); font-size:10px; padding:8px; font-style:italic; }
+  #files-section .files-header { display:flex; gap:4px; margin-bottom:6px; }
+  #files-section .files-header input { flex:1; padding:4px 6px; font-size:10.5px; border:1px solid var(--line); border-radius:4px; background:#fff; }
+  #files-section .files-header input:focus { outline:none; border-color:var(--accent); }
+  #files-section .files-header button { padding:4px 8px; font-size:10px; }
+  #files-section.locked { opacity:0.5; pointer-events:none; }
+  #files-section .file-item.flash { animation: fileFlash 1.2s ease; }
+  @keyframes fileFlash {
+    0% { background:var(--ok); color:#fff; }
+    100% { background:var(--panel-2); color:var(--ink); }
+  }
+
+  /* ============ LEGEND (Materiais) ============ */
+  #legend { bottom:16px; left:16px; }
+  #legend .drag-bar { }
+
+  /* ============ RPA4ALL PANEL ============ */
+  #rpa-panel {
+    top:16px; left:16px; width:340px; max-height:calc(100vh - 32px);
+    font-size:12px; overflow:hidden;
+  }
+  #rpa-panel .rpa-header {
+    display:flex; justify-content:space-between; align-items:center;
+    background:linear-gradient(135deg, #1b4fc0 0%, #2f6df6 50%, #4a8af0 100%);
+    color:#fff; padding:10px 14px; font-size:12px; font-weight:600;
+    border-radius:var(--radius) var(--radius) 0 0;
+    cursor:move;
+  }
+  #rpa-panel .rpa-header .rpa-title { display:flex; align-items:center; gap:7px; }
+  #rpa-panel .rpa-header .rpa-logo {
+    width:22px; height:22px; border-radius:5px; background:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:700; color:#1b4fc0; flex-shrink:0;
+  }
+  #rpa-panel .rpa-header .rpa-actions { display:flex; align-items:center; gap:6px; }
+  #rpa-panel .rpa-header .rpa-tag {
+    font-size:9px; background:rgba(255,255,255,0.18); padding:2px 6px;
+    border-radius:8px; font-weight:500; letter-spacing:0.3px; text-transform:uppercase;
+  }
+  #rpa-panel .rpa-header .rpa-close {
+    width:22px; height:22px; border:0; border-radius:50%;
+    background:rgba(255,255,255,0.2); color:#fff; cursor:pointer;
+    font-size:14px; line-height:1; display:flex; align-items:center; justify-content:center;
+  }
+  #rpa-panel .rpa-header .rpa-close:hover { background:rgba(255,255,255,0.32); }
+  #rpa-body {
+    background:linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+    overflow-y:auto; max-height:calc(100vh - 200px);
+  }
+  #rpa-body.collapsed { display:none; }
+  #rpa-hero {
+    padding:20px 18px 16px; text-align:center;
+    background:radial-gradient(ellipse at top, #eaf1ff 0%, transparent 70%);
+  }
+  #rpa-hero h1 {
+    font-size:19px; font-weight:700; color:#0a2d6e; margin:0 0 6px;
+    letter-spacing:-0.3px; line-height:1.2;
+  }
+  #rpa-hero .rpa-subtitle {
+    font-size:12.5px; color:#4a5366; line-height:1.5; margin:0 0 14px;
+  }
+  #rpa-hero .rpa-highlight {
+    display:inline-block; font-size:10.5px; color:#1b4fc0; font-weight:600;
+    background:#eaf1ff; padding:3px 8px; border-radius:10px; margin:0 2px;
+  }
+  #rpa-cta {
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    width:100%; padding:11px 16px; font-size:13px; font-weight:600;
+    color:#fff; background:linear-gradient(135deg, #1b4fc0, #2f6df6);
+    border:0; border-radius:var(--radius); cursor:pointer;
+    box-shadow:0 4px 12px rgba(27,79,192,0.3); transition:all .15s;
+    font-family:var(--sans);
+  }
+  #rpa-cta:hover { transform:translateY(-1px); box-shadow:0 6px 16px rgba(27,79,192,0.4); }
+  #rpa-cta:active { transform:translateY(0); }
+  #rpa-cta .arrow { font-size:15px; }
+  #rpa-features {
+    padding:14px 18px; display:grid; grid-template-columns:1fr 1fr; gap:10px;
+  }
+  .rpa-feature {
+    background:#fff; border:1px solid var(--line-2); border-radius:8px;
+    padding:10px 11px; transition:all .15s;
+  }
+  .rpa-feature:hover { border-color:var(--accent); transform:translateY(-1px); box-shadow:var(--shadow-sm); }
+  .rpa-feature .icon {
+    width:30px; height:30px; border-radius:7px; display:flex;
+    align-items:center; justify-content:center; font-size:16px; margin-bottom:6px;
+  }
+  .rpa-feature .icon.blue { background:#eaf1ff; color:#1b4fc0; }
+  .rpa-feature .icon.green { background:#e6f7ed; color:#0d8a47; }
+  .rpa-feature .icon.orange { background:#fff3e0; color:#c46400; }
+  .rpa-feature .icon.purple { background:#f3e8ff; color:#6a2db5; }
+  .rpa-feature h3 { font-size:11.5px; font-weight:600; color:var(--ink); margin:0 0 2px; }
+  .rpa-feature p { font-size:10.5px; color:var(--ink-3); margin:0; line-height:1.35; }
+  #rpa-benefits { padding:0 18px 16px; }
+  #rpa-benefits h2 {
+    font-size:11px; font-weight:600; color:var(--ink-3); text-transform:uppercase;
+    letter-spacing:0.8px; margin:0 0 10px; text-align:center;
+  }
+  .rpa-benefit {
+    display:flex; gap:10px; padding:8px 0; font-size:11.5px; color:var(--ink-2);
+    line-height:1.5; align-items:flex-start;
+  }
+  .rpa-benefit .check {
+    width:18px; height:18px; border-radius:50%; background:#0d8a47; color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700;
+    flex-shrink:0; margin-top:1px;
+  }
+  #rpa-cta-bottom {
+    margin:4px 18px 18px;
+  }
+  #rpa-cta-bottom .rpa-note {
+    text-align:center; font-size:10px; color:var(--ink-3); margin-top:6px;
+  }
+  #rpa-collapsed-tab {
+    position:fixed; top:16px; left:16px; z-index:80;
+    background:linear-gradient(135deg, #1b4fc0, #2f6df6); color:#fff;
+    padding:8px 12px; border-radius:var(--radius); cursor:pointer;
+    box-shadow:var(--shadow); font-size:11.5px; font-weight:600;
+    display:flex; align-items:center; gap:7px; transition:all .15s;
+  }
+  #rpa-collapsed-tab:hover { transform:translateY(-1px); box-shadow:0 6px 16px rgba(27,79,192,0.35); }
+
+  /* ============ FULLSCREEN OVERLAY (RPA4All) ============ */
+  #rpa-fullscreen {
+    position:fixed; inset:0; z-index:200; background:#fff; display:none;
+    flex-direction:column;
+  }
+  #rpa-fullscreen.open { display:flex; }
+  #rpa-fs-bar {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 16px; background:var(--head); color:#fff;
+    font-size:12px; font-weight:500;
+  }
+  #rpa-fs-bar .rpa-fs-title { display:flex; align-items:center; gap:8px; }
+  #rpa-fs-bar .rpa-fs-title .rpa-logo {
+    width:22px; height:22px; border-radius:5px; background:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:700; color:#1b4fc0;
+  }
+  #rpa-fs-bar button {
+    background:rgba(255,255,255,0.15); color:#fff; border:0;
+    padding:6px 12px; border-radius:var(--radius-xs); font-size:11px;
+    font-weight:500; cursor:pointer; font-family:var(--sans);
+    display:flex; align-items:center; gap:5px;
+  }
+  #rpa-fs-bar button:hover { background:rgba(255,255,255,0.25); }
+  #rpa-fs-frame { flex:1; border:0; width:100%; height:100%; }
+  .legend-body { padding:9px 12px 10px; }
+  #legend .row {
+    display:flex; align-items:center; gap:9px; padding:3px 0;
+    font-size:11px; color:var(--ink-2);
+  }
+  #legend .sw {
+    display:inline-block; width:20px; height:13px; border-radius:3px;
+    border:1px solid rgba(0,0,0,0.25); flex:0 0 auto;
+  }
+
+  /* ============ WALK HUD ============ */
+  #walk-hud {
+    display:none; position:absolute; bottom:200px; left:50%; transform:translateX(-50%);
+    background:rgba(32,38,46,0.92); color:#fff; border-radius:20px;
+    padding:9px 18px; font-size:12px; font-family:var(--sans); z-index:120;
+    text-align:center; pointer-events:none; line-height:1.6;
+    box-shadow:0 8px 24px rgba(0,0,0,0.3); backdrop-filter:blur(4px);
+  }
+  #walk-hud.show { display:block; }
+  #walk-hud b { color:#7fd0ff; }
+
+  #virtual-hands {
+    display:none; position:absolute; left:50%; top:50%; width:210px; height:104px;
+    transform:translate(-50%, 34px); z-index:119; pointer-events:none;
+  }
+  #virtual-hands.show { display:block; }
+  #virtual-hands .hand {
+    position:absolute; bottom:0; width:74px; height:48px; border-radius:34px 34px 18px 18px;
+    background:linear-gradient(180deg,#d7a36e,#9d6234); box-shadow:0 18px 26px rgba(0,0,0,0.28);
+  }
+  #virtual-hands .hand::before {
+    content:""; position:absolute; top:-16px; width:42px; height:26px; border-radius:20px;
+    background:linear-gradient(180deg,#e2b27e,#ad7140);
+  }
+  #virtual-hands .left { left:18px; transform:rotate(18deg); }
+  #virtual-hands .right { right:18px; transform:rotate(-18deg); }
+  #virtual-hands .left::before { right:9px; transform:rotate(-24deg); }
+  #virtual-hands .right::before { left:9px; transform:rotate(24deg); }
+
+  /* ============ VIEW INFO ============ */
+  #view-info {
+    bottom:16px; right:16px; padding:7px 12px;
+    font-size:10.5px; font-family:var(--mono); color:#fff;
+    background:rgba(32,38,46,0.9); border:0; box-shadow:var(--shadow-sm);
+    border-radius:20px; min-width:120px; text-align:center;
+  }
+  #view-info.drag-bar::before { display:none; }
+
+  /* ============ ACCOUNT MENU (header fixo) ============ */
+  #account-menu {
+    position:fixed; top:14px; right:16px; z-index:100;
+    display:flex; align-items:center; gap:8px;
+  }
+  #account-btn {
+    display:flex; align-items:center; gap:8px;
+    padding:5px 10px 5px 5px; background:rgba(255,255,255,0.97);
+    border:1px solid var(--line); border-radius:24px; cursor:pointer;
+    box-shadow:var(--shadow-sm); font-family:var(--sans);
+    transition:all .14s;
+  }
+  #account-btn:hover { background:#fff; box-shadow:var(--shadow); }
+  #account-btn .avatar {
+    width:28px; height:28px; border-radius:50%; background:var(--accent);
+    color:#fff; display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-weight:600; overflow:hidden; flex-shrink:0;
+  }
+  #account-btn .avatar img { width:100%; height:100%; object-fit:cover; }
+  #account-btn .acc-name {
+    font-size:12px; color:var(--ink); font-weight:500;
+    max-width:120px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  #account-btn .acc-icon {
+    width:18px; height:18px; border-radius:50%;
+    background:var(--panel-3); color:var(--ink-2);
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px; font-weight:600;
+  }
+  #account-btn .acc-login-text { font-size:12px; color:var(--ink); font-weight:500; }
+  #account-dropdown {
+    position:absolute; top:calc(100% + 6px); right:0; min-width:240px;
+    background:rgba(255,255,255,0.98); border:1px solid var(--line);
+    border-radius:var(--radius); box-shadow:var(--shadow);
+    padding:6px; display:none;
+  }
+  #account-dropdown.show { display:block; }
+  #account-dropdown .acc-header { padding:10px 12px 12px; border-bottom:1px solid var(--line-2); }
+  #account-dropdown .acc-avatar-lg {
+    width:48px; height:48px; border-radius:50%; background:var(--accent);
+    color:#fff; display:flex; align-items:center; justify-content:center;
+    font-size:18px; font-weight:600; margin-bottom:8px; overflow:hidden;
+  }
+  #account-dropdown .acc-avatar-lg img { width:100%; height:100%; object-fit:cover; }
+  #account-dropdown .acc-name-lg { font-size:13px; font-weight:600; color:var(--ink); }
+  #account-dropdown .acc-email-lg { font-size:11px; color:var(--ink-3); margin-top:2px; }
+  #account-dropdown .acc-provider {
+    display:inline-block; font-size:9px; padding:2px 6px; border-radius:3px;
+    background:var(--accent-soft); color:var(--accent-ink);
+    margin-top:6px; text-transform:uppercase; letter-spacing:0.5px;
+  }
+  #account-dropdown .acc-items { padding:4px 0; }
+  #account-dropdown .acc-item {
+    display:flex; align-items:center; gap:8px; padding:8px 10px;
+    font-size:12px; color:var(--ink); cursor:pointer; border-radius:var(--radius-xs);
+    transition:background .12s;
+  }
+  #account-dropdown .acc-item:hover { background:var(--panel-2); }
+  #account-dropdown .acc-item .icon { font-size:14px; color:var(--ink-2); width:18px; text-align:center; }
+  #account-dropdown .acc-item.danger { color:var(--danger); }
+  #account-dropdown .acc-item.danger:hover { background:var(--danger-soft); }
+  #account-dropdown .acc-item.danger .icon { color:var(--danger); }
+  #account-dropdown .acc-divider { height:1px; background:var(--line-2); margin:4px 0; }
+
+  #account-menu.logged-out #account-btn { background:rgba(255,255,255,0.97); }
+  #account-menu.logged-out #account-btn:hover { background:#fff; }
+
+  /* ============ EDITOR 3D ============ */
+  #editor {
+    top:330px; right:16px; width:270px;
+  }
+  #editor .drag-bar { }
+  .ed-body { padding:10px 12px 12px; }
+  #sel-info {
+    color:var(--ink-2); font-size:11px; margin-bottom:9px;
+    padding:7px 9px; background:var(--panel-2); border-radius:var(--radius-xs);
+    border-left:3px solid var(--ink-3); font-family:var(--sans); line-height:1.4;
+  }
+  #sel-info b { color:var(--accent-ink); }
+  #sel-info a.buy-link {
+    display:inline-block; margin-top:4px; font-size:10px; font-weight:600;
+    color:var(--accent); text-decoration:none; word-break:break-all;
+  }
+  #sel-info a.buy-link:hover { text-decoration:underline; }
+  #sel-info:empty::before { content:"Clique num objeto 3D para selecionar"; color:var(--ink-3); font-style:italic; }
+  #sel-thumb-wrap { display:none; margin-bottom:10px; }
+  #sel-thumb-wrap canvas {
+    display:block; width:100%; height:140px;
+    background:var(--panel-3); border:1px solid var(--line); border-radius:var(--radius-xs);
+  }
+  #sel-dims {
+    font-family:var(--mono); font-size:10px; color:var(--ink-2);
+    margin-top:5px; line-height:1.5; padding:4px 6px; background:var(--panel-2); border-radius:4px;
+  }
+  #sel-dims b { color:var(--accent-ink); }
+  #sel-controls { display:none; }
+  #sel-controls .ctrl-row { display:flex; gap:5px; margin-bottom:8px; }
+  #sel-controls .ctrl-row button {
+    flex:1; text-align:center; font-size:10px; padding:7px 4px;
+    border-radius:var(--radius-xs); font-family:var(--sans); font-weight:500;
+    background:#fff; color:var(--ink); border:1px solid var(--line); cursor:pointer;
+    transition:all .14s; display:inline-flex; align-items:center; justify-content:center; gap:4px;
+  }
+  #sel-controls .ctrl-row button:hover { background:var(--panel-3); border-color:#c4cdda; }
+  #sel-controls .ctrl-row button.active {
+    background:var(--accent); color:#fff; border-color:var(--accent);
+    box-shadow:0 1px 3px rgba(47,109,246,0.35);
+  }
+  #mode-move::before { content:"✥"; }
+  #mode-rotate::before { content:"⟳"; }
+  #mode-scale::before { content:"⤢"; }
+  #sel-controls .rot-snap {
+    font-size:9px; padding:4px 6px; cursor:pointer;
+    background:#fff; border:1px solid var(--line); border-radius:4px;
+    color:var(--ink-2); font-family:var(--sans);
+  }
+  #sel-controls .rot-snap:hover { border-color:var(--accent); color:var(--accent-ink); }
+  #editor .prop-group {
+    margin-bottom:9px; padding:8px; background:var(--panel-2);
+    border-radius:var(--radius-xs); border:1px solid var(--line-2);
+  }
+  #editor .prop-group .pg-label {
+    font-size:9px; font-weight:700; letter-spacing:0.6px; text-transform:uppercase;
+    color:var(--ink-3); margin-bottom:5px;
+  }
+  #editor .prop-group .pg-row { display:flex; align-items:center; gap:6px; margin-bottom:4px; }
+  #editor .prop-group .pg-row:last-child { margin-bottom:0; }
+  #editor .prop-group label {
+    display:inline-block; width:34px; font-size:9.5px; font-family:var(--mono);
+    color:var(--ink-3); font-weight:600;
+  }
+  #editor input[type=number] {
+    flex:1; width:auto; font-size:11px; font-family:var(--mono);
+    border:1px solid var(--line); border-radius:5px; padding:5px 7px; color:var(--ink);
+    background:#fff; min-width:0;
+  }
+  #editor input[type=number]:focus { border-color:var(--accent); outline:none; box-shadow:0 0 0 3px var(--accent-soft); }
+  #btn-marcenaria::before { content:"🪚"; }
+  #btn-marcenaria:disabled {
+    opacity:0.38; cursor:not-allowed; filter:grayscale(0.6);
+  }
+  #btn-marcenaria.enabled {
+    background:#f4ead6; border-color:#c9a66b; color:#5c4318;
+  }
+  #marcenaria-overlay {
+    display:none; position:fixed; inset:0; z-index:80;
+    background:rgba(18,24,40,0.45); align-items:center; justify-content:center;
+  }
+  #marcenaria-overlay.open { display:flex; }
+  #marcenaria-modal {
+    width:min(860px, 96vw); max-height:90vh; overflow:auto;
+    background:var(--panel); border-radius:var(--radius); box-shadow:var(--shadow);
+    border:1px solid var(--line);
+  }
+  #marcenaria-modal .mc-head {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 16px; background:var(--head); color:#fff; border-radius:var(--radius) var(--radius) 0 0;
+  }
+  #marcenaria-modal .mc-head button {
+    background:transparent; border:0; color:#fff; font-size:18px; cursor:pointer;
+  }
+  #marcenaria-modal .mc-ctx {
+    padding:12px 16px; background:var(--panel-2); font-size:12px; line-height:1.45; color:var(--ink-2);
+    border-bottom:1px solid var(--line);
+  }
+  #marcenaria-modal .mc-ctx b { color:var(--ink); }
+  #mc-workspace {
+    display:grid; grid-template-columns:minmax(340px, 1.1fr) 1fr; gap:14px;
+    padding:14px 16px 8px; align-items:start;
+  }
+  @media (max-width:720px) { #mc-workspace { grid-template-columns:1fr; } }
+  #mc-furn-drop {
+    border:2px dashed #c9a66b; border-radius:var(--radius); background:#f7f1e6;
+    min-height:280px; display:flex; flex-direction:column; align-items:stretch;
+    position:relative;
+  }
+  #mc-furn-drop.dragover {
+    border-color:#5c4318; background:#efe3cc; box-shadow:inset 0 0 0 2px #c9a66b;
+  }
+  #mc-furn-drop canvas { width:100%; height:280px; display:block; border-radius:8px 8px 0 0; background:#e8e6e0; pointer-events:auto; cursor:grab; }
+  .mc-card .mc-apply {
+    margin-top:8px; width:100%; font-size:11px; font-weight:600;
+    background:#f4ead6; border:1px solid #c9a66b; color:#5c4318; border-radius:6px; padding:6px 8px; cursor:pointer;
+  }
+  .mc-card .mc-apply:hover { background:#5c4318; color:#fff; }
+  #mc-ghost {
+    display:none; position:fixed; z-index:95; pointer-events:none;
+    width:120px; padding:6px; background:#fff; border:1px solid #c9a66b; border-radius:8px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.18); font-size:11px; font-weight:600; color:#5c4318; text-align:center;
+  }
+  #mc-ghost.show { display:block; }
+  #mc-furn-drop .mc-drop-lab {
+    font-size:11px; padding:8px 10px 10px; color:#5c4318; text-align:center; font-weight:600;
+  }
+  #mc-sugs {
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));
+    gap:10px;
+  }
+  .mc-card {
+    border:1px solid var(--line); border-radius:var(--radius-sm); background:#fff;
+    padding:8px; cursor:grab; user-select:none;
+  }
+  .mc-card:active { cursor:grabbing; }
+  .mc-card canvas { width:100%; height:88px; display:block; border-radius:6px; background:#efe8dc; margin-bottom:6px; }
+  .mc-card .mc-type {
+    font-size:9px; letter-spacing:0.06em; text-transform:uppercase; color:#8a6a32; font-weight:700;
+  }
+  .mc-card h4 { font-size:13px; margin:4px 0 6px; }
+  .mc-card p { font-size:11px; color:var(--ink-2); line-height:1.4; }
+  .mc-card .mc-dim { font-family:var(--mono); font-size:10px; color:var(--ink-3); margin-top:6px; }
+  #mc-status { padding:0 16px 12px; font-size:11px; color:var(--ink-3); }
+  #mc-drop-hint {
+    display:none; position:fixed; z-index:90; pointer-events:none;
+    background:#5c4318; color:#fff; font-size:11px; padding:6px 10px; border-radius:6px;
+  }
+  #mc-drop-hint.show { display:block; }
+  #editor .btn-danger {
+    background:var(--danger-soft); color:var(--danger); border:1px solid #f0c2c4;
+    margin-top:8px; font-weight:600;
+  }
+  #editor .btn-danger:hover { background:var(--danger); color:#fff; border-color:var(--danger); }
+  #editor .hint {
+    font-size:9.5px; color:var(--ink-3); margin-top:10px; line-height:1.6;
+    padding:8px 9px; background:var(--panel-2); border-radius:var(--radius-xs);
+    border-left:3px solid var(--line);
+  }
+  #editor .hint b { color:var(--accent-ink); font-family:var(--mono); }
+  .ed-actions { display:flex; gap:6px; margin-top:8px; }
+  .ed-actions button {
+    flex:1; font-size:10.5px; padding:7px 6px; border-radius:var(--radius-xs);
+    font-family:var(--sans); font-weight:500; cursor:pointer;
+    background:#fff; color:var(--ink); border:1px solid var(--line); transition:all .14s;
+    display:inline-flex; align-items:center; justify-content:center; gap:4px;
+  }
+  .ed-actions button:hover { background:var(--panel-3); border-color:#c4cdda; }
+  #btn-deselect::before { content:"✕"; }
+  .ed-fill { margin-bottom:8px; display:flex; flex-direction:column; gap:6px; }
+  .ed-fill button {
+    width:100%; background:var(--accent-soft); color:var(--accent-ink);
+    border:1px solid #c4cfe6; font-weight:600; font-size:10.5px; padding:7px;
+    border-radius:var(--radius-xs); cursor:pointer; font-family:var(--sans);
+    display:inline-flex; align-items:center; justify-content:center; gap:5px; transition:all .14s;
+  }
+  .ed-fill button:hover { background:#dce6fb; border-color:var(--accent); }
+  .ed-fill button::before { content:"⬚"; }
+
+  /* Material presets */
+  #mat-section .pg-row { margin-bottom:6px; }
+  #mat-section .pg-row:last-child { margin-bottom:0; }
+  .mat-presets {
+    display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;
+  }
+  .mat-preset {
+    width:22px; height:22px; border-radius:4px; border:2px solid transparent;
+    cursor:pointer; transition:all .12s; position:relative;
+  }
+  .mat-preset:hover { transform:scale(1.15); border-color:var(--accent); z-index:1; }
+  .mat-preset.active { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent-soft); }
+  .mat-preset[title]::after {
+    content:attr(title); position:absolute; bottom:calc(100% + 4px); left:50%;
+    transform:translateX(-50%); background:var(--head); color:#fff; font-size:9px;
+    padding:2px 6px; border-radius:4px; white-space:nowrap; pointer-events:none;
+    opacity:0; transition:opacity .15s;
+  }
+  .mat-preset:hover[title]::after { opacity:1; }
+
+  /* ============ PAINEL IA ============ */
+  #ai-panel {
+    bottom:16px; left:50%; transform:translateX(-50%);
+    width:440px; max-width:calc(100vw - 32px); font-size:12px;
+  }
+  #ai-panel .ai-header {
+    display:flex; justify-content:space-between; align-items:center;
+    background:linear-gradient(180deg, var(--head), var(--head-2));
+    color:#fff; padding:9px 14px; font-size:12px; font-weight:600;
+    border-radius:var(--radius) var(--radius) 0 0; cursor:pointer; user-select:none;
+  }
+  #ai-panel .ai-header #ai-title { display:flex; align-items:center; gap:7px; letter-spacing:0.3px; }
+  #ai-panel .ai-header .dot {
+    width:9px; height:9px; border-radius:50%; background:var(--ok);
+    box-shadow:0 0 0 3px rgba(21,160,90,0.18);
+  }
+  #ai-panel .ai-header .dot.busy { background:var(--warn); box-shadow:0 0 0 3px rgba(224,134,0,0.2); animation:pulse 0.9s infinite; }
+  #ai-panel .ai-header .dot.err { background:var(--danger); box-shadow:0 0 0 3px rgba(229,72,77,0.2); }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.35; } }
+  #ai-body { display:block; }
+  #ai-body.collapsed { display:none; }
+  #ai-model-row { display:none !important; }
+  #ai-model { display:none; }
+  #ai-refresh-models { display:none; }
+  #chat-log {
+    max-height:200px; overflow-y:auto; padding:11px 12px;
+    font-size:11.5px; line-height:1.5; background:#fff;
+  }
+  #chat-log .msg-user, #chat-log .msg-ai, #chat-log .msg-err, #chat-log .msg-sys {
+    margin-bottom:8px; max-width:88%; padding:7px 11px; border-radius:12px;
+    font-family:var(--sans); word-wrap:break-word;
+  }
+  #chat-log .msg-user {
+    background:var(--accent); color:#fff; margin-left:auto; border-bottom-right-radius:3px;
+  }
+  #chat-log .msg-ai {
+    background:var(--panel-2); color:var(--ink); border:1px solid var(--line-2); border-bottom-left-radius:3px;
+  }
+  #chat-log .msg-err {
+    background:var(--danger-soft); color:var(--danger); border:1px solid #f0c2c4; border-radius:var(--radius-xs);
+  }
+  #chat-log .msg-sys { color:var(--ink-3); font-style:italic; padding:2px 4px; }
+  #chat-log::-webkit-scrollbar { width:7px; }
+  #chat-log::-webkit-scrollbar-thumb { background:var(--line); border-radius:4px; }
+  #chat-input-row {
+    display:flex; gap:7px; padding:9px 11px; border-top:1px solid var(--line-2); background:var(--panel-2);
+  }
+  #chat-input {
+    flex:1; font-size:12px; font-family:var(--sans);
+    border:1px solid var(--line); border-radius:20px; padding:8px 13px; color:var(--ink); background:#fff;
+  }
+  #chat-input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+  #chat-input::placeholder { color:var(--ink-3); }
+  #chat-send {
+    background:var(--accent); color:#fff; border:0; border-radius:20px;
+    padding:8px 16px; font-size:12px; cursor:pointer; font-family:var(--sans); font-weight:600;
+    transition:background .14s; display:inline-flex; align-items:center; gap:5px;
+  }
+  #chat-send::before { content:"➤"; font-size:11px; }
+  #chat-send:hover { background:var(--accent-ink); }
+  #chat-send:disabled { background:var(--ink-3); cursor:default; }
+  #ai-feedback-row {
+    display:flex; align-items:center; gap:8px; padding:8px 11px;
+    border-top:1px solid var(--line-2); background:#fff;
+    color:var(--ink-3); font-size:11px;
+  }
+  .ai-feedback-btn {
+    border:1px solid var(--line); background:var(--panel-2); color:var(--ink);
+    border-radius:16px; padding:5px 9px; cursor:pointer; font-size:12px;
+    font-family:var(--sans); transition:all .12s;
+  }
+  .ai-feedback-btn:hover { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+  .ai-feedback-btn.good.active { background:#e8f7ef; border-color:#15a05a; color:#0d6b3a; }
+  .ai-feedback-btn.bad.active { background:#fff0f0; border-color:#e5484d; color:#a22025; }
+  #ai-feedback-status { margin-left:auto; color:var(--ink-3); font-size:10.5px; }
+
+  /* ============ PESO ESTIMADO ============ */
+  .weight-divider {
+    height: 1px; background: var(--line-2); margin: 8px 0 6px;
+  }
+  .weight-total {
+    display: flex; align-items: baseline; gap: 4px;
+    padding: 6px 8px; background: var(--panel-2);
+    border-radius: var(--radius-xs); border-left: 3px solid var(--ok);
+    margin-bottom: 6px;
+  }
+  .weight-total.warn { border-left-color: var(--warn); }
+  .weight-total.danger { border-left-color: var(--danger); }
+  .weight-value {
+    font-size: 20px; font-weight: 700; font-family: var(--mono);
+    color: var(--accent-ink); line-height: 1;
+  }
+  .weight-total.warn .weight-value { color: var(--warn); }
+  .weight-total.danger .weight-value { color: var(--danger); }
+  .weight-unit {
+    font-size: 11px; color: var(--ink-3); font-weight: 500;
+  }
+  .weight-bar-wrap {
+    position: relative; height: 8px; background: var(--panel-3);
+    border-radius: 4px; overflow: hidden; margin-bottom: 2px;
+  }
+  .weight-bar {
+    height: 100%; border-radius: 4px; transition: width 0.4s ease, background 0.4s ease;
+    background: var(--ok);
+  }
+  .weight-bar.warn { background: var(--warn); }
+  .weight-bar.danger { background: var(--danger); }
+  .weight-bar-limit {
+    position: absolute; top: 0; bottom: 0; width: 2px;
+    background: var(--danger); left: 100%; transform: translateX(-1px);
+    opacity: 0.5;
+  }
+  .weight-limit-label {
+    font-size: 9px; color: var(--ink-3); text-align: right;
+    margin-bottom: 6px; font-family: var(--mono);
+  }
+  .weight-breakdown {
+    font-size: 10px; color: var(--ink-2); line-height: 1.6;
+    max-height: 120px; overflow-y: auto;
+  }
+  .weight-breakdown .wb-row {
+    display: flex; justify-content: space-between; gap: 6px;
+    padding: 1px 0;
+  }
+  .weight-breakdown .wb-row .wb-label { color: var(--ink-3); }
+  .weight-breakdown .wb-row .wb-val { font-family: var(--mono); font-weight: 600; color: var(--ink); }
+  .weight-breakdown .wb-sep { height: 1px; background: var(--line-2); margin: 3px 0; }
+
+  /* ============ SCROLLBAR GLOBAL ============ */
+  .ui-win ::-webkit-scrollbar, #palette .grid::-webkit-scrollbar { width:8px; }
+  .ui-win ::-webkit-scrollbar-thumb, #palette .grid::-webkit-scrollbar-thumb { background:var(--line); border-radius:4px; }
+  .ui-win ::-webkit-scrollbar-thumb:hover, #palette .grid::-webkit-scrollbar-thumb:hover { background:#b8c0cf; }
+
+  /* Responsivo: empilha painéis em telas pequenas */
+  @media (max-width: 720px) {
+    #hud, #specs, #legend, #editor { position:absolute; }
+    #specs { top:auto; bottom:auto; }
+    #palette { top:auto; bottom:auto; }
+  }
+
+  /* ============ BOTÃO EXPORTAR ============ */
+  #btn-export {
+    background:var(--accent-soft); color:var(--accent-ink);
+    border-color:#a8c0f8; font-weight:600;
+  }
+  #btn-export::before { content:"📋"; }
+  #btn-export:hover { background:#dce6fb; border-color:var(--accent); }
+
+  /* ============ MODAL PLANO DE CORTE ============ */
+  .cut-modal-overlay {
+    position:fixed; inset:0; z-index:1000;
+    background:rgba(15,20,35,0.55); backdrop-filter:blur(4px);
+    display:flex; align-items:center; justify-content:center;
+    padding:24px;
+  }
+  .cut-modal {
+    background:var(--panel); border-radius:var(--radius);
+    box-shadow:0 24px 64px rgba(0,0,0,0.35);
+    width:min(820px,95vw); max-height:88vh; display:flex; flex-direction:column;
+    overflow:hidden; font-family:var(--sans);
+  }
+  .cut-modal-head {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 20px; background:linear-gradient(180deg, var(--head), var(--head-2));
+    color:#fff; font-size:15px; font-weight:700; letter-spacing:0.3px;
+  }
+  .cut-modal-title { display:flex; align-items:center; gap:8px; }
+  .cut-modal-close {
+    background:transparent; border:0; color:#fff; font-size:22px;
+    cursor:pointer; padding:0 4px; line-height:1; opacity:0.7; border-radius:4px;
+  }
+  .cut-modal-close:hover { opacity:1; background:rgba(255,255,255,0.15); }
+  .cut-modal-body { flex:1; overflow-y:auto; padding:16px 20px 8px; }
+  .cut-summary {
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(120px,1fr));
+    gap:10px; margin-bottom:16px;
+  }
+  .cut-stat {
+    background:var(--panel-2); border:1px solid var(--line-2); border-radius:var(--radius-xs);
+    padding:8px 12px; text-align:center;
+  }
+  .cut-stat .val {
+    font-size:22px; font-weight:700; color:var(--accent-ink);
+    font-family:var(--mono); line-height:1.1;
+  }
+  .cut-stat .lbl {
+    font-size:9px; color:var(--ink-3); text-transform:uppercase;
+    letter-spacing:0.6px; margin-top:3px;
+  }
+  .cut-tabs {
+    display:flex; gap:4px; margin-bottom:12px; flex-wrap:wrap;
+  }
+  .cut-tab {
+    padding:7px 14px; font-size:12px; border:1px solid var(--line);
+    border-radius:20px; background:#fff; color:var(--ink-2);
+    cursor:pointer; font-family:var(--sans); font-weight:500; transition:all .15s;
+  }
+  .cut-tab:hover { background:var(--panel-3); }
+  .cut-tab.active {
+    background:var(--accent); color:#fff; border-color:var(--accent);
+    box-shadow:0 1px 3px rgba(47,109,246,0.35);
+  }
+  .cut-table-wrap { margin-bottom:8px; }
+  .cut-table {
+    width:100%; border-collapse:collapse; font-size:12px; font-family:var(--sans);
+  }
+  .cut-table thead th {
+    background:var(--head); color:#fff; padding:8px 10px; text-align:left;
+    font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.4px;
+    position:sticky; top:0; z-index:1;
+  }
+  .cut-table thead th:first-child { border-radius:5px 0 0 0; }
+  .cut-table thead th:last-child { border-radius:0 5px 0 0; }
+  .cut-table tbody td {
+    padding:7px 10px; border-bottom:1px solid var(--line-2); color:var(--ink);
+  }
+  .cut-table tbody tr:nth-child(even) { background:var(--panel-2); }
+  .cut-table tbody tr:hover { background:var(--accent-soft); }
+  .cut-table .col-n { width:32px; text-align:center; color:var(--ink-3); font-family:var(--mono); font-size:11px; }
+  .cut-table .col-name { font-weight:600; }
+  .cut-table .col-dim { font-family:var(--mono); font-size:11px; white-space:nowrap; }
+  .cut-table .col-qty { text-align:center; font-weight:700; }
+  .cut-table .col-area { font-family:var(--mono); font-size:11px; text-align:right; color:var(--ink-2); }
+  .cut-info {
+    font-size:11px; color:var(--ink-3); line-height:1.6; padding:8px 12px;
+    background:var(--panel-2); border-radius:var(--radius-xs); margin-bottom:8px;
+  }
+  .cut-info b { color:var(--ink); }
+  .cut-modal-foot {
+    display:flex; gap:8px; padding:12px 20px; background:var(--panel-2);
+    border-top:1px solid var(--line-2); flex-wrap:wrap;
+  }
+  .cut-btn {
+    padding:8px 16px; font-size:12px; font-family:var(--sans); font-weight:600;
+    border:1px solid var(--line); border-radius:var(--radius-xs); background:#fff;
+    color:var(--ink); cursor:pointer; transition:all .15s;
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .cut-btn:hover { background:var(--panel-3); border-color:#c4cdda; }
+  .cut-btn-primary {
+    background:var(--accent); color:#fff; border-color:var(--accent);
+  }
+  .cut-btn-primary:hover { background:var(--accent-ink); }
+  .cut-btn::before { font-size:13px; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="canvas-wrap"></div>
+
+  <!-- Account menu (header fixo) -->
+  <div id="account-menu" class="logged-out">
+    <div id="account-btn" tabindex="0">
+      <div class="avatar" id="account-avatar">?</div>
+      <span class="acc-login-text" id="account-btn-text">Entrar</span>
+    </div>
+    <div id="account-dropdown">
+      <div class="acc-header" id="acc-header"></div>
+      <div class="acc-items" id="acc-items"></div>
+    </div>
+  </div>
+
+  <!-- HUD: projeto + controles de visualização -->
+  <div id="hud" class="ui-win">
+    <div class="drag-bar"><span>Projeto · Trailer Nelcyr-Nardelli RL</span><span class="sub">rev 23 · 1:50</span></div>
+    <div class="hud-body">
+      <p>Família: 1 casal + 1 filha. Layout aberto (sem paredes divisórias), banheiro em cubo, mezanino da cama de casal sobre a lança (fora da caçamba). Estilo técnico com cotas e hatches de material.</p>
+
+      <div class="hud-sec">
+        <div class="hud-sec-label">Exibir</div>
+        <div class="btn-row">
+          <button id="btn-walls" class="active">Paredes</button>
+          <button id="btn-roof" class="active">Telhado</button>
+          <button id="btn-cotas" class="active">Cotas</button>
+          <button id="btn-labels" class="active">Rótulos</button>
+          <button id="btn-rotate">Girar</button>
+        </div>
+      </div>
+
+      <div class="hud-sec">
+        <div class="hud-sec-label">Câmera</div>
+        <div class="btn-row">
+          <button id="btn-top">Planta</button>
+          <button id="btn-iso">Isométrica</button>
+          <button id="btn-enter">Entrar</button>
+          <button id="btn-mezz">Mezanino</button>
+        </div>
+      </div>
+
+      <div class="hud-sec">
+        <div class="hud-sec-label">Camadas</div>
+        <div id="cat-row">
+          <button class="cat-btn active" data-cat="telhado">telhado</button>
+          <button class="cat-btn active" data-cat="paredes">paredes</button>
+          <button class="cat-btn active" data-cat="paredes-int">paredes int.</button>
+          <button class="cat-btn active" data-cat="acessorios">acessórios</button>
+          <button class="cat-btn active" data-cat="encanamento">encanamento</button>
+          <button class="cat-btn active" data-cat="eletrica">elétrica</button>
+        </div>
+      </div>
+
+      <div class="hud-sec">
+        <div class="hud-sec-label">Projeto</div>
+        <div class="btn-row">
+          <button id="btn-reset">Reset</button>
+          <button id="btn-save">Salvar</button>
+          <button id="btn-export">Exportar Corte</button>
+        </div>
+      </div>
+
+      <div id="auth-section">
+        <div id="auth-content"></div>
+      </div>
+
+      <div id="files-section" class="locked">
+        <div class="files-header">
+          <input id="file-name-input" type="text" placeholder="Nome do projeto…" maxlength="40">
+          <button id="btn-save-file">Salvar</button>
+        </div>
+        <div id="files-list" class="files-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de exportação de plano de corte -->
+  <div id="cut-export-modal" class="cut-modal-overlay" style="display:none;">
+    <div class="cut-modal">
+      <div class="cut-modal-head">
+        <span class="cut-modal-title">Plano de Corte — Compensado Naval</span>
+        <button id="cut-close" class="cut-modal-close">×</button>
+      </div>
+      <div class="cut-modal-body">
+        <div class="cut-summary" id="cut-summary"></div>
+        <div class="cut-tabs">
+          <button class="cut-tab active" data-sheet="10">Compensado 10mm</button>
+          <button class="cut-tab" data-sheet="15">Compensado 15mm</button>
+          <button class="cut-tab" data-sheet="25">Compensado 25mm</button>
+          <button class="cut-tab" data-sheet="40">Compensado 40mm</button>
+        </div>
+        <div id="cut-table-wrap" class="cut-table-wrap"></div>
+        <div class="cut-info" id="cut-info"></div>
+      </div>
+      <div class="cut-modal-foot">
+        <button id="cut-csv" class="cut-btn cut-btn-primary">Baixar CSV</button>
+        <button id="cut-csv-leroy" class="cut-btn cut-btn-primary">CSV Leroy Merlin</button>
+        <button id="cut-copy" class="cut-btn">Copiar Lista</button>
+        <button id="cut-print" class="cut-btn">Imprimir / PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paleta de móveis -->
+  <div id="palette" class="ui-win">
+    <div class="drag-bar"><span>Paleta</span><span class="pal-count" id="pal-count"></span></div>
+    <div class="pal-search">
+      <input type="text" id="pal-filter" placeholder="🔎 filtrar móveis…" autocomplete="off">
+    </div>
+    <div class="grid">
+      <div class="pal-cat">Móveis & Eletro</div>
+      <button class="pi" data-item="pia">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><ellipse cx="36" cy="28" rx="22" ry="12" fill="#b8b8b8" stroke="#6a6a6a"/><ellipse cx="36" cy="26" rx="16" ry="8" fill="#8a8a8a"/><circle cx="36" cy="26" r="3" fill="#4a4a4a"/><rect x="33" y="10" width="6" height="10" rx="2" fill="#909090"/><circle cx="36" cy="10" r="3" fill="#c0c0c0"/></svg></span>
+        Pia inox Ø28
+      </button>
+      <button class="pi" data-item="comoda">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="14" y="8" width="44" height="38" fill="#c4a060" stroke="#6a4a20"/><rect x="17" y="12" width="38" height="9" fill="#d4b070" stroke="#8a6a30"/><rect x="17" y="23" width="38" height="9" fill="#d4b070" stroke="#8a6a30"/><rect x="17" y="34" width="38" height="9" fill="#d4b070" stroke="#8a6a30"/><circle cx="36" cy="16.5" r="1.4" fill="#3a2a10"/><circle cx="36" cy="27.5" r="1.4" fill="#3a2a10"/><circle cx="36" cy="38.5" r="1.4" fill="#3a2a10"/></svg></span>
+        Cômoda 3 gav.
+      </button>
+      <button class="pi" data-item="armario">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="6" width="36" height="42" fill="#d4b483" stroke="#6a4a20"/><line x1="36" y1="6" x2="36" y2="48" stroke="#8a6a40"/><rect x="21" y="10" width="12" height="8" fill="#c8a870"/><rect x="39" y="10" width="12" height="8" fill="#c8a870"/><circle cx="32" cy="30" r="1.6" fill="#3a2a10"/><circle cx="40" cy="30" r="1.6" fill="#3a2a10"/></svg></span>
+        Armário 40×60
+      </button>
+      <button class="pi" data-item="banco">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="22" width="52" height="22" fill="#d4b483" stroke="#6a4a20"/><rect x="10" y="16" width="52" height="8" fill="#c8a060" stroke="#6a4a20"/><rect x="14" y="28" width="44" height="12" fill="#e8d4a8" stroke="#8a6a40"/></svg></span>
+        Banco-baú
+      </button>
+      <button class="pi" data-item="mesa">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><ellipse cx="36" cy="22" rx="24" ry="10" fill="#c4a060" stroke="#6a4a20"/><rect x="34" y="22" width="4" height="22" fill="#8a6a40"/><ellipse cx="36" cy="44" rx="8" ry="3" fill="#6a4a20"/></svg></span>
+        Mesa Lagun
+      </button>
+      <button class="pi" data-item="dinette">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="14" width="22" height="32" fill="#c4a060" stroke="#6a4a20"/><rect x="6" y="10" width="22" height="8" fill="#80c0a0"/><rect x="32" y="18" width="32" height="22" fill="#b89450" stroke="#6a4a20"/><rect x="46" y="40" width="4" height="8" fill="#8a8a8a"/></svg></span>
+        Banco + mesa
+      </button>
+      <button class="pi" data-item="recpro-38">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="12" width="20" height="32" fill="#c4a060" stroke="#6a4a20"/><rect x="28" y="18" width="22" height="20" fill="#b89450"/><rect x="38" y="38" width="3" height="8" fill="#888"/><text x="36" y="50" text-anchor="middle" fill="#666" font-size="5">RecPro 38"</text></svg></span>
+        RecPro 38" booth
+      </button>
+      <button class="pi" data-item="recpro-44">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="12" width="18" height="32" fill="#c4a060" stroke="#6a4a20"/><rect x="24" y="18" width="24" height="18" fill="#b89450"/><rect x="52" y="12" width="18" height="32" fill="#c4a060" stroke="#6a4a20"/><text x="36" y="50" text-anchor="middle" fill="#666" font-size="5">RecPro 44"</text></svg></span>
+        RecPro 44" combo
+      </button>
+      <button class="pi" data-item="camper-40">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="12" width="22" height="32" fill="#8b6914" stroke="#5a4010"/><rect x="32" y="18" width="28" height="20" fill="#c4a060"/><text x="36" y="50" text-anchor="middle" fill="#666" font-size="5">Comfort 40"</text></svg></span>
+        Camper Comfort 40"
+      </button>
+      <button class="pi" data-item="pe-dinete-12v">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="10" width="40" height="8" fill="#c4a060" stroke="#6a4a20"/><rect x="34" y="18" width="4" height="26" fill="#a0a8b0"/><ellipse cx="36" cy="46" rx="10" ry="3" fill="#888"/></svg></span>
+        Pé dinete 12V
+      </button>
+      <button class="pi" data-item="snap-base">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="14" y="12" width="44" height="8" fill="#c4a060"/><path d="M24 20 L20 44 L52 44 L48 20" fill="#2a2a2a"/></svg></span>
+        SNAP table base
+      </button>
+      <button class="pi" data-item="geladeira">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="22" y="6" width="28" height="42" rx="2" fill="#3a8a4a" stroke="#1a4a22"/><rect x="25" y="10" width="22" height="14" fill="#2e703c"/><rect x="25" y="26" width="22" height="18" fill="#2e703c"/><rect x="45" y="16" width="3" height="8" fill="#c8c8c8"/></svg></span>
+        Geladeira 12V
+      </button>
+
+      <div class="pal-cat">Portas & Janelas</div>
+      <button class="pi" data-item="porta">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="6" width="28" height="42" fill="#c4a574" stroke="#6a4a28"/><rect x="24" y="10" width="20" height="16" fill="#d4c4a0" stroke="#8a6a40"/><circle cx="44" cy="30" r="2.2" fill="#3a3a3a"/></svg></span>
+        Porta 62×160
+      </button>
+      <button class="pi" data-item="porta-int">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="22" y="5" width="24" height="44" fill="#d4b483" stroke="#7a5a30"/><line x1="34" y1="5" x2="34" y2="49" stroke="#b89460"/><circle cx="40" cy="28" r="2" fill="#3a3a3a"/></svg></span>
+        Porta int. 55×170
+      </button>
+      <button class="pi" data-item="janela">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="14" y="8" width="44" height="36" fill="#7eb8d8" fill-opacity="0.35" stroke="#6a7a88"/><rect x="14" y="8" width="44" height="36" fill="none" stroke="#8a9aa8" stroke-width="3"/></svg></span>
+        Janela 50×50
+      </button>
+      <button class="pi" data-item="janela-50x35">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="14" width="48" height="24" fill="#6aa8c8" fill-opacity="0.3" stroke="#555"/><text x="36" y="48" text-anchor="middle" fill="#666" font-size="5">500×350</text></svg></span>
+        Janela SANJO 50×35
+      </button>
+      <button class="pi" data-item="janela-70x40">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="12" width="56" height="26" fill="#6aa8c8" fill-opacity="0.3" stroke="#555"/><text x="36" y="48" text-anchor="middle" fill="#666" font-size="5">700×400</text></svg></span>
+        Janela SANJO 70×40
+      </button>
+      <button class="pi" data-item="janela-90x45">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="12" width="60" height="26" fill="#6aa8c8" fill-opacity="0.3" stroke="#555"/><text x="36" y="48" text-anchor="middle" fill="#666" font-size="5">900×450</text></svg></span>
+        Janela SANJO 90×45
+      </button>
+      <button class="pi" data-item="janela-120x50">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="14" width="64" height="22" fill="#6aa8c8" fill-opacity="0.3" stroke="#555"/><text x="36" y="48" text-anchor="middle" fill="#666" font-size="5">1200×500</text></svg></span>
+        Janela SANJO 120×50
+      </button>
+      <button class="pi" data-item="janela-pp-350">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="22" y="6" width="28" height="38" fill="#6aa8c8" fill-opacity="0.3" stroke="#555"/><text x="36" y="50" text-anchor="middle" fill="#666" font-size="5">350×500</text></svg></span>
+        Polyplastic 35×50
+      </button>
+      <button class="pi" data-item="janela-fixa-120">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="16" width="64" height="20" rx="6" fill="#6aa8c8" fill-opacity="0.3" stroke="#555"/><text x="36" y="48" text-anchor="middle" fill="#666" font-size="5">fixa 1200</text></svg></span>
+        Fixa panorâmica 120×50
+      </button>
+      <button class="pi" data-item="janela-kg-750">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="12" width="52" height="28" rx="4" fill="#4a6070" fill-opacity="0.45" stroke="#333"/><text x="36" y="48" text-anchor="middle" fill="#666" font-size="5">KG 750×500</text></svg></span>
+        Janela KG fumê 75×50
+      </button>
+      <button class="pi" data-item="janela-kg-leitosa">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="14" y="12" width="44" height="28" rx="4" fill="#e8e4dc" fill-opacity="0.7" stroke="#888"/><text x="36" y="48" text-anchor="middle" fill="#666" font-size="5">KG 60×45</text></svg></span>
+        Janela KG leitosa 60×45
+      </button>
+      <button class="pi" data-item="exaustor">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="26" r="18" fill="#c8c8c8" stroke="#6a6a6a"/><circle cx="36" cy="26" r="12" fill="#e8e8e8"/><path d="M36 14 L40 26 L36 38 L32 26 Z" fill="#8a8a8a"/><path d="M18 26 L36 30 L54 26 L36 22 Z" fill="#a0a0a0"/><circle cx="36" cy="26" r="3" fill="#4a4a4a"/></svg></span>
+        Exaustor teto
+      </button>
+      <button class="pi" data-item="exaustor-anti">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="10" width="48" height="32" rx="3" fill="#d0d0d0" stroke="#888"/><rect x="16" y="14" width="40" height="24" rx="2" fill="#e8e8e8"/><path d="M24 22 Q36 18 48 22" fill="none" stroke="#4a4a4a" stroke-width="2"/><path d="M24 28 Q36 32 48 28" fill="none" stroke="#4a4a4a" stroke-width="2"/><circle cx="36" cy="25" r="4" fill="#888"/><text x="36" y="48" text-anchor="middle" fill="#666" font-size="5">150×80mm</text></svg></span>
+        Exaustor Anti-Chuva
+      </button>
+      <button class="pi" data-item="vent-exaust">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="8" width="40" height="36" rx="3" fill="#e0e0e0" stroke="#888"/><circle cx="36" cy="26" r="14" fill="#f0f0f0" stroke="#aaa"/><path d="M36 12 L40 26 L36 40 L32 26Z" fill="#bbb"/><path d="M22 26 L36 30 L50 26 L36 22Z" fill="#ccc"/><circle cx="36" cy="26" r="3" fill="#888"/><text x="36" y="50" text-anchor="middle" fill="#666" font-size="5">245×245mm</text></svg></span>
+        Ventilador Exaustão 12V
+      </button>
+      <button class="pi" data-item="exaustor-coifa">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="14" width="56" height="24" rx="2" fill="#d8d8d8" stroke="#888"/><rect x="12" y="18" width="48" height="16" fill="#eee"/><circle cx="36" cy="26" r="6" fill="#bbb"/><rect x="14" y="20" width="10" height="2" fill="#ffe066"/><text x="36" y="48" text-anchor="middle" fill="#666" font-size="5">387×233mm</text></svg></span>
+        Exaustor Coifa 12V LED
+      </button>
+
+      <div class="pal-cat">Instalações</div>
+      <button class="pi" data-item="potti">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="22" width="32" height="22" rx="3" fill="#e8e4dc" stroke="#8a8680"/><ellipse cx="36" cy="20" rx="14" ry="8" fill="#d8d4cc" stroke="#8a8680"/><ellipse cx="36" cy="20" rx="8" ry="4" fill="#a8c8d8"/><rect x="32" y="8" width="8" height="8" rx="1" fill="#c8c4bc"/></svg></span>
+        Porta Potti
+      </button>
+      <button class="pi" data-item="tanque">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><ellipse cx="36" cy="40" rx="16" ry="6" fill="#3a6a88" stroke="#1a3a50"/><rect x="20" y="14" width="32" height="26" fill="#4a8ab0" opacity="0.85"/><ellipse cx="36" cy="14" rx="16" ry="6" fill="#6aa8c8" stroke="#1a3a50"/><rect x="32" y="6" width="8" height="8" fill="#2a5a70"/></svg></span>
+        Tanque 20L
+      </button>
+      <button class="pi" data-item="quadro">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="8" width="40" height="36" rx="2" fill="#1a1a1a" stroke="#444"/><circle cx="28" cy="20" r="5" fill="#2a8a3a"/><circle cx="44" cy="20" r="5" fill="#c8a020"/><rect x="22" y="32" width="28" height="6" fill="#333"/><rect x="24" y="34" width="8" height="2" fill="#6a6"/></svg></span>
+        Quadro 12V
+      </button>
+      <button class="pi" data-item="tanque-40">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><ellipse cx="36" cy="42" rx="18" ry="5" fill="#2a5a70"/><rect x="18" y="10" width="36" height="32" fill="#4a8ab0" opacity="0.8"/><ellipse cx="36" cy="10" rx="18" ry="5" fill="#6aa8c8"/><rect x="32" y="2" width="8" height="8" fill="#2a5a70"/><text x="36" y="30" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">40L</text></svg></span>
+        Tanque 40L
+      </button>
+
+      <div class="pal-cat">Iluminação</div>
+      <button class="pi" data-item="led-strip">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="20" width="56" height="6" rx="3" fill="#333" stroke="#555"/><circle cx="16" cy="23" r="2.5" fill="#ffe066"/><circle cx="26" cy="23" r="2.5" fill="#ffe066"/><circle cx="36" cy="23" r="2.5" fill="#ffe066"/><circle cx="46" cy="23" r="2.5" fill="#ffe066"/><circle cx="56" cy="23" r="2.5" fill="#ffe066"/></svg></span>
+        LED Strip 5m 12V
+      </button>
+      <button class="pi" data-item="plafon">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="26" r="16" fill="#f0f0f0" stroke="#ccc"/><circle cx="36" cy="26" r="10" fill="#fff8e0"/><circle cx="36" cy="26" r="4" fill="#ffe066" opacity="0.6"/></svg></span>
+        Plafon LED Ø140
+      </button>
+      <button class="pi" data-item="spot-led">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="26" r="10" fill="#2a2a2a" stroke="#555"/><circle cx="36" cy="26" r="6" fill="#fff8e0"/><circle cx="36" cy="26" r="3" fill="#ffe066" opacity="0.7"/></svg></span>
+        Spot LED 3W
+      </button>
+
+      <div class="pal-cat">Ventilação</div>
+      <button class="pi" data-item="claraboia-280">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="22" y="12" width="28" height="28" rx="2" fill="#d0d8d8" stroke="#6a7a7a"/><circle cx="36" cy="26" r="8" fill="#a0b0b0"/><path d="M36 18 L40 26 L36 34 L32 26Z" fill="#6a8a8a"/><circle cx="36" cy="26" r="2" fill="#4a5a5a"/></svg></span>
+        Claraboia 280mm
+      </button>
+      <button class="pi" data-item="claraboia-400">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="8" width="40" height="36" rx="3" fill="#c8d0d0" stroke="#5a6a6a"/><circle cx="36" cy="26" r="12" fill="#90a8a8"/><path d="M36 14 L42 26 L36 38 L30 26Z" fill="#5a7a7a"/><circle cx="36" cy="26" r="3" fill="#3a4a4a"/></svg></span>
+        Claraboia 400mm
+      </button>
+      <button class="pi" data-item="grade-vent">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="12" width="48" height="28" rx="2" fill="#c0c0c0" stroke="#888"/><line x1="12" y1="18" x2="60" y2="18" stroke="#999"/><line x1="12" y1="24" x2="60" y2="24" stroke="#999"/><line x1="12" y1="30" x2="60" y2="30" stroke="#999"/><line x1="12" y1="36" x2="60" y2="36" stroke="#999"/></svg></span>
+        Grade Vent 525×280
+      </button>
+
+      <div class="pal-cat">Banheiro</div>
+      <button class="pi" data-item="box-banheiro">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="14" y="6" width="44" height="40" rx="2" fill="#e0e8e8" stroke="#7a8a8a"/><line x1="14" y1="6" x2="14" y2="46" stroke="#8af" stroke-width="2.5" opacity="0.5"/><circle cx="36" cy="12" r="3" fill="#a0c0d0"/></svg></span>
+        Box Banheiro 108cm
+      </button>
+      <button class="pi" data-item="ducha-ext">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="33" y="6" width="6" height="18" rx="2" fill="#b0b0b0"/><rect x="28" y="4" width="16" height="6" rx="3" fill="#888"/><rect x="30" y="24" width="12" height="16" rx="2" fill="#c0c0c0" stroke="#888"/></svg></span>
+        Ducha Externa
+      </button>
+
+      <div class="pal-cat">Acessórios</div>
+      <button class="pi" data-item="escada-ret">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="24" y="8" width="4" height="38" rx="1" fill="#b0b0b0"/><rect x="44" y="8" width="4" height="38" rx="1" fill="#b0b0b0"/><rect x="24" y="14" width="24" height="3" rx="1" fill="#999"/><rect x="24" y="22" width="24" height="3" rx="1" fill="#999"/><rect x="24" y="30" width="24" height="3" rx="1" fill="#999"/></svg></span>
+        Escada Retrátil
+      </button>
+      <button class="pi" data-item="porta-copo">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="10" width="36" height="32" rx="2" fill="#444" stroke="#666"/><circle cx="30" cy="26" r="6" fill="#555" stroke="#777"/><circle cx="44" cy="26" r="6" fill="#555" stroke="#777"/></svg></span>
+        Porta-copo Dobrável
+      </button>
+      <button class="pi" data-item="mesa-dob">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="14" y="14" width="44" height="24" rx="2" fill="#c4a060" stroke="#6a4a20"/><rect x="14" y="38" width="4" height="8" fill="#8a6a40"/><rect x="54" y="38" width="4" height="8" fill="#8a6a40"/></svg></span>
+        Mesa Dobrável 70×40
+      </button>
+      <button class="pi" data-item="calco">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="30" width="36" height="14" rx="2" fill="#e8a020" stroke="#a06800"/><rect x="22" y="34" width="28" height="6" fill="#d09018"/><text x="36" y="40" text-anchor="middle" fill="#fff" font-size="6" font-weight="bold">UK36</text></svg></span>
+        Calço Roda UK36
+      </button>
+      <button class="pi" data-item="calco-inox">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="28" width="52" height="16" rx="2" fill="#c8d0d4" stroke="#889098"/><rect x="14" y="32" width="44" height="8" fill="#e0e8ec"/><text x="36" y="38" text-anchor="middle" fill="#4a555c" font-size="6" font-weight="bold">INOX</text></svg></span>
+        Calço Inox KG 50cm
+      </button>
+      <button class="pi" data-item="pingadeira">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="22" width="60" height="6" rx="1" fill="#b8c0c4" stroke="#889098"/><path d="M10 28 L14 36 L18 28" fill="none" stroke="#6aa8c8" stroke-width="1.5"/></svg></span>
+        Kit Pingadeira 1400
+      </button>
+      <button class="pi" data-item="boiler">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><ellipse cx="36" cy="40" rx="12" ry="5" fill="#8a9098"/><rect x="24" y="12" width="24" height="28" fill="#c8c8c8"/><ellipse cx="36" cy="12" rx="12" ry="5" fill="#e0e0e0"/><rect x="34" y="4" width="4" height="8" fill="#888"/><text x="36" y="30" text-anchor="middle" fill="#444" font-size="7">10L</text></svg></span>
+        Boiler 10L 12V/220V
+      </button>
+      <button class="pi" data-item="cozinha-compacta">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="18" width="56" height="28" fill="#c4a574" stroke="#6a4a28"/><rect x="12" y="8" width="48" height="12" fill="#a8a8a8"/><circle cx="28" cy="14" r="4" fill="#888"/><rect x="40" y="10" width="14" height="8" fill="#6a6a6a"/></svg></span>
+        Cozinha compacta 120
+      </button>
+      <button class="pi" data-item="trava-porta">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="26" y="10" width="20" height="32" rx="3" fill="#f0f0f0" stroke="#888"/><circle cx="36" cy="24" r="5" fill="#ddd" stroke="#aaa"/></svg></span>
+        Trava Push-Lock
+      </button>
+      <button class="pi" data-item="caixa-gas">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="10" width="52" height="36" rx="3" fill="#d4b483" stroke="#6a4a20"/><rect x="14" y="14" width="44" height="28" fill="#c8a870"/><text x="36" y="32" text-anchor="middle" fill="#6a4a20" font-size="8" font-weight="bold">GÁS</text></svg></span>
+        Caixa de Gás 88×61
+      </button>
+
+      <div class="pal-cat">Climatização</div>
+      <button class="pi" data-item="clima-evap">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="14" width="52" height="24" rx="3" fill="#b0c8d8" stroke="#5a7a8a"/><rect x="14" y="18" width="44" height="16" fill="#c8dce8"/><path d="M20 26 Q26 20 32 26 Q38 32 44 26 Q50 20 56 26" fill="none" stroke="#4a8ab0" stroke-width="2"/><circle cx="20" cy="22" r="2" fill="#4a8ab0"/><circle cx="36" cy="22" r="2" fill="#4a8ab0"/><circle cx="52" cy="22" r="2" fill="#4a8ab0"/><text x="36" y="42" text-anchor="middle" fill="#3a5a6a" font-size="7" font-weight="bold">12V</text></svg></span>
+        Climatiz. Evap. 12V
+      </button>
+      <button class="pi" data-item="ac-portatil">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="10" width="56" height="30" rx="4" fill="#e0e0e0" stroke="#888"/><rect x="12" y="14" width="48" height="14" rx="2" fill="#c8c8c8"/><rect x="14" y="16" width="44" height="10" fill="#d8d8d8"/><circle cx="24" cy="38" r="3" fill="#4a4"/><circle cx="36" cy="38" r="3" fill="#4a4"/><circle cx="48" cy="38" r="3" fill="#4a4"/><text x="36" y="22" text-anchor="middle" fill="#5a5a5a" font-size="6" font-weight="bold">7500BTU</text></svg></span>
+        Ar Cond. Portátil
+      </button>
+      <button class="pi" data-item="ac-teto">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="6" width="48" height="12" rx="3" fill="#d0d0d0" stroke="#888"/><rect x="18" y="18" width="36" height="28" rx="2" fill="#e8e8e8" stroke="#aaa"/><rect x="22" y="22" width="28" height="10" rx="1" fill="#c8c8c8"/><circle cx="36" cy="40" r="4" fill="#ddd" stroke="#aaa"/><text x="36" y="44" text-anchor="middle" fill="#888" font-size="5">12V</text></svg></span>
+        Ar Cond. Teto 12V
+      </button>
+
+      <div class="pal-cat">Elétrica</div>
+      <button class="pi" data-item="entrada-cabos">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="14" width="32" height="24" rx="3" fill="#e8e0d0" stroke="#8a8070"/><circle cx="30" cy="26" r="4" fill="#d0c8b8" stroke="#8a8070"/><circle cx="42" cy="26" r="4" fill="#d0c8b8" stroke="#8a8070"/></svg></span>
+        Entrada Cabos Telhado
+      </button>
+      <button class="pi" data-item="painel-dj">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="8" width="40" height="36" rx="2" fill="#1a1a1a" stroke="#444"/><rect x="20" y="12" width="12" height="4" rx="1" fill="#4a4"/><rect x="34" y="12" width="18" height="4" rx="1" fill="#4a4"/><rect x="20" y="20" width="12" height="4" rx="1" fill="#c8a020"/><rect x="34" y="20" width="18" height="4" rx="1" fill="#c8a020"/><rect x="20" y="28" width="32" height="6" rx="1" fill="#333"/><circle cx="26" cy="31" r="2" fill="#666"/><circle cx="36" cy="31" r="2" fill="#666"/></svg></span>
+        Painel Disjuntores
+      </button>
+    </div>
+    <div class="hint">Clique/arraste no 3D · selecionar anima o uso · desselecionar volta</div>
+  </div>
+
+  <!-- Dimensões -->
+  <div id="specs" class="ui-win">
+    <div class="drag-bar"><span>Dimensões</span></div>
+    <div class="specs-body">
+      <div class="s"><span>Chassi</span><strong>3,00 × 1,50 m</strong></div>
+      <div class="s"><span>Caixa (fora da roda)</span><strong>3,00 × 1,90 m</strong></div>
+      <div class="s"><span>Internas</span><strong>1,80 × 2,90 m</strong></div>
+      <div class="s"><span>Altura interna</span><strong>1,80 m</strong></div>
+      <div class="s"><span>Cama casal</span><strong>1,80 × 1,88 m</strong></div>
+      <div class="s"><span>Armários-degrau</span><strong>0,30 m · 4 níveis</strong></div>
+      <div class="s"><span>Banco + mesa</span><strong>banco 1,60×0,45 · mesa à frente · cama 1,60×0,99</strong></div>
+      <div class="s"><span>Cubo banheiro</span><strong>0,80 × 0,80 m</strong></div>
+      <div class="s"><span>Geladeira 12V</span><strong>0,585 × 0,44 m</strong></div>
+      <div class="s"><span>Porta Potti</span><strong>0,42 × 0,42 m</strong></div>
+
+      <div class="weight-divider"></div>
+      <div class="hud-sec-label" style="margin:6px 1px 5px">Peso Estimado</div>
+      <div class="weight-total" id="weight-total">
+        <span class="weight-value" id="weight-value">—</span>
+        <span class="weight-unit" id="weight-unit"></span>
+      </div>
+      <div class="weight-bar-wrap">
+        <div class="weight-bar" id="weight-bar"></div>
+        <div class="weight-bar-limit"></div>
+      </div>
+      <div class="weight-limit-label">PBT 750 kg</div>
+      <div class="weight-breakdown" id="weight-breakdown"></div>
+    </div>
+  </div>
+
+  <!-- Materiais -->
+  <div id="legend" class="ui-win">
+    <div class="drag-bar"><span>Materiais</span></div>
+    <div class="legend-body">
+      <div class="row"><span class="sw" style="background:#2a2e36"></span>chassi de aço</div>
+      <div class="row"><span class="sw" style="background:#d4b483"></span>compensado naval 15mm</div>
+      <div class="row"><span class="sw" style="background:#c8c8c8"></span>alumínio externo 0,5mm</div>
+      <div class="row"><span class="sw" style="background:#f0d848; background-image:linear-gradient(45deg,rgba(0,0,0,.2) 25%,transparent 25%,transparent 50%,rgba(0,0,0,.2) 50%,rgba(0,0,0,.2) 75%,transparent 75%); background-size:6px 6px"></span>EPS isolante 30mm</div>
+      <div class="row"><span class="sw" style="background:#b8d4e8"></span>vidro/acrílico</div>
+      <div class="row"><span class="sw" style="background:#d08080"></span>colchão casal</div>
+      <div class="row"><span class="sw" style="background:#80c0a0"></span>colchão solteiro</div>
+      <div class="row"><span class="sw" style="background:#f5f5f5"></span>vaso/sanitário</div>
+    </div>
+  </div>
+
+  <!-- HUD de modo caminhada -->
+  <div id="walk-hud">Clique na cena para olhar · <b>WASD</b> andar · <b>Espaço</b> no alçapão = mezanino · <b>Esc</b> sair</div>
+  <div id="virtual-hands" aria-hidden="true"><div class="hand left"></div><div class="hand right"></div></div>
+
+  <!-- Info de vista -->
+  <div id="view-info" class="ui-win drag-bar"> vista: isométrica · ESC 1:50 </div>
+
+  <!-- Editor 3D -->
+  <div id="editor" class="ui-win">
+    <div class="drag-bar"><span>Editor 3D</span></div>
+    <div class="ed-body">
+      <div class="sel-info" id="sel-info"></div>
+      <div id="sel-thumb-wrap">
+        <canvas id="sel-thumb" width="240" height="140"></canvas>
+        <div id="sel-dims"></div>
+      </div>
+      <div id="sel-controls" style="display:none">
+        <div class="ctrl-row">
+          <button id="mode-move" class="active">Mover</button>
+          <button id="mode-rotate">Girar</button>
+          <button id="mode-scale">Escalar</button>
+        </div>
+        <div class="hint" id="magnet-hint" style="margin:0 0 8px;font-size:10px">Ctrl + arrastar = ímã (telhado, paredes, móveis)</div>
+        <div class="prop-group">
+          <div class="pg-label">Posição (m)</div>
+          <div class="pg-row"><label>X</label><input type="number" id="pos-x" step="0.01"></div>
+          <div class="pg-row"><label>Y</label><input type="number" id="pos-y" step="0.01"></div>
+          <div class="pg-row"><label>Z</label><input type="number" id="pos-z" step="0.01"></div>
+        </div>
+        <div class="prop-group">
+          <div class="pg-label">Escala</div>
+          <div class="pg-row"><label>X</label><input type="number" id="scl-x" step="0.01" min="0.01"></div>
+          <div class="pg-row"><label>Y</label><input type="number" id="scl-y" step="0.01" min="0.01"></div>
+          <div class="pg-row"><label>Z</label><input type="number" id="scl-z" step="0.01" min="0.01"></div>
+        </div>
+        <div class="prop-group">
+          <div class="pg-label">Rotação (°)</div>
+          <div class="pg-row"><label>X°</label><input type="number" id="rot-x" step="1"></div>
+          <div class="pg-row"><label>Y°</label><input type="number" id="rot-y" step="1"></div>
+          <div class="pg-row"><label>Z°</label><input type="number" id="rot-z" step="1"></div>
+          <div class="pg-row" style="gap:4px;flex-wrap:wrap">
+            <button type="button" class="rot-snap" data-axis="x" data-deg="-90">X −90</button>
+            <button type="button" class="rot-snap" data-axis="x" data-deg="90">X +90</button>
+            <button type="button" class="rot-snap" data-axis="y" data-deg="90">Y +90</button>
+            <button type="button" class="rot-snap" data-axis="z" data-deg="90">Z +90</button>
+          </div>
+        </div>
+        <div class="prop-group" id="mat-section">
+          <div class="pg-label">Material / Cor</div>
+          <div class="pg-row">
+            <label style="width:auto">Cor</label>
+            <input type="color" id="mat-color" value="#d4b483" style="width:36px;height:28px;padding:0;border:1px solid var(--line);border-radius:4px;cursor:pointer;">
+            <input type="text" id="mat-color-hex" value="#d4b483" style="width:72px;font-size:10px;font-family:var(--mono);padding:4px 5px;" maxlength="7">
+          </div>
+          <div class="pg-row">
+            <label style="width:auto">Brilho</label>
+            <input type="range" id="mat-roughness" min="0" max="1" step="0.05" value="0.7" style="flex:1;accent-color:var(--accent);">
+            <span id="mat-roughness-val" style="width:28px;text-align:right;font-size:9px;color:var(--ink-3);">0.7</span>
+          </div>
+          <div class="pg-row">
+            <label style="width:auto">Metal</label>
+            <input type="range" id="mat-metalness" min="0" max="1" step="0.05" value="0.1" style="flex:1;accent-color:var(--accent);">
+            <span id="mat-metalness-val" style="width:28px;text-align:right;font-size:9px;color:var(--ink-3);">0.1</span>
+          </div>
+          <div class="mat-presets" id="mat-presets"></div>
+        </div>
+        <div class="ed-fill">
+          <button id="btn-fill">Preencher espaço</button>
+          <button id="btn-marcenaria" disabled title="Selecione um elemento de madeira">Marcenaria</button>
+        </div>
+        <div class="ed-actions">
+          <button id="btn-deselect">Desselecionar</button>
+          <button id="btn-delete" class="btn-danger">Excluir</button>
+        </div>
+      </div>
+      <div class="hint">
+        <b>G</b> mover · <b>R</b> girar · <b>S</b> escalar · <b>F</b> preencher<br>
+        <b>Esc</b> desselecionar · <b>Del</b> excluir · <b>Ctrl+Z</b> desfazer · <b>Ctrl+S</b> salvar · <b>Ctrl+Y</b> refazer<br>
+        <b>E</b> entrar · <b>P</b> porta entrada · <b>C</b>/Espaço mezanino · arraste o gizmo para editar
+      </div>
+    </div>
+  </div>
+
+  <div id="mc-drop-hint">Solte no móvel para incorporar</div>
+  <div id="mc-ghost"></div>
+  <div id="marcenaria-overlay">
+    <div id="marcenaria-modal">
+      <div class="mc-head">
+        <span>🪚 Marcenaria</span>
+        <button type="button" id="mc-close" aria-label="Fechar">×</button>
+      </div>
+      <div class="mc-ctx" id="mc-ctx">Selecione um móvel de madeira.</div>
+      <div id="mc-status">Arraste uma peça até a miniatura do móvel.</div>
+      <div id="mc-workspace">
+        <div id="mc-furn-drop">
+          <canvas id="mc-furn-thumb" width="400" height="280"></canvas>
+          <div class="mc-drop-lab">Arraste para girar · solte a peça no ponto do móvel</div>
+        </div>
+        <div id="mc-sugs"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Painel de IA -->
+  <div id="ai-panel" class="ui-win">
+    <div class="ai-header drag-bar" id="ai-header">
+      <span id="ai-title">🤖 Editor por IA</span>
+      <span class="dot" id="ai-dot"></span>
+    </div>
+    <div id="ai-body">
+      <div id="ai-model-row">
+        <select id="ai-model" title="Modelos free (Ollama local)"></select>
+        <button type="button" id="ai-refresh-models">↻</button>
+      </div>
+      <div id="chat-log"></div>
+      <div id="chat-input-row">
+        <input type="text" id="chat-input" placeholder="Ex: mover geladeira 30cm para a esquerda" autocomplete="off">
+        <button id="chat-send">Enviar</button>
+      </div>
+      <div id="ai-feedback-row">
+        <span>Feedback da ultima resposta</span>
+        <button type="button" class="ai-feedback-btn good" id="ai-feedback-good" title="Marcar como acerto">👍</button>
+        <button type="button" class="ai-feedback-btn bad" id="ai-feedback-bad" title="Marcar como erro">👎</button>
+        <span id="ai-feedback-status"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Painel RPA4All (landing page marketing) -->
+  <div id="rpa-panel" class="ui-win">
+    <div class="rpa-header drag-bar" id="rpa-header">
+      <div class="rpa-title">
+        <span class="rpa-logo">R4</span>
+        <span>rpa4all.com</span>
+      </div>
+      <div class="rpa-actions">
+        <span class="rpa-tag">Beta</span>
+        <button id="rpa-panel-close" class="rpa-close" type="button" title="Fechar painel">×</button>
+      </div>
+    </div>
+    <div id="rpa-body">
+      <div id="rpa-hero">
+        <h1>Automação RPA<br>sem complicação</h1>
+        <p class="rpa-subtitle">
+          Crie robôs de automação visual, <span class="rpa-highlight">sem código</span>,
+          e integre com qualquer sistema via <span class="rpa-highlight">browser</span>,
+          <span class="rpa-highlight">API</span> ou <span class="rpa-highlight">desktop</span>.
+        </p>
+        <button id="rpa-cta" type="button">
+          <span>Abrir Ferramenta</span>
+          <span class="arrow">→</span>
+        </button>
+      </div>
+
+      <div id="rpa-features">
+        <div class="rpa-feature">
+          <div class="icon blue">🎨</div>
+          <h3>Drag & Drop</h3>
+          <p>Monte fluxos visualmente, sem programação.</p>
+        </div>
+        <div class="rpa-feature">
+          <div class="icon green">⚡</div>
+          <h3>Execução rápida</h3>
+          <p>Roda no seu navegador, sem instalar nada.</p>
+        </div>
+        <div class="rpa-feature">
+          <div class="icon orange">🔗</div>
+          <h3>+50 integrações</h3>
+          <p>Conecta com WhatsApp, e-mail, planilhas, ERPs.</p>
+        </div>
+        <div class="rpa-feature">
+          <div class="icon purple">🤖</div>
+          <h3>IA integrada</h3>
+          <p>Modelos locais e em nuvem para OCR e NLP.</p>
+        </div>
+      </div>
+
+      <div id="rpa-benefits">
+        <h2>Por que rpa4all?</h2>
+        <div class="rpa-benefit">
+          <span class="check">✓</span>
+          <span><b>Grátis para começar</b> — sem cartão, sem limite de tempo.</span>
+        </div>
+        <div class="rpa-benefit">
+          <span class="check">✓</span>
+          <span><b>100% no browser</b> — seus dados não saem da sua máquina.</span>
+        </div>
+        <div class="rpa-benefit">
+          <span class="check">✓</span>
+          <span><b>Comunidade ativa</b> — templates prontos e suporte em português.</span>
+        </div>
+        <div class="rpa-benefit">
+          <span class="check">✓</span>
+          <span><b>Integra com este projeto</b> — exporte dados do trailer direto para o robô.</span>
+        </div>
+      </div>
+
+      <div id="rpa-cta-bottom">
+        <button id="rpa-cta-2" type="button" class="rpa-cta" style="width:100%;padding:11px 16px;font-size:13px;font-weight:600;color:#fff;background:linear-gradient(135deg, #1b4fc0, #2f6df6);border:0;border-radius:var(--radius);cursor:pointer;box-shadow:0 4px 12px rgba(27,79,192,0.3);font-family:var(--sans);">
+          <span>Experimentar agora</span>
+          <span class="arrow">→</span>
+        </button>
+        <div class="rpa-note">Abre em modo tela cheia · www.rpa4all.com</div>
+      </div>
+    </div>
+  </div>
+  <button id="rpa-collapsed-tab" type="button" style="display:none;">R4 · Abrir RPA4All</button>
+
+  <!-- Fullscreen overlay para RPA4All -->
+  <div id="rpa-fullscreen">
+    <div id="rpa-fs-bar">
+      <div class="rpa-fs-title">
+        <span class="rpa-logo">R4</span>
+        <span>rpa4all.com — Ferramenta</span>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button id="rpa-fs-open" title="Abrir em nova aba">↗ Abrir em nova aba</button>
+        <button id="rpa-fs-close" title="Voltar ao projeto">✕ Voltar</button>
+      </div>
+    </div>
+    <iframe id="rpa-fs-frame" src="" allowfullscreen></iframe>
+  </div>
+</div>
+
+<script src="trailer_lib/three.min.js"></script>
+<script src="trailer_lib/OrbitControls.js"></script>
+<script src="trailer_lib/TransformControls.js"></script>
+<script type="module" src="src/main.js?v=20260831-2050"></script>
+<script>
+(function(){
+  const KEY = 'trailer3d-ui-pos-v1';
+  let zTop = 120;
+  function clamp(el, l, t) {
+    const r = el.getBoundingClientRect();
+    const maxL = Math.max(0, window.innerWidth - r.width);
+    const maxT = Math.max(0, window.innerHeight - r.height);
+    return { l: Math.min(maxL, Math.max(0, l)), t: Math.min(maxT, Math.max(0, t)) };
+  }
+  function saveAll() {
+    const pos = {};
+    document.querySelectorAll('.ui-win').forEach((el) => {
+      if (el.style.left) pos[el.id] = { l: el.style.left, t: el.style.top };
+    });
+    try { localStorage.setItem(KEY, JSON.stringify(pos)); } catch (e) {}
+  }
+  function applySaved() {
+    try {
+      const pos = JSON.parse(localStorage.getItem(KEY) || '{}');
+      Object.keys(pos).forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el || !pos[id]) return;
+        el.style.left = pos[id].l;
+        el.style.top = pos[id].t;
+        el.style.right = 'auto';
+        el.style.bottom = 'auto';
+        el.style.transform = 'none';
+      });
+    } catch (e) {}
+  }
+  function makeDraggable(el) {
+    const bar = el.classList.contains('drag-bar') ? el : (el.querySelector('.drag-bar') || el);
+    let startX, startY, origL, origT, moved;
+    bar.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      if (e.target.closest('button, input, a')) return;
+      e.preventDefault();
+      const rec = el.getBoundingClientRect();
+      startX = e.clientX; startY = e.clientY;
+      origL = rec.left; origT = rec.top;
+      moved = 0;
+      el.classList.add('dragging');
+      el.style.zIndex = String(++zTop);
+      el.style.left = origL + 'px';
+      el.style.top = origT + 'px';
+      el.style.right = 'auto';
+      el.style.bottom = 'auto';
+      el.style.transform = 'none';
+      function move(ev) {
+        const dx = ev.clientX - startX, dy = ev.clientY - startY;
+        moved = Math.max(moved, Math.abs(dx) + Math.abs(dy));
+        const p = clamp(el, origL + dx, origT + dy);
+        el.style.left = p.l + 'px';
+        el.style.top = p.t + 'px';
+      }
+      function up() {
+        window.removeEventListener('pointermove', move);
+        window.removeEventListener('pointerup', up);
+        el.classList.remove('dragging');
+        if (moved > 4) {
+          bar.dataset.skipToggle = '1';
+          setTimeout(() => { delete bar.dataset.skipToggle; }, 0);
+        }
+        saveAll();
+      }
+      window.addEventListener('pointermove', move);
+      window.addEventListener('pointerup', up);
+    });
+  }
+  applySaved();
+  document.querySelectorAll('.ui-win').forEach(makeDraggable);
+})();
+
+// ===== Filtro da paleta (UI-only, não toca na cena 3D) =====
+(function(){
+  var filter = document.getElementById('pal-filter');
+  if(!filter) return;
+  var items = document.querySelectorAll('#palette .pi');
+  var countEl = document.getElementById('pal-count');
+  function updateCount(){
+    if(!countEl) return;
+    var visible = 0;
+    items.forEach(function(it){ if(!it.classList.contains('hidden')) visible++; });
+    countEl.textContent = visible + '/' + items.length;
+  }
+  filter.addEventListener('input', function(){
+    var q = filter.value.trim().toLowerCase();
+    items.forEach(function(it){
+      var txt = (it.textContent || '').trim().toLowerCase();
+      var di = it.getAttribute('data-item') || '';
+      if(!q || txt.indexOf(q) !== -1 || di.indexOf(q) !== -1){
+        it.classList.remove('hidden');
+      } else {
+        it.classList.add('hidden');
+      }
+    });
+    updateCount();
+  });
+  updateCount();
+})();
+
+// ===== EXPORTAR PLANO DE CORTE (UI-only, não toca na cena 3D) =====
+// Dimensões das peças de madeira extraídas do modelo 3D (compensado naval)
+// Constantes do trailer (em metros):
+var CUT_W = 1.50, CUT_BW = 1.90, CUT_L = 3.00, CUT_LT = 2.90;
+var CUT_LI = 1.80, CUT_HINT = 1.80, CUT_WTH = 0.05, CUT_WALLH = 1.85;
+var CUT_MZL = 1.88, CUT_MZW = 1.90, CUT_MZFH = 1.50, CUT_FY = 0.55;
+var CUT_DW = 0.62, CUT_DH = 1.60, CUT_DS = 0.08;
+var CUT_IW = 0.55, CUT_IH = 1.70, CUT_IS = 0.02;
+var CUT_BW = 0.80, CUT_BH = 1.85;
+var CUT_BED_W = 0.70, CUT_BED_L = 1.60;
+var CUT_ROOFW = 1.90, CUT_ROOFL = 2.90 + 1.88; // roofTotalL
+var CUT_ROOFR = 0.40; // raio da curva do telhado
+var CUT_KX = 0.58, CUT_KY = 0.85, CUT_KZ = 0.22;
+var CUT_STAIR_W = 0.30, CUT_TREAD_D = 0.32, CUT_STAIR_RISE = 0.2525;
+var CUT_SKIRT_H = 0.27, CUT_SKIRT_D = 1.08, CUT_SKIRT_T = 0.03;
+var CUT_WING_W = 0.20;
+
+// Lista de peças de madeira para corte
+// Cada peça: { nome, qtd, comp, larg, esp, material, grupo, obs }
+// comp/larg/esp em metros | area = comp * larg (face da chapa)
+var CUT_PIECES = [
+  // ===== GRUPO: Piso (compensado 15mm) =====
+  { nome:"Piso interno", qtd:1, comp:2.90, larg:1.80, esp:0.015, material:"Compensado Naval 15mm", grupo:"Piso", obs:"Sobre assoalho metálico" },
+  { nome:"Piso mezanino", qtd:1, comp:1.88, larg:1.80, esp:0.015, material:"Compensado Naval 15mm", grupo:"Piso", obs:"Sobre a lança" },
+
+  // ===== GRUPO: Paredes externas (compensado 10mm — face interna do sanduíche alu+EPS+comp) =====
+  { nome:"Parede lateral esquerda (caçamba)", qtd:1, comp:2.90, larg:2.25, esp:0.010, material:"Compensado Naval 10mm", grupo:"Parede externa", obs:"Altura segue perfil do telhado — cortar 1.85m reto + curva 0.40m nas pontas" },
+  { nome:"Parede lateral direita (frente porta)", qtd:1, comp:2.07, larg:2.25, esp:0.010, material:"Compensado Naval 10mm", grupo:"Parede externa", obs:"Da frente até o vão da porta (0.62m)" },
+  { nome:"Parede lateral direita (após porta)", qtd:1, comp:0.52, larg:2.25, esp:0.010, material:"Compensado Naval 10mm", grupo:"Parede externa", obs:"Atrás do vão da porta" },
+  { nome:"Parede traseira", qtd:1, comp:1.90, larg:2.00, esp:0.010, material:"Compensado Naval 10mm", grupo:"Parede externa", obs:"Topo curvo (1.85m + curva telhado)" },
+  { nome:"Parede frontal caçamba", qtd:1, comp:1.90, larg:2.25, esp:0.010, material:"Compensado Naval 10mm", grupo:"Parede externa", obs:"Com vão do alçapão do mezanino (0.78×0.70m)" },
+  { nome:"Parede lateral esq. mezanino", qtd:1, comp:1.88, larg:1.26, esp:0.010, material:"Compensado Naval 10mm", grupo:"Parede externa", obs:"Sobre a lança" },
+  { nome:"Parede lateral dir. mezanino", qtd:1, comp:1.88, larg:1.26, esp:0.010, material:"Compensado Naval 10mm", grupo:"Parede externa", obs:"Sobre a lança" },
+  { nome:"Lintel porta entrada", qtd:1, comp:0.62, larg:0.17, esp:0.010, material:"Compensado Naval 10mm", grupo:"Parede externa", obs:"Sobre a porta 62×160cm" },
+  { nome:"Soleira porta entrada", qtd:1, comp:0.62, larg:0.08, esp:0.015, material:"Compensado Naval 15mm", grupo:"Parede externa", obs:"Base da porta" },
+
+  // ===== GRUPO: Paredes internas banheiro (compensado 15mm) =====
+  { nome:"Parede banheiro fundo (+Z)", qtd:1, comp:0.80, larg:1.85, esp:0.015, material:"Compensado Naval 15mm", grupo:"Banheiro", obs:"Cabeceira da dinete" },
+  { nome:"Parede banheiro frente (-Z)", qtd:1, comp:0.80, larg:1.85, esp:0.015, material:"Compensado Naval 15mm", grupo:"Banheiro", obs:"Lado corredor" },
+  { nome:"Parede banheiro lateral (-X)", qtd:1, comp:0.80, larg:1.85, esp:0.015, material:"Compensado Naval 15mm", grupo:"Banheiro", obs:"Encosta na externa" },
+  { nome:"Batente porta banheiro esq.", qtd:1, comp:0.125, larg:1.85, esp:0.015, material:"Compensado Naval 15mm", grupo:"Banheiro", obs:"Vão 55cm" },
+  { nome:"Batente porta banheiro dir.", qtd:1, comp:0.125, larg:1.85, esp:0.015, material:"Compensado Naval 15mm", grupo:"Banheiro", obs:"Vão 55cm" },
+  { nome:"Lintel porta banheiro", qtd:1, comp:0.55, larg:0.13, esp:0.015, material:"Compensado Naval 15mm", grupo:"Banheiro", obs:"Acima da porta 55×170cm" },
+
+  // ===== GRUPO: Saia da caixa (compensado 15mm) =====
+  { nome:"Painel saia lateral", qtd:4, comp:1.08, larg:0.27, esp:0.015, material:"Compensado Naval 15mm", grupo:"Saia", obs:"2 por lado, fora das rodas" },
+  { nome:"Soffit da asa", qtd:4, comp:1.08, larg:0.20, esp:0.015, material:"Compensado Naval 15mm", grupo:"Saia", obs:"Embaixo da asa, sobre as rodas" },
+
+  // ===== GRUPO: Mezanino (compensado 15mm) =====
+  { nome:"Frente do mezanino", qtd:1, comp:1.90, larg:1.26, esp:0.015, material:"Compensado Naval 15mm", grupo:"Mezanino", obs:"Parede frontal do loft" },
+
+  // ===== GRUPO: Cozinha (compensado 15mm) =====
+  { nome:"Balcão pia (corpo)", qtd:1, comp:0.58, larg:0.85, esp:0.015, material:"Compensado Naval 15mm", grupo:"Cozinha", obs:"Fundo, parede traseira" },
+  { nome:"Tampo balcão cozinha", qtd:1, comp:0.62, larg:0.24, esp:0.018, material:"Compensado Naval 18mm", grupo:"Cozinha", obs:"Sobre o balcão" },
+  { nome:"Armário superior cozinha", qtd:1, comp:0.62, larg:0.38, esp:0.015, material:"Compensado Naval 15mm", grupo:"Cozinha", obs:"Parede traseira, superior" },
+
+  // ===== GRUPO: Armários-degrau / Escada (4 degraus) =====
+];
+
+for (var _i = 0; _i < 4; _i++) {
+  var _h = (_i + 1) * CUT_STAIR_RISE; // altura de cada degrau
+  CUT_PIECES.push({
+    nome: "Armário-degrau " + (_i + 1) + " (corpo)",
+    qtd: 1, comp: CUT_STAIR_W, larg: Math.round(_h * 1000) / 1000, esp: 0.015,
+    material: "Compensado Naval 15mm", grupo: "Escada",
+    obs: "Degrau " + (_i + 1) + " — " + Math.round(_h * 100) + "cm de altura, frente 30cm"
+  });
+  CUT_PIECES.push({
+    nome: "Tampo degrau " + (_i + 1),
+    qtd: 1, comp: 0.33, larg: 0.31, esp: 0.015,
+    material: "Compensado Naval 15mm", grupo: "Escada",
+    obs: "Topo do degrau " + (_i + 1)
+  });
+}
+
+CUT_PIECES.push(
+  // ===== GRUPO: Poltrona + mesa (vira cama) =====
+  { nome:"Banco-baú dinete", qtd:1, comp:1.60, larg:0.45, esp:0.42, material:"Compensado Naval 15mm + espuma", grupo:"Dinete", obs:"Encosto na parede −X; RecPro/Camper Comfort (seat 18\")" },
+  { nome:"Tampo mesa (à frente)", qtd:1, comp:1.50, larg:0.50, esp:0.030, material:"Compensado Naval 18mm", grupo:"Dinete", obs:"Pé 12V 740→370 mm; abaixa e completa cama 1,60×0,99 m" },
+
+  // ===== GRUPO: Marcos de janela (compensado 15mm) =====
+  { nome:"Marco janela 50×50 (lateral)", qtd:4, comp:0.55, larg:0.55, esp:0.015, material:"Compensado Naval 15mm", grupo:"Janelas", obs:"2 esq + 2 dir, 55×55cm (c/ folga)" },
+  { nome:"Marco janela traseira 80×50", qtd:1, comp:0.85, larg:0.55, esp:0.015, material:"Compensado Naval 15mm", grupo:"Janelas", obs:"Parede +Z" },
+  { nome:"Marco janela frontal 70×32", qtd:1, comp:0.75, larg:0.37, esp:0.015, material:"Compensado Naval 15mm", grupo:"Janelas", obs:"Frente da caçamba" },
+  { nome:"Marco janela mezanino 50×40", qtd:2, comp:0.55, larg:0.45, esp:0.015, material:"Compensado Naval 15mm", grupo:"Janelas", obs:"1 esq + 1 dir" },
+  { nome:"Marco janela mezanino frontal 80×45", qtd:1, comp:0.85, larg:0.50, esp:0.015, material:"Compensado Naval 15mm", grupo:"Janelas", obs:"Frente do mezanino" },
+
+  // ===== GRUPO: Alçapão mezanino (compensado 15mm) =====
+  { nome:"Alçapão mezanino (tampo)", qtd:1, comp:0.78, larg:0.70, esp:0.015, material:"Compensado Naval 15mm", grupo:"Mezanino", obs:"Vão de acesso ao mezanino" },
+);
+
+// Chapas-padrão disponíveis no mercado brasileiro (Leroy Merlin, Madeira Madeira, etc.)
+var CUT_SHEETS = {
+  10: { comp: 2.44, larg: 1.22, nome: "Chapa 2440×1220mm" },  // 8'×4'
+  15: { comp: 2.44, larg: 1.22, nome: "Chapa 2440×1220mm" },
+  18: { comp: 2.44, larg: 1.22, nome: "Chapa 2440×1220mm" },
+  25: { comp: 2.44, larg: 1.22, nome: "Chapa 2440×1220mm" },
+  40: { comp: 2.44, larg: 1.22, nome: "Chapa 2440×1220mm" },
+};
+
+// Agrupa peças por espessura
+function cutGroupByThickness(pieces) {
+  var groups = {};
+  pieces.forEach(function(p) {
+    var key = String(Math.round(p.esp * 1000));
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(p);
+  });
+  return groups;
+}
+
+// Calcula área de cada peça (face = comp × larg)
+function cutPieceArea(p) { return p.comp * p.larg * p.qtd; }
+
+// Calcula área total por grupo
+function cutTotalArea(pieces) {
+  return pieces.reduce(function(s, p) { return s + cutPieceArea(p); }, 0);
+}
+
+// Formata mm (converte de metros)
+function mm(v) { return Math.round(v * 1000); }
+// Formata m para string
+function fmtM(v) { return v.toFixed(3).replace(/0+$/, '').replace(/\.$/, '.0'); }
+
+// Gera a tabela HTML para uma espessura
+function cutTableHTML(thickness) {
+  var groups = cutGroupByThickness(CUT_PIECES);
+  var items = groups[String(thickness)] || [];
+  if (items.length === 0) return '<p style="color:var(--ink-3);text-align:center;padding:20px">Nenhuma peça nesta espessura.</p>';
+
+  var sheet = CUT_SHEETS[thickness] || CUT_SHEETS[15];
+  var sheetArea = sheet.comp * sheet.larg;
+  var totalArea = cutTotalArea(items);
+  var sheets = Math.ceil(totalArea / sheetArea);
+  var efficiency = ((totalArea / (sheets * sheetArea)) * 100).toFixed(0);
+
+  var html = '';
+  html += '<div class="cut-info"><b>Chapa de referência:</b> ' + sheet.nome + ' (' + mm(sheet.comp) + '×' + mm(sheet.larg) + 'mm) — ' + (sheetArea * 1e6).toFixed(0) + ' cm²/chapa<br>';
+  html += '<b>Área total das peças:</b> ' + (totalArea * 1e6).toFixed(0) + ' cm² · <b>Chapas estimadas:</b> ' + sheets + ' (' + efficiency + '% de aproveitamento)</div>';
+
+  html += '<table class="cut-table"><thead><tr>';
+  html += '<th class="col-n">#</th><th>Peça</th><th>Grupo</th><th class="col-dim">Comp. (mm)</th><th class="col-dim">Larg. (mm)</th><th>Esp. (mm)</th><th class="col-qty">Qtd</th><th class="col-area">Área (cm²)</th><th>Obs</th>';
+  html += '</tr></thead><tbody>';
+  var n = 1;
+  items.forEach(function(p) {
+    var area = cutPieceArea(p);
+    html += '<tr>';
+    html += '<td class="col-n">' + (n++) + '</td>';
+    html += '<td class="col-name">' + p.nome + '</td>';
+    html += '<td>' + p.grupo + '</td>';
+    html += '<td class="col-dim">' + mm(p.comp) + '</td>';
+    html += '<td class="col-dim">' + mm(p.larg) + '</td>';
+    html += '<td>' + mm(p.esp) + '</td>';
+    html += '<td class="col-qty">' + p.qtd + '</td>';
+    html += '<td class="col-area">' + (area * 1e4).toFixed(0) + '</td>';
+    html += '<td style="font-size:10px;color:var(--ink-3)">' + (p.obs || '') + '</td>';
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  return html;
+}
+
+// Gera o resumo (total por espessura)
+function cutSummaryHTML() {
+  var groups = cutGroupByThickness(CUT_PIECES);
+  var totalPieces = 0, totalArea = 0;
+  var html = '';
+  Object.keys(groups).sort(function(a, b) { return parseInt(a) - parseInt(b); }).forEach(function(t) {
+    var items = groups[t];
+    var area = cutTotalArea(items);
+    var count = items.reduce(function(s, p) { return s + p.qtd; }, 0);
+    totalPieces += count;
+    totalArea += area;
+    var sheets = Math.ceil(area / ((CUT_SHEETS[t] || CUT_SHEETS[15]).comp * (CUT_SHEETS[t] || CUT_SHEETS[15]).larg));
+    html += '<div class="cut-stat"><div class="val">' + t + 'mm</div><div class="lbl">' + count + ' peça(s) · ' + sheets + ' chapa(s)</div></div>';
+  });
+  html = '<div class="cut-stat"><div class="val">' + totalPieces + '</div><div class="lbl">Total de peças</div></div>' + html;
+  html += '<div class="cut-stat"><div class="val">' + (totalArea * 1e6).toFixed(0) + ' cm²</div><div class="lbl">Área total madeira</div></div>';
+  return html;
+}
+
+// Gera CSV (formato genérico — CutList Optimizer, etc.)
+function cutCSV(leroyFormat) {
+  var sep = leroyFormat ? ';' : ',';
+  var lines = [];
+  if (leroyFormat) {
+    lines.push('Peça;Quantidade;Comprimento (mm);Largura (mm);Espessura (mm);Material;Grupo;Observacao');
+  } else {
+    lines.push('Nome,Quantidade,Comprimento_mm,Largura_mm,Espessura_mm,Material,Grupo,Observacao');
+  }
+  var n = 1;
+  CUT_PIECES.forEach(function(p) {
+    var row = [
+      p.nome,
+      p.qtd,
+      mm(p.comp),
+      mm(p.larg),
+      mm(p.esp),
+      p.material,
+      p.grupo,
+      (p.obs || '').replace(/[,;]/g, ' ')
+    ];
+    lines.push(row.join(sep));
+  });
+  return lines.join('\n');
+}
+
+// Estado do modal
+var cutActiveSheet = 10;
+function cutShowSheet(t) {
+  cutActiveSheet = t;
+  document.querySelectorAll('.cut-tab').forEach(function(tab) {
+    tab.classList.toggle('active', parseInt(tab.dataset.sheet) === t);
+  });
+  document.getElementById('cut-table-wrap').innerHTML = cutTableHTML(t);
+}
+
+// Abre modal
+function cutOpenModal() {
+  document.getElementById('cut-summary').innerHTML = cutSummaryHTML();
+  cutShowSheet(10);
+  document.getElementById('cut-export-modal').style.display = 'flex';
+}
+
+// Fecha modal
+function cutCloseModal() {
+  document.getElementById('cut-export-modal').style.display = 'none';
+}
+
+// Download CSV
+function cutDownloadCSV(leroy) {
+  var csv = cutCSV(leroy);
+  var bom = '\uFEFF';
+  var blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = leroy ? 'plano_corte_leroy_merlin.csv' : 'plano_corte_trailer.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+}
+
+// Copiar para clipboard
+function cutCopyList() {
+  var csv = cutCSV(false);
+  navigator.clipboard.writeText(csv).then(function() {
+    var btn = document.getElementById('cut-copy');
+    var orig = btn.textContent;
+    btn.textContent = 'Copiado!';
+    setTimeout(function() { btn.textContent = orig; }, 1500);
+  }).catch(function() {
+    // fallback
+    var ta = document.createElement('textarea');
+    ta.value = csv;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+    var btn = document.getElementById('cut-copy');
+    var orig = btn.textContent;
+    btn.textContent = 'Copiado!';
+    setTimeout(function() { btn.textContent = orig; }, 1500);
+  });
+}
+
+// Imprimir / PDF
+function cutPrint() {
+  var w = window.open('', '_blank');
+  var groups = cutGroupByThickness(CUT_PIECES);
+  var sheets = Object.keys(groups).sort(function(a,b) { return parseInt(a) - parseInt(b); });
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Plano de Corte — Trailer Nelcyr-Nardelli RL</title>';
+  html += '<style>';
+  html += '*{margin:0;padding:0;box-sizing:border-box}';
+  html += 'body{font-family:Helvetica,Arial,sans-serif;color:#1f2430;padding:20px;background:#f5f7fb}';
+  html += 'h1{font-size:20px;margin-bottom:4px;color:#1b4fc0}h2{font-size:14px;color:#4a5366;margin-bottom:16px}';
+  html += '.info{background:#fff;border:1px solid #d9dee8;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:12px;line-height:1.6;color:#4a5366}';
+  html += '.info b{color:#1f2430}';
+  html += 'table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;margin-bottom:20px;font-size:11px}';
+  html += 'th{background:#20262e;color:#fff;padding:8px 10px;text-align:left;text-transform:uppercase;font-size:9px;letter-spacing:0.5px}';
+  html += 'td{padding:6px 10px;border-bottom:1px solid #ebeef5}tr:nth-child(even){background:#f5f7fb}';
+  html += 'h3{font-size:14px;margin:20px 0 8px;color:#1b4fc0;border-bottom:2px solid #eaf1ff;padding-bottom:4px}';
+  html += '.stats{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}';
+  html += '.stat{background:#fff;border:1px solid #d9dee8;border-radius:8px;padding:8px 16px;text-align:center}';
+  html += '.stat .v{font-size:20px;font-weight:700;color:#1b4fc0;font-family:monospace}';
+  html += '.stat .l{font-size:9px;color:#8b93a7;text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}';
+  html += '@media print{body{background:#fff;padding:10mm}h3{page-break-after:avoid}table{page-break-inside:avoid}}';
+  html += '</style></head><body>';
+  html += '<h1>Plano de Corte — Trailer Nelcyr-Nardelli RL</h1>';
+  html += '<h2>Compensado Naval · Cortes para envio à empresa de corte</h2>';
+  html += '<div class="info">';
+  html += '<b>Projeto:</b> Trailer 3D — rev 23 · Família: 1 casal + 1 filha<br>';
+  html += '<b>Dimensões externas:</b> 3,00 × 1,90m (chassi 1,50m) · Pé-direito: 1,80m · Mezanino: 1,88×1,80m<br>';
+  html += '<b>Madeira:</b> Compensado Naval (espessuras 10/15/18/25mm)<br>';
+  html += '<b>Chapa de referência:</b> 2440×1220mm (8×4 pés) — ajustar conforme disponibilidade do fornecedor<br>';
+  html += '<b>Observações:</b> Cortes curvos (telhado, para-lamas) devem ser marcados no local. Medidas em mm. tolerância ±1mm.';
+  html += '</div>';
+
+  var totalP = 0, totalA = 0;
+  sheets.forEach(function(t) {
+    var items = groups[t];
+    var sheet = CUT_SHEETS[t] || CUT_SHEETS[15];
+    var area = cutTotalArea(items);
+    var count = items.reduce(function(s, p) { return s + p.qtd; }, 0);
+    var sheets2 = Math.ceil(area / (sheet.comp * sheet.larg));
+    totalP += count; totalA += area;
+    html += '<h3>Compensado ' + t + 'mm — ' + count + ' peça(s) · ' + sheets2 + ' chapa(s) estimada(s)</h3>';
+    html += '<table><thead><tr><th>#</th><th>Peça</th><th>Grupo</th><th>Comp (mm)</th><th>Larg (mm)</th><th>Esp (mm)</th><th>Qtd</th><th>Área (cm²)</th><th>Observação</th></tr></thead><tbody>';
+    var n = 1;
+    items.forEach(function(p) {
+      html += '<tr><td>' + (n++) + '</td><td>' + p.nome + '</td><td>' + p.grupo + '</td>';
+      html += '<td>' + mm(p.comp) + '</td><td>' + mm(p.larg) + '</td><td>' + mm(p.esp) + '</td>';
+      html += '<td style="text-align:center;font-weight:700">' + p.qtd + '</td>';
+      html += '<td style="text-align:right">' + (cutPieceArea(p) * 1e4).toFixed(0) + '</td>';
+      html += '<td style="font-size:10px;color:#888">' + (p.obs || '') + '</td></tr>';
+    });
+    html += '</tbody></table>';
+  });
+
+  html += '<div class="stats">';
+  html += '<div class="stat"><div class="v">' + totalP + '</div><div class="l">Total de peças</div></div>';
+  html += '<div class="stat"><div class="v">' + (totalA * 1e6).toFixed(0) + ' cm²</div><div class="l">Área total madeira</div></div>';
+  html += '</div>';
+  html += '<p style="font-size:10px;color:#8b93a7;margin-top:16px">Gerado por Trailer 3D Studio · ' + new Date().toLocaleString('pt-BR') + '</p>';
+  html += '</body></html>';
+  w.document.write(html);
+  w.document.close();
+  setTimeout(function() { w.print(); }, 250);
+}
+
+// Bind dos eventos do modal
+document.getElementById('btn-export').addEventListener('click', cutOpenModal);
+document.getElementById('cut-close').addEventListener('click', cutCloseModal);
+document.getElementById('cut-export-modal').addEventListener('click', function(e) {
+  if (e.target === this) cutCloseModal();
+});
+document.getElementById('cut-csv').addEventListener('click', function() { cutDownloadCSV(false); });
+document.getElementById('cut-csv-leroy').addEventListener('click', function() { cutDownloadCSV(true); });
+document.getElementById('cut-copy').addEventListener('click', cutCopyList);
+document.getElementById('cut-print').addEventListener('click', cutPrint);
+document.querySelectorAll('.cut-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() { cutShowSheet(parseInt(tab.dataset.sheet)); });
+});
+// Tecla Esc fecha o modal
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && document.getElementById('cut-export-modal').style.display !== 'none') {
+    cutCloseModal();
+  }
+});
+</script>
+</body>
+</html>
