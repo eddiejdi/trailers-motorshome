@@ -26,61 +26,24 @@ concurrency:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Preflight secrets
+      - name: Pull latest on server
         shell: bash
         run: |
           set -euo pipefail
-          test -n "${{ secrets.TRAILER_PROD_HOST }}"
-          test -n "${{ secrets.TRAILER_PROD_SSH_USER }}"
-          test -n "${{ secrets.TRAILER_PROD_SSH_KEY }}"
-          test -n "${{ secrets.TRAILER_PROD_SSH_PORT }}"
-
-      - name: Build artifact
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p dist
-          cp -a index.html main.js PaletteService.js WeightService.js src trailer_lib docs hooks dist/
-          tar -czf trailer-prod.tar.gz -C dist .
-
-      - name: Upload artifact to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.TRAILER_PROD_HOST }}
-          username: ${{ secrets.TRAILER_PROD_SSH_USER }}
-          key: ${{ secrets.TRAILER_PROD_SSH_KEY }}
-          port: ${{ secrets.TRAILER_PROD_SSH_PORT }}
-          source: trailer-prod.tar.gz
-          target: /tmp
-
-      - name: Publish on server
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.TRAILER_PROD_HOST }}
-          username: ${{ secrets.TRAILER_PROD_SSH_USER }}
-          key: ${{ secrets.TRAILER_PROD_SSH_KEY }}
-          port: ${{ secrets.TRAILER_PROD_SSH_PORT }}
-          script_stop: true
-          script: |
-            set -euo pipefail
-            SITE_ROOT=/var/www/rpa4all.com/trailer
-            tmpdir=$(mktemp -d)
-            tar -xzf /tmp/trailer-prod.tar.gz -C "$tmpdir"
-            sudo rsync -a --delete "$tmpdir/" "$SITE_ROOT/"
-            sudo chown -R homelab:www-data "$SITE_ROOT"
-            sudo chmod -R g+rX "$SITE_ROOT"
-            rm -rf "$tmpdir" /tmp/trailer-prod.tar.gz
+          cd /var/www/rpa4all.com/trailer
+          git fetch origin
+          git reset --hard origin/main
+          git clean -fd
+          sudo chown -R homelab:www-data .
+          sudo chmod -R g+rX .
 
       - name: Validate deployed module signature
         shell: bash
         run: |
           set -euo pipefail
-          sleep 3
+          sleep 2
           curl -fsSL "https://www.rpa4all.com/trailer/src/services/PaletteService.js" | grep -q "interiorGroup()"
           curl -fsSL "https://www.rpa4all.com/trailer/src/services/PaletteService.js" | grep -qv "this.interior.add(mesh)"
