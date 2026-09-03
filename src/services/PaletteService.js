@@ -24,8 +24,9 @@ function productSearchUrl(q) {
 }
 
 export default class PaletteService {
-  constructor({ interior, FLOOR_Y, editableMeshes, pushUndoFn, resolvePlacementFn, selectObjectFn, addEditableFn, uniqueNameFn, roofTopFn, makeHingedDoorFn, makeRvWindowFn, makeDinetteGroupFn, M, matFn, weightService }) {
+  constructor({ interior, body, FLOOR_Y, editableMeshes, pushUndoFn, resolvePlacementFn, selectObjectFn, addEditableFn, uniqueNameFn, roofTopFn, makeHingedDoorFn, makeRvWindowFn, makeDinetteGroupFn, M, matFn, weightService }) {
     this.interior = interior;
+    this.body = body || null;
     this.FLOOR_Y = FLOOR_Y;
     this.editableMeshes = editableMeshes;
     this.pushUndo = pushUndoFn;
@@ -140,6 +141,14 @@ export default class PaletteService {
     return mesh;
   }
 
+  finalizeWallOpening(item) {
+    if (!item || !this.body || typeof this.body.applyOpening !== 'function') return;
+    const kind = item.userData && item.userData.kind;
+    if (this.body.isWallOpeningKind(kind) || (item.userData && item.userData.funcKind === 'janela')) {
+      this.body.applyOpening(item);
+    }
+  }
+
   placePaletteAtClient(kind, clientX, clientY, renderer, raycaster, mouse, camera) {
     this.pushUndo();
     const item = this.spawnPaletteItem(kind);
@@ -159,6 +168,7 @@ export default class PaletteService {
     } else {
       this.resolvePlacement(item);
     }
+    this.finalizeWallOpening(item);
     this.selectObject(item);
     return item;
   }
@@ -175,6 +185,7 @@ export default class PaletteService {
         const item = this.spawnPaletteItem(kind);
         if (!item) return;
         this.resolvePlacement(item);
+        this.finalizeWallOpening(item);
         this.selectObject(item);
       });
       btn.addEventListener('dragstart', (e) => {

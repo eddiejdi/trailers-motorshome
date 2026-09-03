@@ -1,7 +1,7 @@
 const THREE = window.THREE;
 
 export default class EditorService {
-  constructor({ scene, camera, renderer, trailer, controls, editableMeshes, FLOOR_Y, WALL_H, Li, Lt, wth, BODY_W, interior }) {
+  constructor({ scene, camera, renderer, trailer, controls, editableMeshes, FLOOR_Y, WALL_H, Li, Lt, wth, BODY_W, interior, body }) {
     this.scene = scene;
     this.camera = camera;
     this.renderer = renderer;
@@ -15,6 +15,7 @@ export default class EditorService {
     this.wth = wth;
     this.BODY_W = BODY_W;
     this.interior = interior;
+    this.body = body || null;
 
     this.selected = null;
     this.transformCtrl = null;
@@ -60,6 +61,10 @@ export default class EditorService {
       if (!e.value && this.selected) {
         if (this.magnetCtrlDown) this.magnetSnap(this.selected);
         else this.resolvePlacement(this.selected);
+        const kind = this.selected.userData && this.selected.userData.kind;
+        if (this.body && this.body.isWallOpeningKind && this.body.isWallOpeningKind(kind)) {
+          this.body.applyOpening(this.selected);
+        }
         const hint = document.getElementById('magnet-hint');
         if (hint && !this.magnetCtrlDown) hint.textContent = 'Ctrl + arrastar = ímã no vizinho';
       }
@@ -279,6 +284,11 @@ export default class EditorService {
 
   resolvePlacement(obj) {
     if (!obj) return;
+    const kind = obj.userData && obj.userData.kind;
+    if (this.body && this.body.isWallOpeningKind && this.body.isWallOpeningKind(kind)) {
+      this.body.applyOpening(obj);
+      return;
+    }
     const floorY = this.FLOOR_Y;
     let box = new THREE.Box3().setFromObject(obj);
     if (box.min.y < floorY - 0.002) obj.position.y += floorY - box.min.y;

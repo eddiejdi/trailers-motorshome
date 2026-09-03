@@ -25,6 +25,19 @@ export default class Body {
     this.frontMzGroup = null;
     this.ribGroup = null;
     this.windowMeshes = [];
+    this._sideWallMeshL = null;
+    this._sideWallMeshR = null;
+    this._origWinLCuts = [];
+    this._origWinRCuts = [];
+    this._userWallCutsL = [];
+    this._userWallCutsR = [];
+    this._userCuts = new Map();
+    this._sidingL = null;
+    this._sidingR = null;
+    this._rearWallGroup = null;
+    this._frontWallBoxGroup = null;
+    this._origWinRear = null;
+    this._origWinFront = null;
   }
 
   wall(w, h, d, mat) {
@@ -284,31 +297,27 @@ export default class Body {
     const backWallGroup = new THREE.Group();
     this.backWallGroup = backWallGroup;
 
-    const zBack = Lt / 2 - wth / 2;
-    const winRear = { x: 0, y: 1.20, w: 0.80, h: 0.50 };
-    const rx0 = winRear.x - winRear.w / 2, rx1 = winRear.x + winRear.w / 2;
-    const ry0 = winRear.y - winRear.h / 2, ry1 = winRear.y + winRear.h / 2;
-    wallsExt.add(this.endWallRange(-BODY_W / 2, rx0, 0, wth, M.parede, zBack, 8));
-    wallsExt.add(this.endWallRange(rx1, BODY_W / 2, 0, wth, M.parede, zBack, 8));
-    wallsExt.add(this.endWallRange(rx0, rx1, 0, wth, M.parede, zBack, 4, ry0));
-    wallsExt.add(this.endWallRange(rx0, rx1, ry1, wth, M.parede, zBack, 4));
+    this._origWinLCuts = Array.isArray(winLCuts) ? winLCuts.slice() : [];
+    this._origWinRCuts = Array.isArray(winRCuts) ? winRCuts.slice() : [];
+    this._origWinRear = { x: 0, y: 1.20, w: 0.80, h: 0.50 };
+    this._origWinFront = { x: 0, y: 0.32, w: 0.70, h: 0.32 };
 
-    // ── Parede frontal da caçamba (z = -Lt/2 + wth/2) ──
+    const zBack = Lt / 2 - wth / 2;
+    this._rearWallGroup = new THREE.Group();
+    wallsExt.add(this._rearWallGroup);
+    this._rebuildRearWall();
+
     const frontWallGroup = new THREE.Group();
     this.frontWallGroup = frontWallGroup;
-    const winFront = { x: 0, y: 0.32, w: 0.70, h: 0.32 };
-    const zFrontBox = -Lt / 2 + wth / 2;
-    const fx0 = winFront.x - winFront.w / 2, fx1 = winFront.x + winFront.w / 2;
-    const fy0 = winFront.y - winFront.h / 2, fy1 = winFront.y + winFront.h / 2;
-    // Parede aos pes da cama do mezanino: somente a metade inferior.
-    wallsExt.add(this.endWallRange(-BODY_W / 2, fx0, 0, wth, M.parede, zFrontBox, 8, mzWallY0));
-    wallsExt.add(this.endWallRange(fx1, BODY_W / 2, 0, wth, M.parede, zFrontBox, 8, mzWallY0));
-    wallsExt.add(this.endWallRange(fx0, fx1, 0, wth, M.parede, zFrontBox, 4, Math.min(fy0, mzWallY0)));
-    if (fy1 < mzWallY0) wallsExt.add(this.endWallRange(fx0, fx1, fy1, wth, M.parede, zFrontBox, 4, mzWallY0));
+    this._frontWallBoxGroup = new THREE.Group();
+    wallsExt.add(this._frontWallBoxGroup);
+    this._rebuildFrontWall();
 
     const zFront = -Lt / 2 + wth / 2;
-    wallsExt.add(this.sideWall(-BODY_W / 2, wth, 0, M.parede, -Lt / 2, Lt / 2, 24, winLCuts));
-    wallsExt.add(this.sideWall(BODY_W / 2 - wth, wth, 0, M.parede, -Lt / 2, Lt / 2, 28, winRCuts));
+    this._sideWallMeshL = this.sideWall(-BODY_W / 2, wth, 0, M.parede, -Lt / 2, Lt / 2, 24, this._origWinLCuts);
+    this._sideWallMeshR = this.sideWall(BODY_W / 2 - wth, wth, 0, M.parede, -Lt / 2, Lt / 2, 28, this._origWinRCuts);
+    wallsExt.add(this._sideWallMeshL);
+    wallsExt.add(this._sideWallMeshR);
     wallsExt.add(this.sideWall(-BODY_W / 2, wth, mzWallY0, M.parede, zRoofFront, -Lt / 2, 16));
     wallsExt.add(this.sideWall(BODY_W / 2 - wth, wth, mzWallY0, M.parede, zRoofFront, -Lt / 2, 16));
 
@@ -324,9 +333,12 @@ export default class Body {
     const ribGroup = new THREE.Group();
     wallsExt.add(ribGroup);
     this.ribGroup = ribGroup;
-
-    this.addSideSiding(ribGroup, -BODY_W / 2, -1, -Lt / 2, Lt / 2, winLCuts);
-    this.addSideSiding(ribGroup, BODY_W / 2, 1, -Lt / 2, Lt / 2, winRCuts);
+    this._sidingL = new THREE.Group();
+    this._sidingR = new THREE.Group();
+    ribGroup.add(this._sidingL);
+    ribGroup.add(this._sidingR);
+    this.addSideSiding(this._sidingL, -BODY_W / 2, -1, -Lt / 2, Lt / 2, this._origWinLCuts);
+    this.addSideSiding(this._sidingR, BODY_W / 2, 1, -Lt / 2, Lt / 2, this._origWinRCuts);
     this.addCorrugatedSide(ribGroup, -BODY_W / 2, -1, zRoofFront, -Lt / 2, mzWallY0);
     this.addCorrugatedSide(ribGroup, BODY_W / 2, 1, zRoofFront, -Lt / 2, mzWallY0);
 
@@ -397,5 +409,172 @@ export default class Body {
     }
 
     return { group: trailer, wallGroup: wallG, wallsExt, backWallGroup, frontWallGroup, ribGroup, WALL_H: WALL_H_LOCAL, entryDoor };
+  }
+
+  isWallOpeningKind(kind) {
+    if (!kind) return false;
+    return kind === 'janela' || kind.indexOf('janela-') === 0 || kind === 'porta';
+  }
+
+  nearestWall(mesh) {
+    if (!mesh) return null;
+    const halfW = this.BODY_W / 2;
+    const halfL = this.Lt / 2;
+    const x = mesh.position.x;
+    const z = mesh.position.z;
+    const dL = Math.abs(x + halfW);
+    const dR = Math.abs(x - halfW);
+    const dF = Math.abs(z + halfL);
+    const dB = Math.abs(z - halfL);
+    const min = Math.min(dL, dR, dF, dB);
+    if (min === dL) return 'left';
+    if (min === dR) return 'right';
+    if (min === dF) return 'front';
+    return 'rear';
+  }
+
+  snapToWall(mesh) {
+    const wall = this.nearestWall(mesh);
+    if (!wall) return null;
+    const mid = this.wth / 2;
+    const halfW = this.BODY_W / 2;
+    const halfL = this.Lt / 2;
+    if (wall === 'left') {
+      mesh.position.x = -halfW + mid;
+      mesh.rotation.y = -Math.PI / 2;
+    } else if (wall === 'right') {
+      mesh.position.x = halfW - mid;
+      mesh.rotation.y = Math.PI / 2;
+    } else if (wall === 'rear') {
+      mesh.position.z = halfL - mid;
+      mesh.rotation.y = 0;
+    } else {
+      mesh.position.z = -halfL + mid;
+      mesh.rotation.y = Math.PI;
+    }
+    return wall;
+  }
+
+  openingFromMesh(mesh, wall) {
+    const kind = (mesh.userData && mesh.userData.kind) || '';
+    const isDoor = kind === 'porta';
+    const w = isDoor ? 0.62 : (mesh.userData.glassW || 0.50);
+    const h = isDoor ? 1.60 : (mesh.userData.glassH || 0.50);
+    const y0 = isDoor ? mesh.position.y : mesh.position.y - h / 2;
+    const y1 = isDoor ? mesh.position.y + h : mesh.position.y + h / 2;
+    if (wall === 'left' || wall === 'right') {
+      return { z0: mesh.position.z - w / 2, z1: mesh.position.z + w / 2, y0, y1 };
+    }
+    return { x0: mesh.position.x - w / 2, x1: mesh.position.x + w / 2, y0, y1 };
+  }
+
+  applyOpening(mesh) {
+    if (!mesh || !this.wallsExt) return;
+    this._userCuts.delete(mesh.uuid);
+    const kind = mesh.userData && mesh.userData.kind;
+    if (!this.isWallOpeningKind(kind) && !(mesh.userData && mesh.userData.funcKind === 'janela')) return;
+    const wall = this.snapToWall(mesh);
+    if (!wall) {
+      this.rebuildOpenings();
+      return;
+    }
+    this._userCuts.set(mesh.uuid, { wall, opening: this.openingFromMesh(mesh, wall) });
+    this.rebuildOpenings();
+  }
+
+  removeOpening(mesh) {
+    if (!mesh) return;
+    this._userCuts.delete(mesh.uuid);
+    this.rebuildOpenings();
+  }
+
+  _cutsFor(wall) {
+    const extra = [];
+    this._userCuts.forEach((v) => {
+      if (v.wall === wall) extra.push(v.opening);
+    });
+    return extra;
+  }
+
+  rebuildOpenings() {
+    this._rebuildSideWalls();
+    this._rebuildRearWall();
+    this._rebuildFrontWall();
+  }
+
+  _rebuildSideWalls() {
+    const { M, BODY_W, Lt, wth } = this;
+    if (!this.wallsExt) return;
+    const cutsL = this._origWinLCuts.concat(this._cutsFor('left'));
+    const cutsR = this._origWinRCuts.concat(this._cutsFor('right'));
+    if (this._sideWallMeshL) this.wallsExt.remove(this._sideWallMeshL);
+    if (this._sideWallMeshR) this.wallsExt.remove(this._sideWallMeshR);
+    this._sideWallMeshL = this.sideWall(-BODY_W / 2, wth, 0, M.parede, -Lt / 2, Lt / 2, 24, cutsL);
+    this._sideWallMeshR = this.sideWall(BODY_W / 2 - wth, wth, 0, M.parede, -Lt / 2, Lt / 2, 28, cutsR);
+    this.wallsExt.add(this._sideWallMeshL);
+    this.wallsExt.add(this._sideWallMeshR);
+    if (this._sidingL) {
+      while (this._sidingL.children.length) this._sidingL.remove(this._sidingL.children[0]);
+      this.addSideSiding(this._sidingL, -BODY_W / 2, -1, -Lt / 2, Lt / 2, cutsL);
+    }
+    if (this._sidingR) {
+      while (this._sidingR.children.length) this._sidingR.remove(this._sidingR.children[0]);
+      this.addSideSiding(this._sidingR, BODY_W / 2, 1, -Lt / 2, Lt / 2, cutsR);
+    }
+  }
+
+  _rectCuts(base, extras) {
+    const out = [];
+    if (base) {
+      out.push({
+        x0: base.x - base.w / 2,
+        x1: base.x + base.w / 2,
+        y0: base.y - base.h / 2,
+        y1: base.y + base.h / 2,
+      });
+    }
+    extras.forEach((c) => {
+      if (c.x0 != null) out.push(c);
+    });
+    return out;
+  }
+
+  _rebuildEndWallGroup(group, zPos, yCap, cuts) {
+    const { M, BODY_W, wth } = this;
+    if (!group) return;
+    while (group.children.length) group.remove(group.children[0]);
+    const xs = [-BODY_W / 2, BODY_W / 2];
+    cuts.forEach((c) => { xs.push(c.x0, c.x1); });
+    xs.sort((a, b) => a - b);
+    const uniq = [];
+    xs.forEach((x) => {
+      if (!uniq.length || Math.abs(uniq[uniq.length - 1] - x) > 1e-5) uniq.push(x);
+    });
+    for (let i = 0; i < uniq.length - 1; i++) {
+      const a = uniq[i], b = uniq[i + 1];
+      if (b - a < 0.02) continue;
+      const mid = (a + b) / 2;
+      const hit = cuts.find((c) => mid > c.x0 && mid < c.x1);
+      if (hit) {
+        const capLow = yCap != null ? Math.min(hit.y0, yCap) : hit.y0;
+        if (capLow > 0.02) group.add(this.endWallRange(a, b, 0, wth, M.parede, zPos, 4, capLow));
+        if (yCap == null || hit.y1 < yCap - 0.01) {
+          group.add(this.endWallRange(a, b, hit.y1, wth, M.parede, zPos, 4, yCap));
+        }
+      } else {
+        group.add(this.endWallRange(a, b, 0, wth, M.parede, zPos, 8, yCap));
+      }
+    }
+  }
+
+  _rebuildRearWall() {
+    const zBack = this.Lt / 2 - this.wth / 2;
+    this._rebuildEndWallGroup(this._rearWallGroup, zBack, null, this._rectCuts(this._origWinRear, this._cutsFor('rear')));
+  }
+
+  _rebuildFrontWall() {
+    const zFrontBox = -this.Lt / 2 + this.wth / 2;
+    this._rebuildEndWallGroup(this._frontWallBoxGroup, zFrontBox, this.mzWallY0, this._rectCuts(this._origWinFront, this._cutsFor('front')));
+  }
   }
 }

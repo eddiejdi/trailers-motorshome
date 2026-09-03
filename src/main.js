@@ -225,7 +225,7 @@ class TrailerApp {
         scene, camera, renderer, trailer: this.trailer, controls,
         editableMeshes: this.editableMeshes,
         FLOOR_Y: C2.FLOOR_Y, WALL_H: D.WALL_H, Li: D.Li, Lt: D.Lt,
-        wth: D.wth, BODY_W: D.BODY_W, interior
+        wth: D.wth, BODY_W: D.BODY_W, interior, body
       });
 
       this.services.save = new SaveService({
@@ -271,7 +271,7 @@ class TrailerApp {
       const matFn = (color, opts) => mat(color, opts, THREE);
 
       this.services.palette = new PaletteService({
-        interior, FLOOR_Y: C2.FLOOR_Y,
+        interior, body, FLOOR_Y: C2.FLOOR_Y,
         editableMeshes: this.editableMeshes,
         pushUndoFn: () => ed.pushUndo(),
         resolvePlacementFn: (obj) => ed.resolvePlacement(obj),
