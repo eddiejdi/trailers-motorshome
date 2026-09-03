@@ -576,5 +576,4 @@ export default class Body {
     const zFrontBox = -this.Lt / 2 + this.wth / 2;
     this._rebuildEndWallGroup(this._frontWallBoxGroup, zFrontBox, this.mzWallY0, this._rectCuts(this._origWinFront, this._cutsFor('front')));
   }
-  }
 }
