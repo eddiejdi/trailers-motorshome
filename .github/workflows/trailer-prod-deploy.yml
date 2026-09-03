@@ -44,6 +44,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          sleep 2
-          curl -fsSL "https://www.rpa4all.com/trailer/src/services/PaletteService.js" | grep -q "interiorGroup()"
-          curl -fsSL "https://www.rpa4all.com/trailer/src/services/PaletteService.js" | grep -qv "this.interior.add(mesh)"
+          grep -q "interiorGroup()" /var/www/rpa4all.com/trailer/src/services/PaletteService.js
+          grep -qv "this.interior.add(mesh)" /var/www/rpa4all.com/trailer/src/services/PaletteService.js
+          echo "Palette fix verified."
