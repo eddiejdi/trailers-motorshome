@@ -1,0 +1,79 @@
+name: Trailer Prod Deploy
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "index.html"
+      - "trailer_3d.html"
+      - "serve.py"
+      - "src/**"
+      - "trailer_lib/**"
+      - "docs/**"
+      - "deploy/prod/**"
+      - ".github/workflows/trailer-prod-deploy.yml"
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Deploy reason"
+        required: false
+        default: "manual"
+
+concurrency:
+  group: trailer-prod-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Preflight secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${{ secrets.TRAILER_PROD_HOST }}"
+          test -n "${{ secrets.TRAILER_PROD_SSH_USER }}"
+          test -n "${{ secrets.TRAILER_PROD_SSH_KEY }}"
+          test -n "${{ secrets.TRAILER_PROD_SSH_PORT }}"
+
+      - name: Build artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          cp -a index.html trailer_3d.html serve.py src trailer_lib docs dist/
+          tar -czf trailer-prod.tar.gz -C dist .
+
+      - name: Upload artifact to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.TRAILER_PROD_HOST }}
+          username: ${{ secrets.TRAILER_PROD_SSH_USER }}
+          key: ${{ secrets.TRAILER_PROD_SSH_KEY }}
+          port: ${{ secrets.TRAILER_PROD_SSH_PORT }}
+          source: trailer-prod.tar.gz
+          target: /tmp
+
+      - name: Publish on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.TRAILER_PROD_HOST }}
+          username: ${{ secrets.TRAILER_PROD_SSH_USER }}
+          key: ${{ secrets.TRAILER_PROD_SSH_KEY }}
+          port: ${{ secrets.TRAILER_PROD_SSH_PORT }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            sudo APP_USER=trailerapp APP_GROUP=www-data APP_BASE=/srv/trailer-app SITE_ROOT=/var/www/rpa4all.com/trailer /usr/local/sbin/trailer-prod-publish /tmp/trailer-prod.tar.gz
+            rm -f /tmp/trailer-prod.tar.gz
+
+      - name: Validate deployed module signature
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL "https://www.rpa4all.com/trailer/src/services/PaletteService.js" | grep -q "interiorGroup()"
+          curl -fsSL "https://www.rpa4all.com/trailer/src/services/PaletteService.js" | grep -qv "this.interior.add(mesh)"
