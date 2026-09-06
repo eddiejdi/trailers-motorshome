@@ -22,6 +22,64 @@ import MarcenariaService from './services/MarcenariaService.js';
 import AuthService from './services/AuthService.js';
 import UserFilesService from './services/UserFilesService.js';
 import WeightService from './services/WeightService.js';
+import ProjectService from './services/ProjectService.js';
+
+const PALLET_DATA = {
+  'pia':            { name:'Pia inox Ø28',            cat:'Móveis & Eletro', w:1.8, mat:'Inox 304',       v:null,    dims:'280×280×150mm', desc:'Pia redonda em aço inoxidável, ideal para cozinhas de trailer.' },
+  'comoda':         { name:'Cômoda 3 gav.',           cat:'Móveis & Eletro', w:12,  mat:'Compensado',     v:null,    dims:'600×400×500mm', desc:'Cômoda com 3 gavetas de compensado naval, acabamento em laca.' },
+  'armario':        { name:'Armário 40×60',           cat:'Móveis & Eletro', w:14,  mat:'Compensado',     v:null,    dims:'400×600×350mm', desc:'Armário de parede com duas portas, prateleira interna.' },
+  'banco':          { name:'Banco-baú',               cat:'Móveis & Eletro', w:8,   mat:'Compensado',     v:null,    dims:'1200×450×450mm', desc:'Banco com tampa articulada, espaço interno para armazenamento.' },
+  'mesa':           { name:'Mesa Lagun',               cat:'Móveis & Eletro', w:5,   mat:'Laminado',       v:null,    dims:'Ø700×720mm', desc:'Mesa de coluna Lagun, base pivotante, tampa redonda.' },
+  'dinette':        { name:'Banco + mesa',             cat:'Móveis & Eletro', w:18,  mat:'Compensado',     v:null,    dims:'1200×900×720mm', desc:'Conjunto dinette: banco com encosto + mesa articulada.' },
+  'recpro-38':      { name:'RecPro 38" booth',        cat:'Móveis & Eletro', w:22,  mat:'MDF/Compensado', v:null,    dims:'965×1016×457mm', desc:'Booth de canto RecPro 38", com prateleiras e nichos.' },
+  'recpro-44':      { name:'RecPro 44" combo',        cat:'Móveis & Eletro', w:28,  mat:'MDF/Compensado', v:null,    dims:'1118×1016×457mm', desc:'Combo RecPro 44": nichos laterais + painel central.' },
+  'camper-40':      { name:'Camper Comfort 40"',      cat:'Móveis & Eletro', w:25,  mat:'MDF',            v:null,    dims:'1016×965×457mm', desc:'Módulo Camper Comfort 40", gavetas e armário integrado.' },
+  'pe-dinete-12v':  { name:'Pé dinete 12V',           cat:'Móveis & Eletro', w:3.5, mat:'Compósito',      v:'12V',   dims:'400×400×720mm', desc:'Pé de mesa com motor 12V para elevação automática.' },
+  'snap-base':      { name:'SNAP table base',          cat:'Móveis & Eletro', w:6,   mat:'Aço/Alumínio',   v:null,    dims:'600×600×720mm', desc:'Base articulada SNAP para mesa, fixação no piso.' },
+  'geladeira':      { name:'Geladeira 12V',            cat:'Móveis & Eletro', w:15,  mat:'Plástico/Aço',   v:'12V DC', dims:'480×500×530mm', desc:'Geladeira compressor 12V DC, 40L, portão reversível.' },
+  'porta':          { name:'Porta 62×160',             cat:'Portas & Janelas', w:18,  mat:'Compensado',     v:null,    dims:'620×1600×40mm', desc:'Porta externa de entrada, compensado naval, dobradiça inox.' },
+  'porta-int':      { name:'Porta int. 55×170',        cat:'Portas & Janelas', w:12,  mat:'Compensado',     v:null,    dims:'550×1700×35mm', desc:'Porta interna divisória, compensado 15mm, dobradiça escondida.' },
+  'janela':         { name:'Janela 50×50',             cat:'Portas & Janelas', w:3.5, mat:'Alumínio/Vidro', v:null,    dims:'500×500mm', desc:'Janela basculante em alumínio com vidro temperado.' },
+  'janela-50x35':   { name:'Janela SANJO 50×35',      cat:'Portas & Janelas', w:2.8, mat:'Alumínio/Vidro', v:null,    dims:'500×350mm', desc:'Janela SANJO basculante, perfil de alumínio extrudado.' },
+  'janela-70x40':   { name:'Janela SANJO 70×40',      cat:'Portas & Janelas', w:3.6, mat:'Alumínio/Vidro', v:null,    dims:'700×400mm', desc:'Janela SANJO, vidro duplo, vedação em EPDM.' },
+  'janela-90x45':   { name:'Janela SANJO 90×45',      cat:'Portas & Janelas', w:4.5, mat:'Alumínio/Vidro', v:null,    dims:'900×450mm', desc:'Janela SANJO ampla, basculante com travas laterais.' },
+  'janela-120x50':  { name:'Janela SANJO 120×50',     cat:'Portas & Janelas', w:5.8, mat:'Alumínio/Vidro', v:null,    dims:'1200×500mm', desc:'Janela SANJO panorâmica, perfil duplo, vidro 4mm.' },
+  'janela-pp-350':  { name:'Polyplastic 35×50',        cat:'Portas & Janelas', w:1.2, mat:'Plástico',       v:null,    dims:'350×500mm', desc:'Janela Polyplastic flexível, acrílico policarbonato.' },
+  'janela-fixa-120':{ name:'Fixa panorâmica 120×50',  cat:'Portas & Janelas', w:4.2, mat:'Alumínio/Vidro', v:null,    dims:'1200×500mm', desc:'Janela fixa panorâmica, vidro temperado 5mm.' },
+  'janela-kg-750':  { name:'Janela KG fumê 75×50',    cat:'Portas & Janelas', w:4.8, mat:'Alumínio/Vidro', v:null,    dims:'750×500mm', desc:'Janela KG Acryl fumê, perfil de alumínio, vedação dupla.' },
+  'janela-kg-leitosa':{ name:'Janela KG leitosa 60×45',cat:'Portas & Janelas', w:3.2, mat:'Alumínio/Vidro', v:null,    dims:'600×450mm', desc:'Janela KG Acryl leitosa, translúcida, perfil extrudado.' },
+  'exaustor':       { name:'Exaustor teto',            cat:'Portas & Janelas', w:0.8, mat:'Plástico',       v:'12V DC', dims:'Ø280mm', desc:'Exaustor de teto 12V, fluxo 300m³/h, baixo ruído.' },
+  'exaustor-anti':  { name:'Exaustor Anti-Chuva',     cat:'Portas & Janelas', w:1.2, mat:'Plástico',       v:'12V DC', dims:'150×80mm', desc:'Exaustor com proteção anti-chuva, DPI 44, 12V.' },
+  'vent-exaust':    { name:'Ventilador Exaustão 12V',  cat:'Portas & Janelas', w:1.0, mat:'Plástico',       v:'12V DC', dims:'245×245mm', desc:'Ventilador de exaustão 12V, 4 velocidades, grade removível.' },
+  'exaustor-coifa': { name:'Exaustor Coifa 12V LED',  cat:'Portas & Janelas', w:1.5, mat:'Plástico/Metal', v:'12V DC', dims:'387×233mm', desc:'Exaustor coifa com LED integrado, 3 velocidades.' },
+  'potti':          { name:'Porta Potti',              cat:'Instalações', w:2.5,  mat:'Plástico',       v:null,    dims:'330×450mm', desc:'Porta porta-papel higiênico Potti, fixação na parede.' },
+  'tanque':         { name:'Tanque 20L',               cat:'Instalações', w:1.2,  mat:'Polietileno',    v:null,    dims:'300×200×300mm', desc:'Tanque de água limpa 20L, polietileno alimentício, tampa rosqueável.' },
+  'quadro':         { name:'Quadro 12V',               cat:'Instalações', w:2.0,  mat:'Plástico/Aço',   v:'12V DC', dims:'300×250×100mm', desc:'Quadro de distribuição 12V, disjuntores termomagnéticos.' },
+  'tanque-40':      { name:'Tanque 40L',               cat:'Instalações', w:2.2,  mat:'Polietileno',    v:null,    dims:'500×300×400mm', desc:'Tanque de água limpa 40L, formato axial, tampa rosqueável.' },
+  'led-strip':      { name:'LED Strip 5m 12V',         cat:'Iluminação', w:0.3,  mat:'Silicone/LED',   v:'12V DC', dims:'5000×10×2mm', desc:'Fita LED 5m 12V, 60 LEDs/m, branco quente, IP65.' },
+  'plafon':         { name:'Plafon LED Ø140',          cat:'Iluminação', w:0.2,  mat:'Plástico/LED',   v:'12V DC', dims:'Ø140×35mm', desc:'Plafon LED redondo 12V, 10W, 800lm, branco neutro.' },
+  'spot-led':       { name:'Spot LED 3W',              cat:'Iluminação', w:0.08, mat:'Alumínio/LED',   v:'12V DC', dims:'Ø50×40mm', desc:'Spot LED embutido 12V, 3W, 250lm, branco quente.' },
+  'claraboia-280':  { name:'Claraboia 280mm',          cat:'Ventilação', w:1.5,  mat:'Plástico',       v:null,    dims:'280×280×120mm', desc:'Claraboia redonda 280mm, Tampa Anti-UV, vedação EPDM.' },
+  'claraboia-400':  { name:'Claraboia 400mm',          cat:'Ventilação', w:2.8,  mat:'Plástico',       v:null,    dims:'400×400×150mm', desc:'Claraboia quadrada 400mm, Tampa dupla, isolamento térmico.' },
+  'grade-vent':     { name:'Grade Vent 525×280',       cat:'Ventilação', w:0.6,  mat:'Alumínio',       v:null,    dims:'525×280mm', desc:'Grade de ventilação em alumínio, perfil extrudado, pintura eletrostática.' },
+  'box-banheiro':   { name:'Box Banheiro 108cm',       cat:'Banheiro', w:12,   mat:'Acrílico/Fibra', v:null,    dims:'1080×800×1850mm', desc:'Box de banheiro em acrílico branco, porta basculante, perfil cromado.' },
+  'ducha-ext':      { name:'Ducha Externa',            cat:'Banheiro', w:1.5,  mat:'Inox/Plástico',  v:null,    dims:'300×200×600mm', desc:'Ducha externa com registro, acabamento cromado, altura ajustável.' },
+  'escada-ret':     { name:'Escada Retrátil',          cat:'Acessórios', w:3.2,  mat:'Alumínio',       v:null,    dims:'450×300×700mm', desc:'Escada retrátil 2 degraus, alumínio anodizado, capacidade 150kg.' },
+  'porta-copo':     { name:'Porta-copo Dobrável',      cat:'Acessórios', w:0.4,  mat:'Plástico/Aço',   v:null,    dims:'200×150×100mm', desc:'Porta-copo dobrável, suporte para 2 copos, fixação na parede.' },
+  'mesa-dob':       { name:'Mesa Dobrável 70×40',      cat:'Acessórios', w:3.5,  mat:'Laminado',       v:null,    dims:'700×400×680mm', desc:'Mesa dobrável de parede, tampa laminada, dobradiça reforçada.' },
+  'calco':          { name:'Calço Roda UK36',           cat:'Acessórios', w:0.8,  mat:'Borracha',       v:null,    dims:'150×100×80mm', desc:'Calço de roda em borracha vulcanizada, tamanho UK36.' },
+  'calco-inox':     { name:'Calço Inox KG 50cm',       cat:'Acessórios', w:1.0,  mat:'Aço Inoxidável', v:null,    dims:'500×80×60mm', desc:'Calço inox articulado KG 50cm, trava de segurança.' },
+  'pingadeira':     { name:'Kit Pingadeira 1400',      cat:'Acessórios', w:0.6,  mat:'Alumínio',       v:null,    dims:'1400×50×30mm', desc:'Kit pingadeira em alumínio extrudado, perfil em L, 1.4m.' },
+  'boiler':         { name:'Boiler 10L 12V/220V',      cat:'Acessórios', w:4.5,  mat:'Inox',           v:'12V/220V', dims:'Ø250×380mm', desc:'Boiler 10L bivolt, aquecimento rápido, isolamento térmico.' },
+  'cozinha-compacta':{ name:'Cozinha compacta 120',    cat:'Acessórios', w:18,   mat:'MDF/Inox',       v:null,    dims:'1200×450×900mm', desc:'Módulo de cozinha compacto 120cm, pia + fogareiro + armário.' },
+  'trava-porta':    { name:'Trava Push-Lock',          cat:'Acessórios', w:0.2,  mat:'Nylon/Aço',      v:null,    dims:'80×60×40mm', desc:'Trava Push-Lock para porta de trailer, trava por pressão.' },
+  'caixa-gas':      { name:'Caixa de Gás 88×61',      cat:'Acessórios', w:3.0,  mat:'Compensado',     v:null,    dims:'880×610×400mm', desc:'Caixa de armazenamento de gás, ventilação inferior, acesso rápido.' },
+  'clima-evap':     { name:'Climatiz. Evap. 12V',     cat:'Climatização', w:5.5,  mat:'Plástico',       v:'12V DC', dims:'500×300×400mm', desc:'Climatizador evaporativo 12V, tanque 6L, 3 velocidades.' },
+  'ac-portatil':    { name:'Ar Cond. Portátil',        cat:'Climatização', w:25,   mat:'Plástico',       v:'220V',  dims:'400×350×700mm', desc:'Ar condicionado portátil 7500 BTU, 220V, modo frio/ar.' },
+  'ac-teto':        { name:'Ar Cond. Teto 12V',        cat:'Climatização', w:8,    mat:'Plástico/Metal', v:'12V DC', dims:'400×300×150mm', desc:'Ar condicionado de teto 12V, 3000 BTU, baixo consumo.' },
+  'entrada-cabos':  { name:'Entrada Cabos Telhado',    cat:'Elétrica', w:0.3,  mat:'EPDM/Plástico',  v:null,    dims:'Ø30×40mm', desc:'Boot de entrada de cabos, vedação IP67, silicone EPDM.' },
+  'painel-dj':      { name:'Painel Disjuntores',       cat:'Elétrica', w:1.5,  mat:'Plástico/Aço',   v:'12V DC', dims:'300×250×100mm', desc:'Painel de disjuntores 12V, 6 circuitos, LEDs indicadores.' },
+};
 
 class TrailerApp {
   constructor() {
@@ -303,12 +361,14 @@ class TrailerApp {
       });
 
       this.services.auth = new AuthService();
+      this.services.project = new ProjectService();
+      this.services.weight = new WeightService(this.services.project.getWeights());
       this.services.userFiles = new UserFilesService({
         auth: this.services.auth,
         saveService: this.services.save,
+        projectService: this.services.project,
         loadDeps: {},
       });
-      this.services.weight = new WeightService();
 
       this.initUI();
       this.startLoop();
@@ -375,6 +435,8 @@ class TrailerApp {
     const roof = this.models.roof;
     const labels = this.models.labels;
     const windowsM = this.models.windows;
+
+    this.renderSpecPanel(document.getElementById('specs-list'));
 
     let showWalls = true, showRoof = true, showCotas = false, showLabels = false;
 
@@ -516,6 +578,16 @@ class TrailerApp {
     });
     bind('btn-save', () => save.saveLayout());
 
+    // ── Gerenciamento de projeto ──
+    const { project, weight, userFiles } = this.services;
+
+    const updateCurrentProjectName = () => {
+      const nameEl = document.getElementById('files-current-name');
+      if (nameEl) {
+        nameEl.textContent = userFiles.getCurrentProjectName() || project.getMeta()?.name || 'Sem nome';
+      }
+    };
+
     document.querySelectorAll('.cat-btn').forEach((btn) => {
       btn.onclick = () => {
         btn.classList.toggle('active');
@@ -644,10 +716,9 @@ class TrailerApp {
     this.ensureEnvelopeVisibility(true);
 
     // ── Indicador de Peso ──
-    const weight = this.services.weight;
     const updateWeightUI = () => {
       const data = weight.getWeightBreakdown();
-      const cat = WeightService.getWeightCategory(data.total);
+      const cat = weight.getWeightCategory(data.total);
       const totalEl = document.getElementById('weight-total');
       const valEl = document.getElementById('weight-value');
       const unitEl = document.getElementById('weight-unit');
@@ -667,14 +738,15 @@ class TrailerApp {
         unitEl.textContent = 'kg ✕';
       }
 
-      const pct = Math.min(100, (data.total / 750) * 100);
+      const pct = Math.min(100, (data.total / data.pbtLimit) * 100);
       barEl.style.width = pct + '%';
       barEl.className = 'weight-bar' + (cat !== 'ok' ? ' ' + cat : '');
 
       let html = '';
       html += '<div class="wb-row"><span class="wb-label">Chassi + rodas</span><span class="wb-val">' + (data.breakdown.chassis + data.breakdown.wheels) + ' kg</span></div>';
       html += '<div class="wb-row"><span class="wb-label">Carroceria</span><span class="wb-val">' + (data.breakdown.wallsExt + data.breakdown.roof + data.breakdown.floor + data.breakdown.skirt) + ' kg</span></div>';
-      html += '<div class="wb-row"><span class="wb-label">Interior</span><span class="wb-val">' + (data.breakdown.mezzanine + data.breakdown.bathCube + data.breakdown.kitchen + data.breakdown.stairCabs + data.breakdown.mattress) + ' kg</span></div>';
+      html += '<div class="wb-row"><span class="wb-label">Parede banheiro</span><span class="wb-val">' + (data.breakdown.bathWalls || 0) + ' kg</span></div>';
+      html += '<div class="wb-row"><span class="wb-label">Interior</span><span class="wb-val">' + (data.breakdown.mezzanine + data.breakdown.bathFixtures + data.breakdown.kitchen + data.breakdown.stairCabs + data.breakdown.mattress) + ' kg</span></div>';
       html += '<div class="wb-row"><span class="wb-label">Isolamento + fix.</span><span class="wb-val">' + (data.breakdown.insulation + data.breakdown.fasteners) + ' kg</span></div>';
       html += '<div class="wb-row"><span class="wb-label">Instalações</span><span class="wb-val">' + (data.breakdown.plumbing + data.breakdown.electrical) + ' kg</span></div>';
       if (data.paletteKg > 0) {
@@ -753,26 +825,249 @@ class TrailerApp {
 
     try { palette.setupDragAndDrop(this.sceneManager.getRenderer(), this.sceneManager.getCamera()); } catch (e) { console.warn('setupDragAndDrop not available:', e); }
 
-      const saveDeps = {
-        spawnPaletteItem: (kind) => palette.spawnPaletteItem(kind),
-        attachProductMeta: (mesh, kind) => palette.attachProductMeta(mesh, kind),
-        attachCarpentryPart: (parent, spec, worldPoint, localPoint) => marcenaria.attachCarpentryPart(parent, spec, worldPoint, localPoint),
-        aiLog: (text, cls) => ai && ai.aiLog(text, cls),
-      };
-      save.captureFactoryLayout(() => editor.captureLayout());
-      save.loadLayout(saveDeps);
+    const saveDeps = {
+      spawnPaletteItem: (kind) => palette.spawnPaletteItem(kind),
+      attachProductMeta: (mesh, kind) => palette.attachProductMeta(mesh, kind),
+      attachCarpentryPart: (parent, spec, worldPoint, localPoint) => marcenaria.attachCarpentryPart(parent, spec, worldPoint, localPoint),
+      aiLog: (text, cls) => ai && ai.aiLog(text, cls),
+    };
+    save.captureFactoryLayout(() => editor.captureLayout());
+    save.loadLayout(saveDeps);
 
-      // Sincronizar peso com itens carregados
-      const loadedKinds = this.editableMeshes
-        .filter((m) => m.userData && m.userData.kind)
-        .map((m) => m.userData.kind);
-      weight.syncFromKinds(loadedKinds);
+    const loadedKinds = this.editableMeshes
+      .filter((m) => m.userData && m.userData.kind)
+      .map((m) => m.userData.kind);
+    weight.syncFromKinds(loadedKinds);
 
-      if (typeof this.ensureEnvelopeVisibility === 'function') this.ensureEnvelopeVisibility(true, true);
+    if (typeof this.ensureEnvelopeVisibility === 'function') this.ensureEnvelopeVisibility(true, true);
+
+    // ── GNOME Panel Menu Actions ──
+    const gnomeMenus = document.querySelectorAll('.gnome-menu');
+    gnomeMenus.forEach((menu) => {
+      const btn = menu.querySelector('.gnome-menu-btn');
+      if (btn) {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const wasOpen = menu.classList.contains('open');
+          gnomeMenus.forEach((m) => m.classList.remove('open'));
+          if (!wasOpen) menu.classList.add('open');
+        });
+      }
+    });
+    document.addEventListener('click', () => {
+      gnomeMenus.forEach((m) => m.classList.remove('open'));
+    });
+
+    const gnomePanel = document.getElementById('gnome-panel');
+    if (gnomePanel) {
+      gnomePanel.addEventListener('click', (e) => {
+        const item = e.target.closest('.gnome-menu-item:not(.disabled)');
+        if (!item) return;
+        const action = item.dataset.action;
+        gnomeMenus.forEach((m) => m.classList.remove('open'));
+
+        switch (action) {
+          case 'new-project':
+            if (confirm('Criar novo projeto? As alterações não salvas serão perdidas.')) {
+              userFiles.newProject();
+              weight.setProjectWeights(project.getWeights());
+              this.renderSpecPanel(document.getElementById('specs-list'));
+              weight.resetPaletteItems();
+              save.resetLayout();
+              updateCurrentProjectName();
+              ai && ai.aiLog('Novo projeto criado.', 'sys');
+            }
+            break;
+          case 'save':
+            save.saveLayout();
+            break;
+          case 'save-as':
+            document.getElementById('files-section')?.scrollIntoView({ behavior: 'smooth' });
+            break;
+          case 'rename-project':
+            const renameInput = document.getElementById('file-name-input');
+            if (renameInput) {
+              renameInput.value = userFiles.getCurrentProjectName() || '';
+              renameInput.focus();
+            }
+            break;
+          case 'export-corte':
+            document.getElementById('cut-export-modal').style.display = '';
+            break;
+          case 'download-project':
+            project.downloadProject();
+            ai && ai.aiLog('Projeto baixado como arquivo .json.', 'sys');
+            break;
+          case 'open-project':
+            project.openProjectFile().then((proj) => {
+              if (proj) {
+                weight.setProjectWeights(project.getWeights());
+                this.renderSpecPanel(document.getElementById('specs-list'));
+                updateCurrentProjectName();
+                ai && ai.aiLog('Projeto importado: ' + (proj.meta?.name || ''), 'sys');
+              }
+            }).catch((err) => alert('Erro: ' + err.message));
+            break;
+          case 'reset':
+            save.resetLayout();
+            setTimeout(() => {
+              const kinds = this.editableMeshes.filter((m) => m.userData && m.userData.kind).map((m) => m.userData.kind);
+              weight.syncFromKinds(kinds);
+            }, 100);
+            break;
+          case 'view-planta':
+            camera.position.set(0, 8, 0.01);
+            controls.target.set(0, 0, 0);
+            controls.update();
+            break;
+          case 'view-isometrica':
+            camera.position.set(5, 4, 5);
+            controls.target.set(0, 0.6, 0);
+            controls.update();
+            break;
+          case 'view-entrar':
+            document.getElementById('btn-enter')?.click();
+            break;
+          case 'view-mezzanino':
+            document.getElementById('btn-mezz')?.click();
+            break;
+          case 'toggle-walls':
+            showWalls = !showWalls;
+            if (body.wallsExt) body.wallsExt.visible = showWalls;
+            if (body.backWallGroup) body.backWallGroup.visible = showWalls;
+            if (body.frontWallGroup) body.frontWallGroup.visible = showWalls;
+            if (body.frontMzGroup) body.frontMzGroup.visible = showWalls;
+            item.classList.toggle('checked', showWalls);
+            break;
+          case 'toggle-roof':
+            showRoof = !showRoof;
+            if (roof.group) roof.group.visible = showRoof;
+            if (windowsM.sky) windowsM.sky.visible = showRoof;
+            if (windowsM.mzSky) windowsM.mzSky.visible = showRoof;
+            item.classList.toggle('checked', showRoof);
+            break;
+          case 'toggle-cotas':
+            showCotas = !showCotas;
+            if (labels.cotasGroup) labels.cotasGroup.visible = showCotas;
+            item.classList.toggle('checked', showCotas);
+            break;
+          case 'toggle-labels':
+            showLabels = !showLabels;
+            if (labels.labelsGroup) labels.labelsGroup.visible = showLabels;
+            item.classList.toggle('checked', showLabels);
+            break;
+          case 'cat-telhado':
+          case 'cat-paredes':
+          case 'cat-paredes-int':
+          case 'cat-acessorios':
+          case 'cat-encanamento':
+          case 'cat-eletrica':
+            const cat = action.replace('cat-', '').replace('-', '_');
+            item.classList.toggle('checked');
+            const active = item.classList.contains('checked');
+            this.editableMeshes.forEach((m) => {
+              if (m.userData.category === cat) m.visible = active;
+            });
+            if (cat === 'paredes') {
+              [body.wallsExt, body.backWallGroup, body.frontWallGroup, body.frontMzGroup].forEach((g) => { if (g) g.visible = active; });
+            }
+            if (cat === 'paredes_int' && this.models.interior.wallsInt) this.models.interior.wallsInt.visible = active;
+            if (cat === 'telhado') {
+              if (roof.group) roof.group.visible = active;
+              if (windowsM.sky) windowsM.sky.visible = active;
+              if (windowsM.mzSky) windowsM.mzSky.visible = active;
+            }
+            const catBtn = document.querySelector(`.cat-btn[data-cat="${cat}"]`);
+            if (catBtn) catBtn.classList.toggle('active', active);
+            break;
+          case 'toggle-win':
+            const winId = item.dataset.win;
+            if (winId) this._toggleWindow(winId, item);
+            break;
+        }
+      });
+    }
+
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.ui-win-close');
+      if (btn) {
+        const winId = btn.dataset.close;
+        if (winId) this._toggleWindow(winId);
+      }
+    });
 
     this._initAuthUI();
     this._initFilesUI();
     this._initRPA();
+    this._initPaletteInteractions();
+  }
+
+  _toggleWindow(winId, menuItem) {
+    const el = document.getElementById(winId);
+    if (!el) return;
+    const closed = el.classList.toggle('closed');
+    if (menuItem) {
+      menuItem.classList.toggle('checked', !closed);
+    } else {
+      const mi = document.querySelector(`.gnome-menu-item[data-win="${winId}"]`);
+      if (mi) mi.classList.toggle('checked', !closed);
+    }
+  }
+
+  _initPaletteInteractions() {
+    let popover = null;
+    const createPopover = () => {
+      if (popover) return popover;
+      popover = document.createElement('div');
+      popover.className = 'pi-popover';
+      document.body.appendChild(popover);
+      return popover;
+    };
+    const showPopover = (btn, data) => {
+      const pop = createPopover();
+      pop.innerHTML = `
+        <div class="pop-title">${data.name}</div>
+        <div class="pop-row"><span class="pop-key">Peso</span><span class="pop-val">${data.w} kg</span></div>
+        <div class="pop-row"><span class="pop-key">Material</span><span class="pop-val">${data.mat}</span></div>
+        ${data.v ? `<div class="pop-row"><span class="pop-key">Voltagem</span><span class="pop-val">${data.v}</span></div>` : ''}
+        <div class="pop-row"><span class="pop-key">Dimensões</span><span class="pop-val">${data.dims}</span></div>
+        <div class="pop-desc">${data.desc}</div>`;
+      const r = btn.getBoundingClientRect();
+      let left = r.right + 8;
+      let top = r.top;
+      if (left + 250 > window.innerWidth) left = r.left - 248;
+      if (top + 200 > window.innerHeight) top = window.innerHeight - 210;
+      if (top < 36) top = 36;
+      pop.style.left = left + 'px';
+      pop.style.top = top + 'px';
+      pop.classList.add('show');
+    };
+    const hidePopover = () => { if (popover) popover.classList.remove('show'); };
+
+    document.querySelectorAll('#palette .pi[data-item]').forEach((btn) => {
+      const key = btn.dataset.item;
+      const data = PALLET_DATA[key];
+      const label = btn.childNodes[btn.childNodes.length - 1];
+      if (label && data) {
+        const span = document.createElement('span');
+        span.className = 'pi-label';
+        span.textContent = data.name;
+        btn.replaceChild(span, label);
+      }
+      btn.addEventListener('mouseenter', () => { if (data) showPopover(btn, data); });
+      btn.addEventListener('mouseleave', hidePopover);
+      btn.addEventListener('click', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        const size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+        ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+        btn.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 500);
+      });
+    });
   }
 
   _initRPA() {
@@ -824,19 +1119,16 @@ class TrailerApp {
     const auth = this.services.auth;
     const content = document.getElementById('auth-content');
     const filesSection = document.getElementById('files-section');
-    const accountMenu = document.getElementById('account-menu');
-    const accountBtn = document.getElementById('account-btn');
-    const accountDropdown = document.getElementById('account-dropdown');
-    const accountAvatar = document.getElementById('account-avatar');
-    const accountBtnText = document.getElementById('account-btn-text');
-    const accHeader = document.getElementById('acc-header');
-    const accItems = document.getElementById('acc-items');
+    const gnomeAccountBtn = document.getElementById('gnome-account-btn');
+    const gnomeAccountDropdown = document.getElementById('gnome-account-dropdown');
+    const gnomeAccountIcon = document.getElementById('gnome-account-icon');
+    const gnomeAccountText = document.getElementById('gnome-account-text');
+    const gnomeContaMenu = gnomeAccountBtn ? gnomeAccountBtn.closest('.gnome-menu') : null;
     if (!content) return;
 
     const render = () => {
       const user = auth.getUser();
       if (user) {
-        // Form de login no HUD (ainda visível para contexto)
         content.innerHTML = `
           <div class="auth-user">
             <div class="auth-avatar">${user.avatar ? `<img src="${user.avatar}" alt="">` : (user.name || user.email).slice(0, 1).toUpperCase()}</div>
@@ -853,36 +1145,23 @@ class TrailerApp {
         const btnLogout = document.getElementById('btn-logout');
         if (btnLogout) btnLogout.onclick = () => auth.logout();
 
-        // Header account menu
-        accountMenu.classList.remove('logged-out');
         const initials = (user.name || user.email || '?').slice(0, 1).toUpperCase();
-        accountAvatar.innerHTML = user.avatar ? `<img src="${user.avatar}" alt="">` : initials;
-        accountBtnText.textContent = user.name || user.email;
-        accountBtnText.className = 'acc-name';
-        accHeader.innerHTML = `
-          <div class="acc-avatar-lg">${user.avatar ? `<img src="${user.avatar}" alt="">` : initials}</div>
-          <div class="acc-name-lg">${user.name || user.email}</div>
-          <div class="acc-email-lg">${user.email}</div>
-          <div class="acc-provider">${user.provider === 'google' ? 'Google' : 'Local'}</div>
-        `;
-        accItems.innerHTML = `
-          <div class="acc-item" data-act="files">
-            <span class="icon">📁</span>
-            <span>Meus projetos</span>
+        gnomeAccountIcon.innerHTML = user.avatar ? `<img src="${user.avatar}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover">` : initials;
+        gnomeAccountText.textContent = user.name || user.email;
+
+        gnomeAccountDropdown.innerHTML = `
+          <div class="gnome-menu-item no-icon" data-action="account-info">
+            <span class="icon" style="font-size:16px">${user.avatar ? `<img src="${user.avatar}" alt="" style="width:20px;height:20px;border-radius:50%;object-fit:cover">` : initials}</span>
+            <div style="line-height:1.3">
+              <div style="font-weight:600;font-size:11.5px">${user.name || user.email}</div>
+              <div style="font-size:10px;color:var(--ink-3)">${user.email}</div>
+            </div>
           </div>
-          <div class="acc-divider"></div>
-          <div class="acc-item danger" data-act="logout">
-            <span class="icon">⏻</span>
-            <span>Sair</span>
-          </div>
+          <div class="gnome-menu-sep"></div>
+          <div class="gnome-menu-item" data-action="gnome-logout"><span class="icon">⏻</span>Sair</div>
         `;
-        accItems.querySelector('[data-act="files"]').onclick = () => {
-          accountDropdown.classList.remove('show');
-          const hud = document.getElementById('hud');
-          if (hud) hud.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        };
-        accItems.querySelector('[data-act="logout"]').onclick = () => {
-          accountDropdown.classList.remove('show');
+        gnomeAccountDropdown.querySelector('[data-action="gnome-logout"]').onclick = () => {
+          gnomeContaMenu && gnomeContaMenu.classList.remove('open');
           auth.logout();
         };
       } else {
@@ -923,69 +1202,65 @@ class TrailerApp {
           tryRender();
         }
 
-        // Header account menu (logged out)
-        accountMenu.classList.add('logged-out');
-        accountAvatar.innerHTML = '?';
-        accountBtnText.textContent = 'Entrar';
-        accountBtnText.className = 'acc-login-text';
-        accHeader.innerHTML = `
-          <div class="acc-avatar-lg">?</div>
-          <div class="acc-name-lg">Não autenticado</div>
-          <div class="acc-email-lg">Faça login para salvar projetos</div>
-        `;
-        accItems.innerHTML = `
-          <div class="acc-item" data-act="login-email">
-            <span class="icon">✉</span>
-            <span>Entrar com e-mail</span>
+        gnomeAccountIcon.innerHTML = '?';
+        gnomeAccountText.textContent = 'Entrar';
+
+        gnomeAccountDropdown.innerHTML = `
+          <div class="gnome-menu-item no-icon" data-action="account-info">
+            <span class="icon">?</span>
+            <div style="line-height:1.3">
+              <div style="font-weight:600;font-size:11.5px">Não autenticado</div>
+              <div style="font-size:10px;color:var(--ink-3)">Faça login para salvar projetos</div>
+            </div>
           </div>
-          <div class="acc-divider"></div>
-          <div class="acc-item" data-act="login-google">
-            <span class="icon">G</span>
-            <span>Entrar com Google</span>
-          </div>
+          <div class="gnome-menu-sep"></div>
+          <div class="gnome-menu-item" data-action="gnome-login-email"><span class="icon">✉</span>Entrar com e-mail</div>
+          <div class="gnome-menu-item" data-action="gnome-login-google"><span class="icon">G</span>Entrar com Google</div>
         `;
-        accItems.querySelector('[data-act="login-email"]').onclick = () => {
-          accountDropdown.classList.remove('show');
+        gnomeAccountDropdown.querySelector('[data-action="gnome-login-email"]').onclick = () => {
+          gnomeContaMenu && gnomeContaMenu.classList.remove('open');
           const emailInput = document.getElementById('auth-email');
           if (emailInput) emailInput.focus();
         };
-        accItems.querySelector('[data-act="login-google"]').onclick = () => {
-          accountDropdown.classList.remove('show');
+        gnomeAccountDropdown.querySelector('[data-action="gnome-login-google"]').onclick = () => {
+          gnomeContaMenu && gnomeContaMenu.classList.remove('open');
           auth.loginWithGoogle().catch((e) => console.warn('Google login:', e.message));
         };
       }
     };
-
-    // Toggle dropdown
-    if (accountBtn) {
-      accountBtn.onclick = (e) => {
-        e.stopPropagation();
-        accountDropdown.classList.toggle('show');
-      };
-      // Fecha ao clicar fora
-      document.addEventListener('click', (e) => {
-        if (!accountMenu.contains(e.target)) accountDropdown.classList.remove('show');
-      });
-      // Fecha com Esc
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') accountDropdown.classList.remove('show');
-      });
-    }
 
     auth.on('login', render);
     auth.on('logout', render);
     render();
   }
 
+  renderSpecPanel(rootEl) {
+    const { project } = this.services;
+    if (project) project.renderSpecPanel(rootEl);
+  }
+
   _initFilesUI() {
     const userFiles = this.services.userFiles;
     const auth = this.services.auth;
+    const project = this.services.project;
+    const weight = this.services.weight;
     const list = document.getElementById('files-list');
     const input = document.getElementById('file-name-input');
     const btnSave = document.getElementById('btn-save-file');
+    const btnRename = document.getElementById('btn-rename-file');
+    const nameEl = document.getElementById('files-current-name');
     if (!list || !input || !btnSave) return;
 
+    const updateCurrentName = () => {
+      if (nameEl) {
+        nameEl.textContent = userFiles.getCurrentProjectName() || project.getMeta()?.name || 'Sem nome';
+      }
+      // Atualiza input com nome atual
+      input.value = userFiles.getCurrentProjectName() || '';
+    };
+
     const render = () => {
+      updateCurrentName();
       if (!auth.isAuthenticated()) { list.innerHTML = ''; return; }
       const files = userFiles.list();
       if (!files.length) {
@@ -1009,6 +1284,10 @@ class TrailerApp {
           e.stopPropagation();
           try {
             userFiles.load(id);
+            // Atualiza peso e spec panel com o projeto carregado
+            weight.setProjectWeights(project.getWeights());
+            this.renderSpecPanel(document.getElementById('specs-list'));
+            updateCurrentName();
             if (typeof this.ensureEnvelopeVisibility === 'function') this.ensureEnvelopeVisibility(true);
           } catch (err) { alert(err.message); }
         };
@@ -1046,6 +1325,20 @@ class TrailerApp {
         }, 50);
       } catch (e) { alert(e.message); }
     };
+
+    if (btnRename) {
+      btnRename.onclick = () => {
+        if (!auth.isAuthenticated()) { alert('Faça login primeiro'); return; }
+        const currentId = userFiles.getCurrentFileId();
+        if (!currentId) { alert('Abra um projeto salvo primeiro'); return; }
+        const newName = input.value.trim();
+        if (!newName) { alert('Digite um nome'); return; }
+        try {
+          userFiles.rename(currentId, newName);
+          render();
+        } catch (e) { alert(e.message); }
+      };
+    }
 
     userFiles.on('change', render);
     auth.on('login', render);

@@ -121,11 +121,149 @@ export default class PaletteService {
         janela: [0.50, 0.50, 'Janela 50×50'],
         'janela-50x35': [0.50, 0.35, 'Janela SANJO 50×35'],
         'janela-70x40': [0.70, 0.40, 'Janela SANJO 70×40'],
+        'janela-90x45': [0.90, 0.45, 'Janela SANJO 90×45'],
+        'janela-120x50': [1.20, 0.50, 'Janela SANJO 120×50'],
+        'janela-pp-350': [0.35, 0.50, 'Polyplastic 35×50'],
+        'janela-fixa-120': [1.20, 0.50, 'Fixa panorâmica 120×50'],
+        'janela-kg-750': [0.75, 0.50, 'Janela KG fumê 75×50'],
+        'janela-kg-leitosa': [0.60, 0.45, 'Janela KG leitosa 60×45'],
       };
       const sp = specs[kind] || specs.janela;
       mesh = this.makeRvWindow(sp[0], sp[1]);
       mesh.position.set(0, 1.20, 0);
       name = sp[2]; cat = 'paredes';
+    } else if (kind === 'dinette') {
+      mesh = this.makeDinetteGroup ? this.makeDinetteGroup() : new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.45, 0.8), M.madeira);
+      mesh.position.set(0, 0.22, 0.4); name = 'Dinette'; cat = 'acessorios';
+    } else if (kind === 'recpro-38') {
+      const g = new THREE.Group();
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(0.96, 0.46, 0.44), M.madeira));
+      const shelf = new THREE.Mesh(new THREE.BoxGeometry(0.96, 0.02, 0.44), M.madeira);
+      shelf.position.y = 0.23; g.add(shelf);
+      mesh = g; mesh.position.set(0, 0.23, 0); name = 'RecPro 38"'; cat = 'acessorios';
+    } else if (kind === 'recpro-44') {
+      const g = new THREE.Group();
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(1.12, 0.46, 0.44), M.madeira));
+      const shelf = new THREE.Mesh(new THREE.BoxGeometry(1.12, 0.02, 0.44), M.madeira);
+      shelf.position.y = 0.23; g.add(shelf);
+      mesh = g; mesh.position.set(0, 0.23, 0); name = 'RecPro 44"'; cat = 'acessorios';
+    } else if (kind === 'camper-40') {
+      const g = new THREE.Group();
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(1.02, 0.46, 0.44), M.madeira));
+      const shelf = new THREE.Mesh(new THREE.BoxGeometry(1.02, 0.02, 0.44), M.madeira);
+      shelf.position.y = 0.23; g.add(shelf);
+      mesh = g; mesh.position.set(0, 0.23, 0); name = 'Camper Comfort 40"'; cat = 'acessorios';
+    } else if (kind === 'pe-dinete-12v') {
+      mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.70, 8), new THREE.MeshStandardMaterial({ color: 0xa0a8b0, metalness: 0.6 }));
+      mesh.position.set(0, 0.35, 0.4); name = 'Pé dinete 12V'; cat = 'acessorios';
+    } else if (kind === 'snap-base') {
+      const g = new THREE.Group();
+      const top = new THREE.Mesh(new THREE.CylinderGeometry(0.30, 0.30, 0.03, 16), M.madeira);
+      top.position.y = 0.72; g.add(top);
+      const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.04, 0.70, 8), new THREE.MeshStandardMaterial({ color: 0x2a2a2a }));
+      leg.position.y = 0.35; g.add(leg);
+      mesh = g; mesh.position.set(0, 0, 0.4); name = 'SNAP table base'; cat = 'acessorios';
+    } else if (kind === 'exaustor-anti') {
+      mesh = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.08, 0.08), new THREE.MeshStandardMaterial({ color: 0xd0d0d0 }));
+      mesh.position.set(0, roofTop(0) + 0.04, 0.5); name = 'Exaustor Anti-Chuva'; cat = 'eletrica';
+    } else if (kind === 'vent-exaust') {
+      mesh = new THREE.Mesh(new THREE.BoxGeometry(0.245, 0.245, 0.08), new THREE.MeshStandardMaterial({ color: 0xe0e0e0 }));
+      mesh.position.set(0, roofTop(0) + 0.04, 0.5); name = 'Ventilador Exaustão'; cat = 'eletrica';
+    } else if (kind === 'exaustor-coifa') {
+      const g = new THREE.Group();
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(0.39, 0.06, 0.23), new THREE.MeshStandardMaterial({ color: 0xd8d8d8 })));
+      const light = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.02, 0.04), new THREE.MeshStandardMaterial({ color: 0xffe066, emissive: 0xffe066, emissiveIntensity: 0.4 }));
+      light.position.set(0, -0.04, 0); g.add(light);
+      mesh = g; mesh.position.set(0, roofTop(0) + 0.04, 0.5); name = 'Exaustor Coifa 12V LED'; cat = 'eletrica';
+    } else if (kind === 'tanque-40') {
+      mesh = new THREE.Mesh(new THREE.BoxGeometry(0.50, 0.40, 0.30), new THREE.MeshStandardMaterial({ color: 0x4a8ab0, transparent: true, opacity: 0.7 }));
+      mesh.position.set(0.2, 0.20, -0.5); name = 'Tanque 40L'; cat = 'encanamento';
+    } else if (kind === 'spot-led') {
+      mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.03, 8), new THREE.MeshStandardMaterial({ color: 0x2a2a2a, emissive: 0xfff8e0, emissiveIntensity: 0.5 }));
+      mesh.position.set(0, roofTop(0) - 0.01, 0); name = 'Spot LED 3W'; cat = 'eletrica';
+    } else if (kind === 'claraboia-280') {
+      mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.12, 16), new THREE.MeshStandardMaterial({ color: 0xd0d8d8, transparent: true, opacity: 0.6 }));
+      mesh.position.set(0, roofTop(0) + 0.06, 0); name = 'Claraboia 280mm'; cat = 'acessorios';
+    } else if (kind === 'claraboia-400') {
+      mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.20, 0.20, 0.15, 16), new THREE.MeshStandardMaterial({ color: 0xc8d0d0, transparent: true, opacity: 0.6 }));
+      mesh.position.set(0, roofTop(0) + 0.08, 0); name = 'Claraboia 400mm'; cat = 'acessorios';
+    } else if (kind === 'grade-vent') {
+      mesh = new THREE.Mesh(new THREE.BoxGeometry(0.525, 0.28, 0.02), new THREE.MeshStandardMaterial({ color: 0xc0c0c0, metalness: 0.5 }));
+      mesh.position.set(0, 1.0, 0); name = 'Grade Vent 525×280'; cat = 'acessorios';
+    } else if (kind === 'box-banheiro') {
+      const g = new THREE.Group();
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(1.08, 1.85, 0.02), new THREE.MeshStandardMaterial({ color: 0xe0e8e8, transparent: true, opacity: 0.5 })));
+      const side = new THREE.Mesh(new THREE.BoxGeometry(0.02, 1.85, 0.80), new THREE.MeshStandardMaterial({ color: 0xe0e8e8, transparent: true, opacity: 0.5 }));
+      side.position.set(-0.54, 0, 0.40); g.add(side);
+      mesh = g; mesh.position.set(-0.3, 0.92, -0.6); name = 'Box Banheiro 108cm'; cat = 'encanamento';
+    } else if (kind === 'ducha-ext') {
+      const g = new THREE.Group();
+      const pipe = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.6, 6), new THREE.MeshStandardMaterial({ color: 0xb0b0b0, metalness: 0.7 }));
+      pipe.position.y = 0.3; g.add(pipe);
+      const head = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.04, 0.06), new THREE.MeshStandardMaterial({ color: 0xc0c0c0, metalness: 0.6 }));
+      head.position.y = 0.6; g.add(head);
+      mesh = g; mesh.position.set(-0.5, 0.02, 0); name = 'Ducha Externa'; cat = 'encanamento';
+    } else if (kind === 'escada-ret') {
+      const g = new THREE.Group();
+      const rail1 = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.70, 6), new THREE.MeshStandardMaterial({ color: 0xb0b0b0, metalness: 0.7 }));
+      rail1.position.set(-0.12, 0.35, 0); g.add(rail1);
+      const rail2 = rail1.clone(); rail2.position.x = 0.12; g.add(rail2);
+      for (let i = 0; i < 3; i++) {
+        const step = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.02, 0.06), new THREE.MeshStandardMaterial({ color: 0x999999 }));
+        step.position.set(0, 0.15 + i * 0.20, 0); g.add(step);
+      }
+      mesh = g; mesh.position.set(0, 0.02, 0.5); name = 'Escada Retrátil'; cat = 'acessorios';
+    } else if (kind === 'porta-copo') {
+      const g = new THREE.Group();
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(0.20, 0.15, 0.10), new THREE.MeshStandardMaterial({ color: 0x444444 })));
+      const c1 = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.06, 8), new THREE.MeshStandardMaterial({ color: 0x555555 }));
+      c1.position.set(-0.05, 0, 0.06); g.add(c1);
+      const c2 = c1.clone(); c2.position.x = 0.05; g.add(c2);
+      mesh = g; mesh.position.set(0, 0.90, 0.4); name = 'Porta-copo Dobrável'; cat = 'acessorios';
+    } else if (kind === 'mesa-dob') {
+      const g = new THREE.Group();
+      const top = new THREE.Mesh(new THREE.BoxGeometry(0.70, 0.03, 0.40), M.madeira);
+      top.position.y = 0.68; g.add(top);
+      const leg1 = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.65, 0.03), M.madeira);
+      leg1.position.set(-0.30, 0.32, 0.18); g.add(leg1);
+      const leg2 = leg1.clone(); leg2.position.x = 0.30; g.add(leg2);
+      mesh = g; mesh.position.set(0, 0.02, 0.4); name = 'Mesa Dobrável 70×40'; cat = 'acessorios';
+    } else if (kind === 'calco') {
+      mesh = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.08, 0.10), new THREE.MeshStandardMaterial({ color: 0xe8a020 }));
+      mesh.position.set(0, 0.04, 0.5); name = 'Calço Roda UK36'; cat = 'acessorios';
+    } else if (kind === 'calco-inox') {
+      mesh = new THREE.Mesh(new THREE.BoxGeometry(0.50, 0.06, 0.08), new THREE.MeshStandardMaterial({ color: 0xc8d0d4, metalness: 0.7 }));
+      mesh.position.set(0, 0.03, 0.5); name = 'Calço Inox KG 50cm'; cat = 'acessorios';
+    } else if (kind === 'pingadeira') {
+      mesh = new THREE.Mesh(new THREE.BoxGeometry(1.40, 0.05, 0.03), new THREE.MeshStandardMaterial({ color: 0xb8c0c4, metalness: 0.5 }));
+      mesh.position.set(0, 1.80, 0); name = 'Kit Pingadeira 1400'; cat = 'acessorios';
+    } else if (kind === 'cozinha-compacta') {
+      const g = new THREE.Group();
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(1.20, 0.90, 0.45), M.madeira));
+      const counter = new THREE.Mesh(new THREE.BoxGeometry(1.20, 0.03, 0.45), new THREE.MeshStandardMaterial({ color: 0xa8a8a8, metalness: 0.3 }));
+      counter.position.y = 0.45; g.add(counter);
+      mesh = g; mesh.position.set(0, 0.45, 0.4); name = 'Cozinha compacta 120'; cat = 'acessorios';
+    } else if (kind === 'trava-porta') {
+      mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.06, 8), new THREE.MeshStandardMaterial({ color: 0xf0f0f0 }));
+      mesh.position.set(0.32, 0.90, 0.42); name = 'Trava Push-Lock'; cat = 'acessorios';
+    } else if (kind === 'caixa-gas') {
+      mesh = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.40, 0.61), M.madeira);
+      mesh.position.set(0, 0.20, 0.6); name = 'Caixa de Gás'; cat = 'acessorios';
+    } else if (kind === 'clima-evap') {
+      mesh = new THREE.Mesh(new THREE.BoxGeometry(0.50, 0.40, 0.30), new THREE.MeshStandardMaterial({ color: 0xb0c8d8 }));
+      mesh.position.set(0.3, 0.20, -0.4); name = 'Climatiz. Evap. 12V'; cat = 'acessorios';
+    } else if (kind === 'ac-portatil') {
+      mesh = new THREE.Mesh(new THREE.BoxGeometry(0.40, 0.70, 0.35), new THREE.MeshStandardMaterial({ color: 0xe0e0e0 }));
+      mesh.position.set(0.3, 0.35, -0.4); name = 'Ar Cond. Portátil'; cat = 'acessorios';
+    } else if (kind === 'ac-teto') {
+      mesh = new THREE.Mesh(new THREE.BoxGeometry(0.40, 0.15, 0.30), new THREE.MeshStandardMaterial({ color: 0xd0d0d0 }));
+      mesh.position.set(0, roofTop(0) - 0.08, 0); name = 'Ar Cond. Teto 12V'; cat = 'acessorios';
+    } else if (kind === 'entrada-cabos') {
+      mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.04, 8), new THREE.MeshStandardMaterial({ color: 0x333333 }));
+      mesh.position.set(0, roofTop(0) + 0.02, 0.3); name = 'Entrada Cabos Telhado'; cat = 'eletrica';
+    } else if (kind === 'painel-dj') {
+      mesh = new THREE.Mesh(new THREE.BoxGeometry(0.30, 0.25, 0.10), new THREE.MeshStandardMaterial({ color: 0x1a1a1a }));
+      mesh.position.set(0.55, 1.20, 0); name = 'Painel Disjuntores'; cat = 'eletrica';
     } else {
       return null;
     }

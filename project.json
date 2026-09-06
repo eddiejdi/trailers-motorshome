@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "name": "Trailer Nelcyr-Nardelli",
+    "version": "1.0.0",
+    "rev": 23,
+    "description": "Família: 1 casal + 1 filha. Layout aberto (sem paredes divisórias), banheiro em cubo, mezanino da cama de casal sobre a lança (fora da caçamba). Estilo técnico com cotas e hatching de material."
+  },
+  "dimensions": {
+    "chassis":      { "L": 3.00, "W": 1.50, "unit": "m" },
+    "body":         { "L": 3.00, "W": 1.90, "H": 1.85, "unit": "m" },
+    "interior":     { "L": 2.90, "W": 1.80, "H": 1.80, "unit": "m" },
+    "wall_thickness": 0.05,
+    "mattress_casal": { "L": 1.88, "W": 1.38, "unit": "m" },
+    "bath_cube":    { "W": 0.80, "H": 1.85, "unit": "m" },
+    "bath_walls":   { "count": 3, "W": 0.80, "H": 1.85, "thickness": 0.015, "material": "compensado 15mm" },
+    "stair_cabs":   { "count": 4, "W": 0.30, "rise": 0.34, "unit": "m" },
+    "kitchen":      { "counter": "0.58×0.85×0.22", "geladeira": "0.32×0.585×0.22" },
+    "door_external":{ "W": 0.62, "H": 1.60 },
+    "door_internal":{ "W": 0.55, "H": 1.70 },
+    "potti":        { "W": 0.42, "H": 0.42, "unit": "m" }
+  },
+  "weights_kg": {
+    "chassis":      52,
+    "wheels":       16,
+    "floor":        22,
+    "wallsExt":     38,
+    "roof":         18,
+    "skirt":         6,
+    "mezzanine":    14,
+    "bathWalls":     6,
+    "bathFixtures":  4,
+    "kitchen":      12,
+    "stairCabs":    10,
+    "mattress":     10,
+    "plumbing":      4,
+    "electrical":    3,
+    "insulation":    8,
+    "fasteners":     5,
+    "pbt_limit":   750,
+    "warn_threshold": 600
+  },
+  "specs": [
+    { "key": "chassi",          "label": "Chassi",                  "format": "{L} × {chassis.W}" },
+    { "key": "caixa",           "label": "Caixa (fora da roda)",    "format": "{L} × {body.W}" },
+    { "key": "internas",        "label": "Internas",                "format": "{interior.W} × {interior.L}" },
+    { "key": "altura-interna",  "label": "Altura interna",          "format": "{interior.H}" },
+    { "key": "cama-casal",      "label": "Cama casal",              "format": "{mattress_casal.W} × {mattress_casal.L}" },
+    { "key": "armarios-degrau", "label": "Armários-degrau",         "format": "{stair_cabs.W} · {stair_cabs.count} níveis" },
+    { "key": "banco-mesa",      "label": "Banco + mesa",            "format": "banco 1,60×0,45 · mesa à frente · cama 1,60×0,99" },
+    { "key": "cubo-banheiro",   "label": "Cubo banheiro",           "format": "{bath_cube.W} × {bath_cube.W}" },
+    { "key": "paredes-banheiro","label": "Paredes banheiro",        "format": "{bath_walls.count}× ({bath_walls.W}×{bath_walls.H}m) {bath_walls.material} · {weights_kg.bathWalls} kg" },
+    { "key": "geladeira",       "label": "Geladeira 12V",           "format": "0,585 × 0,44" },
+    { "key": "porta-potti",     "label": "Porta Potti",             "format": "{potti.W} × {potti.W}" }
+  ]
+}

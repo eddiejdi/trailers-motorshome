@@ -1,31 +1,10 @@
 /**
  * WeightService — Estimativa de peso total do veículo (trailer camper).
  *
- * Pesos baseados em materiais reais (compensado naval, aço, alumínio, EPS)
- * e dimensões do projeto. Atualizado dinamicamente conforme móveis são
- * adicionados/removidos da paleta.
+ * Pesos base vêm do projeto (ProjectService) — a ferramenta (frontend) não
+ * embute valores; ela lê do projeto carregado.
  */
 
-// Pesos base por componente (kg) — estimativa industrial
-const BASE_WEIGHTS = {
-  chassis:      52,   // Longarinas aço + treliça + roda de gato
-  wheels:       16,   // 2 pneus 14" + rodas aço
-  floor:        22,   // Compensado 15mm (3.0×1.5m) + chapa aluminio
-  wallsExt:     38,   // Parede sanduíche (alu+EPS+comp) 4 faces
-  roof:         18,   // Telhado comp+EPS+alu curvo
-  skirt:         6,   // Saia lateral (4 painéis)
-  mezzanine:    14,   // Estrutura mezanino + piso
-  bathCube:     10,   // Cubo banheiro (3 paredes comp 15mm)
-  kitchen:      12,   // Balcão + tampo + armário superior
-  stairCabs:    10,   // 4 armários-degrau
-  mattress:     10,   // Colchão casal 1.80×1.88
-  plumbing:      4,   // Encanamento (água fria/quente + esgoto)
-  electrical:    3,   // Fiação + quadro + disjuntores
-  insulation:    8,   // EPS isolante parede + telhado
-  fasteners:     5,   // Parafusos, presilhas, selante
-};
-
-// Pesos dos itens da paleta (kg por item)
 const PALETTE_WEIGHTS = {
   // Móveis & Eletro
   'pia':             2.5,
@@ -104,12 +83,28 @@ const PALETTE_WEIGHTS = {
 const WATER_KG_PER_LITER = 1.0;
 
 export default class WeightService {
-  constructor() {
+  constructor(projectWeights) {
     this._listeners = [];
-    this._waterLevel = 0;   // litros no tanque
-    this._gasLevel = 0;     // kg de gás
-    this._extraItems = {};  // { itemType: count }
+    this._waterLevel = 0;          // litros no tanque
+    this._gasLevel = 0;            // kg de gás
+    this._extraItems = {};         // { itemType: count }
+    this._projectWeights = projectWeights || {};  // Pesos do projeto carregado
+    this._pbtLimit = this._projectWeights.pbt_limit || 750;
+    this._warnThreshold = this._projectWeights.warn_threshold || 600;
   }
+
+  /**
+   * Atualiza os pesos base a partir de um novo projeto.
+   * Chamado quando o usuário carrega um projeto diferente.
+   */
+  setProjectWeights(projectWeights) {
+    this._projectWeights = projectWeights || {};
+    this._pbtLimit = this._projectWeights.pbt_limit || 750;
+    this._warnThreshold = this._projectWeights.warn_threshold || 600;
+    this._notify();
+  }
+
+  getPbtLimit() { return this._pbtLimit; }
 
   /**
    * Registra listener para mudanças de peso.
@@ -186,7 +181,10 @@ export default class WeightService {
    * Retorna breakdown completo de peso.
    */
   getWeightBreakdown() {
-    const base = { ...BASE_WEIGHTS };
+    // Copia os pesos do projeto, excluindo chaves de configuração (pbt_limit, warn_threshold)
+    const base = { ...this._projectWeights };
+    delete base.pbt_limit;
+    delete base.warn_threshold;
 
     // Itens da paleta
     const palette = {};
@@ -212,6 +210,7 @@ export default class WeightService {
       breakdown: base,
       paletteItems: palette,
       waterLiters: this._waterLevel,
+      pbtLimit: this._pbtLimit,
     };
   }
 
@@ -225,11 +224,11 @@ export default class WeightService {
 
   /**
    * Retorna categoria de peso (ok / warn / danger).
+   * Usa os thresholds do projeto carregado.
    */
-  static getWeightCategory(totalKg) {
-    // PBT típico de trailer leve: 750 kg (categoria B no Brasil)
-    if (totalKg <= 600) return 'ok';
-    if (totalKg <= 750) return 'warn';
+  getWeightCategory(totalKg) {
+    if (totalKg <= this._warnThreshold) return 'ok';
+    if (totalKg <= this._pbtLimit) return 'warn';
     return 'danger';
   }
 }
