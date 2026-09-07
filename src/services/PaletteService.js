@@ -12,12 +12,6 @@ const PALETTE_CATALOG = {
   janela: { q: 'janela trailer 500x500', buy: 'https://www.google.com/search?tbm=shop&q=janela+trailer+50x50' },
   potti: { q: 'Thetford Porta Potti 365', buy: 'https://www.google.com/search?tbm=shop&q=Porta+Potti+365' },
   tanque: { q: 'tanque água 20L trailer', buy: 'https://www.google.com/search?tbm=shop&q=tanque+%C3%A1gua+20L+trailer' },
-  'caixa-agua-80': { q: 'caixa de água 80L trailer van motorhome', buy: 'https://www.mercadolivre.com.br/caixa-de-agua-para-trailer-van-e-motorhome-80l/up/MLBU3419758639' },
-  'caixa-agua-100': { q: 'caixa d\'água 100 litros trailer van motorhome', buy: 'https://www.mercadolivre.com.br/caixa-d-agua-100-litros-para-trailer-van-motorhome/up/MLBU1738593317' },
-  'caixa-agua-130': { q: 'caixa de água polietileno 130L trailer motorhome', buy: 'https://www.google.com/search?tbm=shop&q=caixa+de+%C3%A1gua+polietileno+130L+trailer' },
-  'caixa-agua-152': { q: 'caixa de água 152L baixo perfil trailer', buy: 'https://www.meutrailer.com.br/caixa-de-agua-de-polietileno-152l-p-trailer-van-motorhome/p/1074' },
-  'tanque-agua-30': { q: 'tanque água fresca 30L 40L vertical RV trailer', buy: 'https://pt.aliexpress.com/item/1005004815933161.html' },
-  'reservatorio-40': { q: 'reservatório água 40L com rodas e alça transporte', buy: 'https://www.toprv.com.br/reservatorio-de-agua-40l-com-rodas-e-alca-para-transporte-9160004' },
   quadro: { q: 'quadro elétrico 12V trailer', buy: 'https://www.google.com/search?tbm=shop&q=quadro+el%C3%A9trico+12V+trailer' },
   exaustor: { q: 'exaustor teto 12V trailer', buy: 'https://www.google.com/search?tbm=shop&q=exaustor+teto+12V+trailer' },
   'led-strip': { q: 'fita LED 12V 5m trailer', buy: 'https://www.google.com/search?tbm=shop&q=fita+LED+12V+5m+trailer' },
@@ -114,13 +108,13 @@ export default class PaletteService {
       mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.06, 16), M.aluminio);
       mesh.position.set(0, roofTop(0) + 0.04, 0.5); name = 'Exaustor'; cat = 'eletrica';
     } else if (kind === 'led-strip') {
-      mesh = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.015, 0.015), new THREE.MeshStandardMaterial({ color: 0x333333, emissive: 0xffe066, emissiveIntensity: 0.15 }));
+      mesh = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.015, 0.015), new THREE.MeshStandardMaterial({ color: 0x333333 }));
       mesh.position.set(0, roofTop(0) + 0.01, 0); name = 'LED Strip 5m'; cat = 'eletrica';
     } else if (kind === 'plafon') {
       mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.025, 16), new THREE.MeshStandardMaterial({ color: 0xf0f0f0, emissive: 0xfff8e0, emissiveIntensity: 0.3 }));
       mesh.position.set(0, roofTop(0) - 0.01, 0); name = 'Plafon LED Ø140'; cat = 'eletrica';
     } else if (kind === 'boiler') {
-      mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.40, 16), new THREE.MeshStandardMaterial({ color: 0xc8c8c8, metalness: 0.5, emissive: 0xff8640, emissiveIntensity: 0.12 }));
+      mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.40, 16), new THREE.MeshStandardMaterial({ color: 0xc8c8c8, metalness: 0.5 }));
       mesh.position.set(0.35, 0.20, -0.55); name = 'Boiler 10L'; cat = 'encanamento';
     } else if (kind === 'janela' || kind.indexOf('janela-') === 0) {
       const specs = {
@@ -184,35 +178,6 @@ export default class PaletteService {
     } else if (kind === 'tanque-40') {
       mesh = new THREE.Mesh(new THREE.BoxGeometry(0.50, 0.40, 0.30), new THREE.MeshStandardMaterial({ color: 0x4a8ab0, transparent: true, opacity: 0.7 }));
       mesh.position.set(0.2, 0.20, -0.5); name = 'Tanque 40L'; cat = 'encanamento';
-    } else if (kind === 'caixa-agua-80' || kind === 'caixa-agua-100' || kind === 'caixa-agua-130' || kind === 'caixa-agua-152') {
-      const specs = {
-        'caixa-agua-80':  [1.30, 0.42, 0.38, 'Caixa de Água 80L'],
-        'caixa-agua-100': [1.10, 0.45, 0.55, 'Caixa de Água 100L'],
-        'caixa-agua-130': [1.23, 0.30, 0.56, 'Caixa de Água 130L'],
-        'caixa-agua-152': [1.45, 0.22, 0.56, 'Caixa de Água 152L'],
-      };
-      const sp = specs[kind];
-      const g = new THREE.Group();
-      const body = new THREE.Mesh(new THREE.BoxGeometry(sp[0], sp[1], sp[2]), new THREE.MeshStandardMaterial({ color: 0x8ec6de, transparent: true, opacity: 0.55 }));
-      g.add(body);
-      const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.05, 12), new THREE.MeshStandardMaterial({ color: 0x2a5a70 }));
-      cap.position.y = sp[1] / 2 + 0.025; g.add(cap);
-      mesh = g; mesh.position.set(0, 0.02, 0); name = sp[3]; cat = 'encanamento';
-    } else if (kind === 'tanque-agua-30') {
-      mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.60, 14), new THREE.MeshStandardMaterial({ color: 0x4a8ab0, transparent: true, opacity: 0.7 }));
-      mesh.position.set(0.2, 0.30, -0.5); name = 'Tanque de Água Vertical 30/40L'; cat = 'encanamento';
-    } else if (kind === 'reservatorio-40') {
-      const g = new THREE.Group();
-      const body = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.26, 0.32), new THREE.MeshStandardMaterial({ color: 0x6ab0c8, transparent: true, opacity: 0.65 }));
-      g.add(body);
-      for (let i = 0; i < 2; i++) for (let j = 0; j < 2; j++) {
-        const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.02, 10), new THREE.MeshStandardMaterial({ color: 0x222222 }));
-        wheel.rotation.z = Math.PI / 2;
-        wheel.position.set(-0.15 + i * 0.30, -0.16, -0.09 + j * 0.18); g.add(wheel);
-      }
-      const handle = new THREE.Mesh(new THREE.TorusGeometry(0.05, 0.015, 6, 14), new THREE.MeshStandardMaterial({ color: 0x2a5a70 }));
-      handle.position.y = 0.15; g.add(handle);
-      mesh = g; mesh.position.set(0.2, 0.13, -0.5); name = 'Reservatório 40L c/ rodas'; cat = 'encanamento';
     } else if (kind === 'spot-led') {
       mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.03, 8), new THREE.MeshStandardMaterial({ color: 0x2a2a2a, emissive: 0xfff8e0, emissiveIntensity: 0.5 }));
       mesh.position.set(0, roofTop(0) - 0.01, 0); name = 'Spot LED 3W'; cat = 'eletrica';
@@ -285,7 +250,7 @@ export default class PaletteService {
       mesh = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.40, 0.61), M.madeira);
       mesh.position.set(0, 0.20, 0.6); name = 'Caixa de Gás'; cat = 'acessorios';
     } else if (kind === 'clima-evap') {
-      mesh = new THREE.Mesh(new THREE.BoxGeometry(0.50, 0.40, 0.30), new THREE.MeshStandardMaterial({ color: 0xb0c8d8, emissive: 0x76c6ff, emissiveIntensity: 0.12 }));
+      mesh = new THREE.Mesh(new THREE.BoxGeometry(0.50, 0.40, 0.30), new THREE.MeshStandardMaterial({ color: 0xb0c8d8 }));
       mesh.position.set(0.3, 0.20, -0.4); name = 'Climatiz. Evap. 12V'; cat = 'acessorios';
     } else if (kind === 'ac-portatil') {
       mesh = new THREE.Mesh(new THREE.BoxGeometry(0.40, 0.70, 0.35), new THREE.MeshStandardMaterial({ color: 0xe0e0e0 }));

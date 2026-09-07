@@ -1,5 +1,5 @@
 export default class Labels {
-  constructor(THREE, { BODY_W, Li, Lt, W, WALL_H, FLOOR_Y, roofRise, mzFloorH, mzW, mzL }) {
+  constructor(THREE, { BODY_W, Li, Lt, W, WALL_H, FLOOR_Y, mzFloorH, mzW, mzL }) {
     this.THREE = THREE;
     this.BODY_W = BODY_W;
     this.Li = Li;
@@ -7,16 +7,11 @@ export default class Labels {
     this.W = W;
     this.WALL_H = WALL_H;
     this.FLOOR_Y = FLOOR_Y;
-    this.roofRise = roofRise;
     this.mzFloorH = mzFloorH;
     this.mzW = mzW;
     this.mzL = mzL;
     this.cotasGroup = null;
     this.labelsGroup = null;
-  }
-
-  fmtM(n, suffix = '') {
-    return n.toFixed(2).replace('.', ',') + suffix;
   }
 
   cotaText(text, size = 160) {
@@ -126,20 +121,20 @@ export default class Labels {
   }
 
   build(scene, dims) {
-    const { THREE, BODY_W, Li, Lt, W, WALL_H, FLOOR_Y, roofRise, mzFloorH, mzW, mzL } = this;
+    const { THREE, BODY_W, Li, Lt, W, WALL_H, FLOOR_Y, mzFloorH, mzW, mzL } = this;
 
     const cotasGroup = new THREE.Group();
     scene.add(cotasGroup);
     this.cotasGroup = cotasGroup;
 
     const zRoofFront = -Lt / 2 - mzL;
-    this.cotaH(-W / 2, W / 2, -0.30, -Lt / 2 - mzL - 0.55, this.fmtM(W) + ' chassi');
-    this.cotaH(-BODY_W / 2, BODY_W / 2, -0.30, -Lt / 2 - mzL - 0.35, this.fmtM(BODY_W) + ' caixa');
-    this.cotaH(-Li / 2, Li / 2, -0.30, Lt / 2 + 0.20, this.fmtM(Li));
-    this.cotaH_z(-Lt / 2, Lt / 2, -0.30, -W / 2 - 0.30, this.fmtM(Lt));
-    this.cotaH_z(-Lt / 2 - mzL, -Lt / 2, -0.30, BODY_W / 2 + 0.30, this.fmtM(mzL));
-    this.cotaV(0, roofRise + WALL_H + FLOOR_Y, W / 2 + 0.50, 0, this.fmtM(roofRise + WALL_H + FLOOR_Y));
-    this.cotaV(0, mzFloorH, -mzW / 2 - 0.30, -Lt / 2 - mzL + 0.20, this.fmtM(mzFloorH));
+    this.cotaH(-W / 2, W / 2, -0.30, -Lt / 2 - mzL - 0.55, '1,50 chassi');
+    this.cotaH(-BODY_W / 2, BODY_W / 2, -0.30, -Lt / 2 - mzL - 0.35, '1,90 caixa');
+    this.cotaH(-Li / 2, Li / 2, -0.30, Lt / 2 + 0.20, '1,80');
+    this.cotaH_z(-Lt / 2, Lt / 2, -0.30, -W / 2 - 0.30, '2,90');
+    this.cotaH_z(-Lt / 2 - mzL, -Lt / 2, -0.30, BODY_W / 2 + 0.30, '1,88');
+    this.cotaV(0, WALL_H + FLOOR_Y, W / 2 + 0.50, 0, '2,65');
+    this.cotaV(0, mzFloorH, -mzW / 2 - 0.30, -Lt / 2 - mzL + 0.20, '1,30');
 
     const labelsGroup = new THREE.Group();
     scene.add(labelsGroup);

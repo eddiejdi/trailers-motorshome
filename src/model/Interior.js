@@ -141,16 +141,14 @@ export default class Interior {
     body.castShadow = true; body.receiveShadow = true;
     g.add(body);
     const doorMat = new THREE.MeshStandardMaterial({ color: 0xc4a060, roughness: 0.55 });
-    const dd = 0.018;
-    const dz = d * 0.80, dh = Math.max(0.18, h - 0.10);
-    for (const sx of [-w / 2, w / 2]) {
-      const side = sx < 0 ? -1 : 1;
-      const door = new THREE.Mesh(new THREE.BoxGeometry(dd, dh, dz), doorMat);
-      door.position.set(sx + side * (dd / 2 + 0.002), h / 2, 0);
+    const dw = w * 0.42, dh = Math.max(0.18, h - 0.10), dd = 0.018;
+    for (const sx of [-w * 0.22, w * 0.22]) {
+      const door = new THREE.Mesh(new THREE.BoxGeometry(dw, dh, dd), doorMat);
+      door.position.set(sx, h / 2, d / 2 + dd / 2 + 0.002);
       g.add(door);
       const kn = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.01, 0.03, 8), M.aluminioD);
       kn.rotation.x = Math.PI / 2;
-      kn.position.set(sx + side * (dd + 0.012), h / 2, 0);
+      kn.position.set(sx + dw * 0.28, h / 2, d / 2 + dd + 0.012);
       g.add(kn);
     }
     const top = new THREE.Mesh(new THREE.BoxGeometry(w + 0.01, 0.025, d + 0.01), M.madeiraD);
@@ -243,19 +241,8 @@ export default class Interior {
     const mirror = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.32, 0.01), M.vidro);
     mirror.position.set(bathX0 + 0.06, 1.15, bathZ0 + 0.62);
     bath.add(mirror);
-    // Caixa de detrito 100L — entre as longarinas, acima do eixo (z=0),
-    // com espaço para a suspensão e abaixo do assoalho (elevado por caibros).
-    const greyTankBox = new THREE.Mesh(new THREE.BoxGeometry(0.60, 0.20, 0.86), new THREE.MeshStandardMaterial({ color: 0x334440, transparent: true, opacity: 0.6 }));
-    greyTankBox.position.set(0, 0.10, 0);
-    const greyTankCap = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.02, 10), new THREE.MeshStandardMaterial({ color: 0x1f2a26 }));
-    greyTankCap.position.set(0, 0.20, 0);
-    const grey = new THREE.Group();
-    grey.add(greyTankBox);
-    grey.add(greyTankCap);
-    grey.position.set(0.33, 0.50, 0);
-    grey.userData.name = 'Caixa de detrito 100L';
-    grey.userData.kind = 'grey-tank';
-    grey.userData.hidden = false;
+    const grey = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.35, 12), new THREE.MeshStandardMaterial({ color: 0x3a3a3a, transparent: true, opacity: 0.6 }));
+    grey.position.set(-Li / 2 + 0.20, CHASSIS_Y - 0.15, -Lt / 2 + 0.40);
     chassisG.add(grey);
 
     const kitchen = new THREE.Group();
@@ -289,20 +276,9 @@ export default class Interior {
     const upCab = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.38, 0.22), M.madeiraD);
     upCab.position.set(kX, 1.52, kZ + 0.02);
     kitchen.add(upCab);
-    // Caixa de água potável 100L — entre as longarinas, acima do eixo (z=0),
-    // com espaço para a suspensão e abaixo do assoalho (elevado por caibros).
-    const freshWaterBox = new THREE.Mesh(new THREE.BoxGeometry(0.60, 0.20, 0.86), new THREE.MeshStandardMaterial({ color: 0x2f9fe0, transparent: true, opacity: 0.55 }));
-    freshWaterBox.position.set(0, 0.10, 0);
-    const freshWaterCap = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.02, 10), new THREE.MeshStandardMaterial({ color: 0x1a5a80 }));
-    freshWaterCap.position.set(0, 0.20, 0);
-    const freshWater = new THREE.Group();
-    freshWater.add(freshWaterBox);
-    freshWater.add(freshWaterCap);
-    freshWater.position.set(-0.33, 0.50, 0);
-    freshWater.userData.name = 'Caixa de água potável 100L';
-    freshWater.userData.kind = 'water-tank';
-    freshWater.userData.hidden = false;
-    chassisG.add(freshWater);
+    const freshWater = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.32, 12), new THREE.MeshStandardMaterial({ color: 0x4a8ab0, roughness: 0.6, transparent: true, opacity: 0.7 }));
+    freshWater.position.set(kX + 0.28, 0.16, kZ);
+    kitchen.add(freshWater);
     const fogIcon = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.04, 16), M.chassis);
     fogIcon.rotation.x = Math.PI / 2;
     fogIcon.position.set(0.50, 0.85, -Lt / 2 - 0.04);
@@ -405,7 +381,7 @@ export default class Interior {
       kX, kZ, bedX, bedZ, stairX, HATCH_Z,
       gel, gelHandle, piaBowl, tap, tapHead, upCab, freshWater,
       fogIcon, fogIcon2, potti, pottiLid, ducha, mirror,
-      counter, counterTop, cubDoor, grey
+      counter, counterTop, cubDoor
     };
   }
 }

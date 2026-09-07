@@ -17,8 +17,6 @@ import MaterialService from './services/MaterialService.js';
 import WalkthroughService from './services/WalkthroughService.js';
 import AIService from './services/AIService.js?v=20260831-2050';
 import ExportService from './services/ExportService.js';
-import ObjectAnimator from './services/ObjectAnimator.js';
-import ConnectionService from './services/ConnectionService.js';
 import PaletteService from './services/PaletteService.js';
 import MarcenariaService from './services/MarcenariaService.js';
 import AuthService from './services/AuthService.js';
@@ -58,12 +56,6 @@ const PALLET_DATA = {
   'tanque':         { name:'Tanque 20L',               cat:'Instalações', w:1.2,  mat:'Polietileno',    v:null,    dims:'300×200×300mm', desc:'Tanque de água limpa 20L, polietileno alimentício, tampa rosqueável.' },
   'quadro':         { name:'Quadro 12V',               cat:'Instalações', w:2.0,  mat:'Plástico/Aço',   v:'12V DC', dims:'300×250×100mm', desc:'Quadro de distribuição 12V, disjuntores termomagnéticos.' },
   'tanque-40':      { name:'Tanque 40L',               cat:'Instalações', w:2.2,  mat:'Polietileno',    v:null,    dims:'500×300×400mm', desc:'Tanque de água limpa 40L, formato axial, tampa rosqueável.' },
-  'caixa-agua-80':  { name:'Caixa de Água 80L',        cat:'Instalações', w:4.5,  mat:'Polietileno',    v:null,    dims:'1300×380×420mm', desc:'Caixa de água polietileno 80L para trailer/van/motorhome, sem emendas.' },
-  'caixa-agua-100': { name:'Caixa de Água 100L',       cat:'Instalações', w:5.5,  mat:'Polietileno',    v:null,    dims:'1100×450×550mm', desc:'Caixa d\'água 100 litros para trailer/van/motorhome, polietileno.' },
-  'caixa-agua-130': { name:'Caixa de Água 130L',       cat:'Instalações', w:6.0,  mat:'Polietileno',    v:null,    dims:'1230×560×300mm', desc:'Caixa de água polietileno 130L, baixa altura para instalação sob assoalho.' },
-  'caixa-agua-152': { name:'Caixa de Água 152L',       cat:'Instalações', w:7.0,  mat:'Polietileno',    v:null,    dims:'1455×560×200mm', desc:'Caixa de água polietileno 152L baixo perfil (45mm), ideal sob o trailer.' },
-  'tanque-agua-30': { name:'Tanque Água Vertical 30/40L',cat:'Instalações', w:2.5, mat:'Polietileno',    v:null,    dims:'Ø300×600mm', desc:'Tanque de água fresca vertical 30/40L, polietileno, para RV/trailer.' },
-  'reservatorio-40':{ name:'Reservatório 40L c/ rodas', cat:'Instalações', w:4.0, mat:'Polietileno',    v:null,    dims:'420×320×280mm', desc:'Reservatório portátil 40L com rodas e alça, ideal para transporte de água.' },
   'led-strip':      { name:'LED Strip 5m 12V',         cat:'Iluminação', w:0.3,  mat:'Silicone/LED',   v:'12V DC', dims:'5000×10×2mm', desc:'Fita LED 5m 12V, 60 LEDs/m, branco quente, IP65.' },
   'plafon':         { name:'Plafon LED Ø140',          cat:'Iluminação', w:0.2,  mat:'Plástico/LED',   v:'12V DC', dims:'Ø140×35mm', desc:'Plafon LED redondo 12V, 10W, 800lm, branco neutro.' },
   'spot-led':       { name:'Spot LED 3W',              cat:'Iluminação', w:0.08, mat:'Alumínio/LED',   v:'12V DC', dims:'Ø50×40mm', desc:'Spot LED embutido 12V, 3W, 250lm, branco quente.' },
@@ -103,12 +95,12 @@ class TrailerApp {
   _computeDerived() {
     const { W, BODY_W, L, Lt, Hc, Hint, wth, Li, CHASSIS_Y, mzL, mzW, mzFloorH,
       FLOOR_T, N_STEPS, DOOR_W, DOOR_H, DOOR_SILL, INT_DOOR_W, INT_DOOR_H, INT_SILL,
-      BATH_W, LOFT_HATCH_W, ROOF_CURVE_R, ROOF_RISE, SKIRT_T, WALL_H, CHASSIS_BEAM_H, CHASSIS_BEAM_W, JOIST_H } = D;
+      BATH_W, LOFT_HATCH_W, ROOF_CURVE_R, ROOF_RISE, SKIRT_T, WALL_H, CHASSIS_BEAM_H, CHASSIS_BEAM_W } = D;
 
     const chassisBeamH = CHASSIS_BEAM_H;
     const chassisBeamW = CHASSIS_BEAM_W;
     const chassisDeckT = 0.04;
-    const FLOOR_Y = CHASSIS_Y + 0.04 + chassisBeamH + JOIST_H + chassisDeckT;
+    const FLOOR_Y = CHASSIS_Y + 0.04 + chassisBeamH + chassisDeckT;
 
     const zRoofFront = -Lt / 2 - mzL;
     const zRoofRear = Lt / 2;
@@ -220,7 +212,6 @@ class TrailerApp {
       const body = new Body(THREE, M, {
         BODY_W: D.BODY_W, Lt: D.Lt, L: D.L, W: D.W, Hc: D.Hc, Hint: D.Hint, wth: D.wth,
         CHASSIS_Y: D.CHASSIS_Y, FLOOR_Y: C2.FLOOR_Y,
-        JOIST_H: D.JOIST_H,
         roofY: C2.roofY, roofTop: C2.roofTop,
         roofFlatStart: C2.roofFlatStart, roofFlatEnd: C2.roofFlatEnd,
         zRoofFront: C2.zRoofFront,
@@ -278,7 +269,7 @@ class TrailerApp {
 
       const labels = new Labels(THREE, {
         BODY_W: D.BODY_W, Li: D.Li, Lt: D.Lt, W: D.W,
-        WALL_H: D.WALL_H, FLOOR_Y: C2.FLOOR_Y, roofRise: C2.roofRise,
+        WALL_H: D.WALL_H, FLOOR_Y: C2.FLOOR_Y,
         mzFloorH: D.mzFloorH, mzW: D.mzW, mzL: D.mzL
       });
       this.models.labels = labels;
@@ -286,32 +277,6 @@ class TrailerApp {
 
       // ── Coletar meshes editáveis ──
       this._collectEditableMeshes();
-
-      // Porta de entrada passa a ser clicável e anima ao selecionar (abre).
-      const entryDoor = bodyResult.entryDoor;
-      if (entryDoor) {
-        entryDoor.userData.editable = true;
-        entryDoor.userData.name = 'Porta de entrada';
-        entryDoor.userData.funcKind = 'porta';
-        entryDoor.userData.skipFunc = false;
-        if (entryDoor.userData.hinge && entryDoor.userData.hinge.userData) {
-          entryDoor.userData.hinge.userData.restY = 0;
-          entryDoor.userData.hinge.userData.openY = -1.95;
-        }
-        this.editableMeshes.push(entryDoor);
-      }
-
-      // Janelas estruturais (nas paredes) também selecionáveis → animam ao clicar.
-      (this.models.windows.windowMeshes || []).forEach((g) => {
-        g.userData.editable = true;
-        g.userData.name = g.userData.winName || 'Janela';
-        g.userData.category = 'paredes';
-        g.userData.collider = true;
-        if (!this.editableMeshes.includes(g)) this.editableMeshes.push(g);
-      });
-
-      // ── Coletar TODOS os meshes do trailer + rótulos como selecionáveis ──
-      this._collectAllEditable();
 
       // ── Serviços ──
       this.services.editor = new EditorService({
@@ -361,21 +326,6 @@ class TrailerApp {
 
       this.services.export = new ExportService();
 
-      this.services.animator = new ObjectAnimator({
-        editableMeshes: this.editableMeshes
-      });
-      if (window.trailerApp && console) console.log('[ObjectAnimator] pronto — selecione um item da paleta para ver a animação');
-
-      this.services.connections = new ConnectionService({
-        scene, trailer: this.trailer,
-        editableMeshes: this.editableMeshes,
-        waterTank: interiorResult.freshWater,
-        greyTank: interiorResult.grey,
-        FLOOR_Y: C2.FLOOR_Y, Li: D.Li, Lt: D.Lt,
-        BODY_W: D.BODY_W, wth: D.wth
-      });
-      if (window.trailerApp && console) console.log('[Connections] ligações de água/elétrica/esgoto ativas');
-
       const matFn = (color, opts) => mat(color, opts, THREE);
 
       this.services.palette = new PaletteService({
@@ -384,13 +334,7 @@ class TrailerApp {
         pushUndoFn: () => ed.pushUndo(),
         resolvePlacementFn: (obj) => ed.resolvePlacement(obj),
         selectObjectFn: (obj) => ed.selectObject(obj),
-        addEditableFn: (mesh, name, cat) => {
-          mesh.userData.editable = true;
-          if (name) mesh.userData.name = name;
-          mesh.userData.category = cat || 'acessorios';
-          mesh.userData.collider = true;
-          if (!this.editableMeshes.includes(mesh)) this.editableMeshes.push(mesh);
-        },
+        addEditableFn: (mesh) => { if (!this.editableMeshes.includes(mesh)) this.editableMeshes.push(mesh); },
         uniqueNameFn: (base) => {
           let n = base, i = 2;
           while (this.editableMeshes.some(m => m.userData && m.userData.name === n)) n = base + ' ' + i++;
@@ -426,7 +370,6 @@ class TrailerApp {
         loadDeps: {},
       });
 
-      this._setupSaveAsModal();
       this.initUI();
       this.startLoop();
       console.log('Trailer 3D Studio inicializado com sucesso!');
@@ -480,27 +423,6 @@ class TrailerApp {
 
     this.editableMeshes = meshes;
     console.log('Editable meshes:', meshes.length);
-  }
-
-  _collectAllEditable() {
-    const seen = new Set(this.editableMeshes);
-    const self = this;
-    const add = (obj) => {
-      if (obj.isMesh && !seen.has(obj)) {
-        seen.add(obj);
-        obj.userData.editable = true;
-        obj.userData.collider = true;
-        if (!obj.userData.name) obj.userData.name = obj.name || 'Objeto';
-        self.editableMeshes.push(obj);
-      }
-    };
-    if (this.trailer) this.trailer.traverse(add);
-    const labels = this.models.labels;
-    if (labels) {
-      if (labels.labelsGroup) labels.labelsGroup.traverse(add);
-      if (labels.cotasGroup) labels.cotasGroup.traverse(add);
-    }
-    console.log('Total editable meshes after _collectAllEditable:', this.editableMeshes.length);
   }
 
   initUI() {
@@ -624,20 +546,6 @@ class TrailerApp {
       }
     });
     document.addEventListener('keydown', (e) => {
-      const t = e.target;
-      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT')) return;
-      const k = (e.key || '').toLowerCase();
-      if ((e.ctrlKey || e.metaKey) && k === 'z') {
-        e.preventDefault();
-        if (e.shiftKey) editor.redoEdit();
-        else editor.undoEdit();
-        return;
-      }
-      if ((e.ctrlKey || e.metaKey) && k === 'y') {
-        e.preventDefault();
-        editor.redoEdit();
-        return;
-      }
       const btn = document.getElementById('btn-enter');
       const walkHud = document.getElementById('walk-hud');
       const crosshair = document.getElementById('crosshair');
@@ -725,11 +633,6 @@ class TrailerApp {
         ['mode-move', 'mode-rotate', 'mode-scale'].forEach((bid) => document.getElementById(bid)?.classList.remove('active'));
         document.getElementById(id)?.classList.add('active');
       });
-    });
-    const chkConn = document.getElementById('chk-connections');
-    if (chkConn) chkConn.addEventListener('change', () => {
-      const conns = this.services.connections;
-      if (conns) conns.setVisible(chkConn.checked);
     });
     const bindNum = (id, fn) => {
       const el = document.getElementById(id);
@@ -964,12 +867,6 @@ class TrailerApp {
         gnomeMenus.forEach((m) => m.classList.remove('open'));
 
         switch (action) {
-          case 'undo':
-            editor.undoEdit();
-            break;
-          case 'redo':
-            editor.redoEdit();
-            break;
           case 'new-project':
             if (confirm('Criar novo projeto? As alterações não salvas serão perdidas.')) {
               userFiles.newProject();
@@ -985,7 +882,7 @@ class TrailerApp {
             save.saveLayout();
             break;
           case 'save-as':
-            this._openSaveAs();
+            document.getElementById('files-section')?.scrollIntoView({ behavior: 'smooth' });
             break;
           case 'rename-project':
             const renameInput = document.getElementById('file-name-input');
@@ -1449,73 +1346,12 @@ class TrailerApp {
     render();
   }
 
-  _setupSaveAsModal() {
-    const modal = document.getElementById('saveas-modal');
-    const nameEl = document.getElementById('saveas-name');
-    const closeBtn = document.getElementById('saveas-close');
-    const cancelBtn = document.getElementById('saveas-cancel');
-    const confirmBtn = document.getElementById('saveas-confirm');
-    if (!modal || !nameEl || !confirmBtn) return;
-    const close = () => { modal.style.display = 'none'; };
-    if (closeBtn) closeBtn.onclick = close;
-    if (cancelBtn) cancelBtn.onclick = close;
-    confirmBtn.onclick = () => {
-      const name = nameEl.value.trim();
-      if (!name) { nameEl.focus(); return; }
-      this._downloadProjectJson(name);
-      const ai = this.services.ai;
-      if (ai && typeof ai.aiLog === 'function') ai.aiLog('Salvo como arquivo local: ' + name + '.json', 'sys');
-      close();
-    };
-    nameEl.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') confirmBtn.click();
-      if (e.key === 'Escape') close();
-    });
-    modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
-  }
-
-  _openSaveAs() {
-    const modal = document.getElementById('saveas-modal');
-    const nameEl = document.getElementById('saveas-name');
-    if (!modal || !nameEl) return;
-    const project = this.services.project;
-    const current = this.services.userFiles.getCurrentProjectName() || project.getMeta()?.name || 'meu-trailer';
-    const base = current.replace(/[^a-z0-9-_ ]+/gi, '-').trim().replace(/\s+/g, '-').replace(/-{2,}/g, '-');
-    nameEl.value = base || 'meu-trailer';
-    modal.style.display = 'flex';
-    nameEl.focus();
-    nameEl.select();
-  }
-
-  _downloadProjectJson(name) {
-    const project = this.services.project;
-    const save = this.services.save;
-    const safe = (name || 'meu-trailer').replace(/[^a-z0-9-_]+/gi, '-').replace(/^-+|-+$/g, '') || 'meu-trailer';
-    const data = {
-      v: 2,
-      type: 'trailer3d-project',
-      savedAt: new Date().toISOString(),
-      meta: project.getMeta(),
-      project: project.getProject(),
-      layout: save.serializeLayout(),
-    };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = safe + '.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
-
   startLoop() {
     const renderer = this.sceneManager.getRenderer();
     const scene = this.sceneManager.getScene();
     const camera = this.sceneManager.getCamera();
     const controls = this.sceneManager.getControls();
-    const { walkthrough, animator, connections } = this.services;
+    const { walkthrough } = this.services;
 
     let lastTime = performance.now();
     const animate = () => {
@@ -1530,8 +1366,6 @@ class TrailerApp {
         controls.update();
       }
       walkthrough.tickDoor(dt);
-      if (animator && !walkthrough.walkMode) animator.update(dt);
-      if (connections) connections.update(dt);
       renderer.render(scene, camera);
     };
     animate();

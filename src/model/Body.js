@@ -1,5 +1,5 @@
 export default class Body {
-  constructor(THREE, M, { BODY_W, Lt, L, W, Hc, Hint, wth, CHASSIS_Y, FLOOR_Y, JOIST_H, roofY, roofTop, roofFlatStart, roofFlatEnd, zRoofFront, mzWallY0, mzFloorH }) {
+  constructor(THREE, M, { BODY_W, Lt, L, W, Hc, Hint, wth, CHASSIS_Y, FLOOR_Y, roofY, roofTop, roofFlatStart, roofFlatEnd, zRoofFront, mzWallY0, mzFloorH }) {
     this.THREE = THREE;
     this.M = M;
     this.BODY_W = BODY_W;
@@ -11,7 +11,6 @@ export default class Body {
     this.wth = wth;
     this.CHASSIS_Y = CHASSIS_Y;
     this.FLOOR_Y = FLOOR_Y;
-    this.JOIST_H = JOIST_H;
     this.roofY = roofY;
     this.roofTop = roofTop;
     this.roofFlatStart = roofFlatStart;
@@ -283,7 +282,6 @@ export default class Body {
 
   build(winCut, winLCuts, winRCuts, chassisG) {
     const { THREE, M, BODY_W, Lt, wth, WALL_H, mzWallY0, mzFloorH, zRoofFront, FLOOR_Y, CHASSIS_Y, L, W, roofTop } = this;
-    const JOIST_H = this.JOIST_H;
     const trailer = new THREE.Group();
     const wallG = new THREE.Group();
     trailer.add(wallG);
@@ -381,7 +379,7 @@ export default class Body {
     const h_skirt = SKIRT_TOP - SKIRT_BOT; // meia roda abaixo da caixa
     const zSegs = [[-L_ / 2, -WHEEL_ARCH], [WHEEL_ARCH, L_ / 2]];
     const wingW = BODY_W / 2 - W_ / 2;
-    const deckY = CHASSIS_Y + 0.04 + 0.15 + 0.02 + JOIST_H;
+    const deckY = CHASSIS_Y + 0.04 + 0.15 + 0.02;
     for (const sign of [-1, 1]) {
       const xSkirt = sign * (BODY_W / 2 - SKIRT_T / 2);
       const xWing = sign * (W_ / 2 + wingW / 2);

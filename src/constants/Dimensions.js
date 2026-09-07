@@ -51,10 +51,6 @@ export const mzFloorH = 1.50;
 export const CHASSIS_BEAM_H = 0.15;  // height of the chassis beam
 export const CHASSIS_BEAM_W = 0.06;  // width of the beam flange
 
-// Joists (caibros) screwed on the rails to raise the Cargo bed floor
-// so the water tanks fit above the axle, between the chassis rails.
-export const JOIST_H = 0.26;
-
 // Wall height (internal + top margin for roof curve)
 export const WALL_H = Hint + 0.05;   // 1.85 m
 
