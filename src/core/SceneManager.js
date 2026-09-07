@@ -50,7 +50,7 @@ export class SceneManager {
     controls.dampingFactor = 0.1;
     controls.minDistance = 2.0;
     controls.maxDistance = 15;
-    controls.maxPolarAngle = Math.PI / 2 - 0.02;
+    controls.maxPolarAngle = Math.PI - 0.02;
     controls.target.set(0, 0.6, 0);
     this._controls = controls;
 

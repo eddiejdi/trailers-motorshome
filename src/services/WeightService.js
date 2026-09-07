@@ -42,6 +42,12 @@ const PALETTE_WEIGHTS = {
   'tanque':          2.0,  // vazio
   'quadro':          1.5,
   'tanque-40':       3.5,  // vazio
+  'caixa-agua-80':   4.5,  // vazio
+  'caixa-agua-100':  5.5,  // vazio
+  'caixa-agua-130':  6.0,  // vazio
+  'caixa-agua-152':  7.0,  // vazio
+  'tanque-agua-30':  2.5,  // vazio 30/40L
+  'reservatorio-40': 4.0,  // vazio c/ rodas
 
   // Iluminação
   'led-strip':       0.5,

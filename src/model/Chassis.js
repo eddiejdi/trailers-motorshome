@@ -1,5 +1,5 @@
 export default class Chassis {
-  constructor(THREE, M, { W, BODY_W, L, CHASSIS_Y }) {
+  constructor(THREE, M, { W, BODY_W, L, CHASSIS_Y, JOIST_H }) {
     this.THREE = THREE;
     this.M = M;
     this.W = W;
@@ -8,15 +8,39 @@ export default class Chassis {
     this.CHASSIS_Y = CHASSIS_Y;
     this.chassisBeamH = 0.15;
     this.chassisBeamW = 0.06;
+    this.JOIST_H = JOIST_H || 0.24;
     this.group = null;
   }
 
   build() {
     const { THREE, M, W, BODY_W, L, CHASSIS_Y, chassisBeamH, chassisBeamW } = this;
+    const JOIST_H = this.JOIST_H;
     const chassisG = new THREE.Group();
 
+    const railTop = CHASSIS_Y + 0.04 + chassisBeamH;
+    const deckTop = railTop + JOIST_H;
+
+    // Caibros de madeira parafusados sobre as longarinas (suspendem o assoalho
+    // até a altura das rodas, criando o vão entre as longarinas para as caixas
+    // de água ficarem acima do eixo com espaço para a suspensão).
+    const caibroPos = [-W / 2 + chassisBeamW / 2, 0, W / 2 - chassisBeamW / 2];
+    for (const cx of caibroPos) {
+      const base = cx === 0 ? CHASSIS_Y + 0.04 + chassisBeamH * 0.7 : railTop;
+      const hgt = deckTop - base;
+      const caibro = new THREE.Mesh(new THREE.BoxGeometry(0.06, hgt, L), M.madeiraD);
+      caibro.position.set(cx, base + hgt / 2, 0);
+      caibro.castShadow = true;
+      chassisG.add(caibro);
+      for (const sz of [-1.2, -0.6, 0, 0.6, 1.2]) {
+        const par = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.03, 8), M.chassis);
+        par.position.set(cx, deckTop - 0.015, sz);
+        par.rotation.x = Math.PI / 2;
+        chassisG.add(par);
+      }
+    }
+
     const floor = new THREE.Mesh(new THREE.BoxGeometry(W, 0.04, L), M.chassis);
-    floor.position.y = CHASSIS_Y + 0.04 + chassisBeamH + 0.02;
+    floor.position.y = deckTop + 0.02;
     floor.castShadow = true; floor.receiveShadow = true;
     chassisG.add(floor);
 
