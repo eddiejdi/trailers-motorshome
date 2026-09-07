@@ -371,6 +371,7 @@ class TrailerApp {
       });
 
       this.initUI();
+      this._collectAllEditable();
       this.startLoop();
       console.log('Trailer 3D Studio inicializado com sucesso!');
     } catch (err) {
@@ -423,6 +424,27 @@ class TrailerApp {
 
     this.editableMeshes = meshes;
     console.log('Editable meshes:', meshes.length);
+  }
+
+  _collectAllEditable() {
+    const seen = new Set(this.editableMeshes);
+    const self = this;
+    const add = (obj) => {
+      if (obj.isMesh && !seen.has(obj)) {
+        seen.add(obj);
+        obj.userData.editable = true;
+        obj.userData.collider = true;
+        if (!obj.userData.name) obj.userData.name = obj.name || 'Objeto';
+        self.editableMeshes.push(obj);
+      }
+    };
+    if (this.trailer) this.trailer.traverse(add);
+    const labels = this.models.labels;
+    if (labels) {
+      if (labels.labelsGroup) labels.labelsGroup.traverse(add);
+      if (labels.cotasGroup) labels.cotasGroup.traverse(add);
+    }
+    console.log('Total editable meshes after _collectAllEditable:', this.editableMeshes.length);
   }
 
   initUI() {
