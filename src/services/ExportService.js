@@ -37,12 +37,13 @@ export default class ExportService {
     this.CUT_WING_W = 0.20;
 
     this.CUT_PIECES = this._buildPieces();
+    this._scenePieces = null;
     this.CUT_SHEETS = {
-      10: { comp: 2.44, larg: 1.22, nome: 'Chapa 2440×1220mm' },
-      15: { comp: 2.44, larg: 1.22, nome: 'Chapa 2440×1220mm' },
-      18: { comp: 2.44, larg: 1.22, nome: 'Chapa 2440×1220mm' },
-      25: { comp: 2.44, larg: 1.22, nome: 'Chapa 2440×1220mm' },
-      40: { comp: 2.44, larg: 1.22, nome: 'Chapa 2440×1220mm' },
+      10: { comp: 2.17, larg: 1.07, nome: 'Chapa 2200x1100mm (util 2170x1070mm)' },
+      15: { comp: 2.17, larg: 1.07, nome: 'Chapa 2200x1100mm (util 2170x1070mm)' },
+      18: { comp: 2.17, larg: 1.07, nome: 'Chapa 2200x1100mm (util 2170x1070mm)' },
+      25: { comp: 2.17, larg: 1.07, nome: 'Chapa 2200x1100mm (util 2170x1070mm)' },
+      40: { comp: 2.17, larg: 1.07, nome: 'Chapa 2200x1100mm (util 2170x1070mm)' },
     };
   }
 
@@ -117,8 +118,16 @@ export default class ExportService {
 
   mm(v) { return Math.round(v * 1000); }
 
+  getPieces() {
+    return this._scenePieces && this._scenePieces.length ? this._scenePieces : this.CUT_PIECES;
+  }
+
+  setScenePieces(pieces) {
+    this._scenePieces = pieces;
+  }
+
   cutTableHTML(thickness) {
-    const groups = this.cutGroupByThickness(this.CUT_PIECES);
+    const groups = this.cutGroupByThickness(this.getPieces());
     const items = groups[String(thickness)] || [];
     if (items.length === 0) return '<p style="color:var(--ink-3);text-align:center;padding:20px">Nenhuma peça nesta espessura.</p>';
 
@@ -154,7 +163,7 @@ export default class ExportService {
   }
 
   cutSummaryHTML() {
-    const groups = this.cutGroupByThickness(this.CUT_PIECES);
+    const groups = this.cutGroupByThickness(this.getPieces());
     let totalPieces = 0, totalArea = 0;
     let html = '';
     Object.keys(groups).sort((a, b) => parseInt(a) - parseInt(b)).forEach((t) => {
@@ -179,7 +188,7 @@ export default class ExportService {
     } else {
       lines.push('Nome,Quantidade,Comprimento_mm,Largura_mm,Espessura_mm,Material,Grupo,Observacao');
     }
-    this.CUT_PIECES.forEach((p) => {
+    this.getPieces().forEach((p) => {
       const row = [
         p.nome, p.qtd, this.mm(p.comp), this.mm(p.larg), this.mm(p.esp),
         p.material, p.grupo, (p.obs || '').replace(/[,;]/g, ' '),
@@ -217,7 +226,7 @@ export default class ExportService {
 
   cutPrint() {
     const w = window.open('', '_blank');
-    const groups = this.cutGroupByThickness(this.CUT_PIECES);
+    const groups = this.cutGroupByThickness(this.getPieces());
     const sheets = Object.keys(groups).sort((a, b) => parseInt(a) - parseInt(b));
     let html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Plano de Corte</title>';
     html += '<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Helvetica,Arial,sans-serif;color:#1f2430;padding:20px;background:#f5f7fb}h1{font-size:20px;margin-bottom:4px;color:#1b4fc0}h2{font-size:14px;color:#4a5366;margin-bottom:16px}table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;margin-bottom:20px;font-size:11px}th{background:#20262e;color:#fff;padding:8px 10px;text-align:left;text-transform:uppercase;font-size:9px}td{padding:6px 10px;border-bottom:1px solid #ebeef5}tr:nth-child(even){background:#f5f7fb}h3{font-size:14px;margin:20px 0 8px;color:#1b4fc0;border-bottom:2px solid #eaf1ff;padding-bottom:4px}@media print{body{background:#fff;padding:10mm}}</style></head><body>';

@@ -76,7 +76,7 @@ export default class ProjectService {
 
   loadProject(data) {
     if (!data || typeof data !== 'object') throw new Error('Projeto inválido');
-    if (!data.dimensions || !data.weights_kg) throw new Error('Projeto faltando dimensions ou weights_kg');
+    if (!data.dimensions && !data.geometry) throw new Error('Projeto faltando dimensions ou geometry');
     this.project = data;
     this._emit('change', this.project);
     return this.project;

@@ -50,7 +50,9 @@ export class SceneManager {
     controls.dampingFactor = 0.1;
     controls.minDistance = 2.0;
     controls.maxDistance = 15;
-    controls.maxPolarAngle = Math.PI / 2 - 0.02;
+    // PI = órbita completa (inclui vista por baixo do chassi)
+    controls.minPolarAngle = 0;
+    controls.maxPolarAngle = Math.PI;
     controls.target.set(0, 0.6, 0);
     this._controls = controls;
 
@@ -126,6 +128,21 @@ export class SceneManager {
   getCamera()  { return this._camera; }
   getRenderer(){ return this._renderer; }
   getControls(){ return this._controls; }
+
+  /**
+   * Reposition camera + target in one shot.
+   * Disables damping so OrbitControls snaps to the new spherical state.
+   */
+  repositionCamera(posX, posY, posZ, targetX, targetY, targetZ) {
+    const c = this._controls;
+    const cam = this._camera;
+    c.enableDamping = false;
+    cam.up.set(0, 1, 0);
+    c.target.set(targetX, targetY, targetZ);
+    cam.position.set(posX, posY, posZ);
+    c.update();
+    c.enableDamping = true;
+  }
 
   /**
    * Render a single frame (call inside your animation loop).

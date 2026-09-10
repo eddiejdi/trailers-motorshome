@@ -488,6 +488,11 @@ export default class Body {
     this.rebuildOpenings();
   }
 
+  clearUserOpenings() {
+    this._userCuts.clear();
+    this.rebuildOpenings();
+  }
+
   _cutsFor(wall) {
     const extra = [];
     this._userCuts.forEach((v) => {

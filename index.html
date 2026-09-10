@@ -149,6 +149,7 @@
   #btn-labels::before  { content:"🏷️"; }
   #btn-rotate::before  { content:"⟳"; }
   #btn-top::before     { content:"⊤"; }
+  #btn-bottom::before  { content:"⊥"; }
   #btn-iso::before     { content:"◇"; }
   #btn-enter::before   { content:"🚪"; }
   #btn-reset::before   { content:"↺"; }
@@ -1032,6 +1033,7 @@
         <button class="gnome-menu-btn">Visualizar</button>
         <div class="gnome-menu-dropdown">
           <div class="gnome-menu-item" data-action="view-planta"><span class="icon">⊤</span>Planta</div>
+          <div class="gnome-menu-item" data-action="view-baixo"><span class="icon">⊥</span>Baixo</div>
           <div class="gnome-menu-item" data-action="view-isometrica"><span class="icon">◇</span>Isométrica</div>
           <div class="gnome-menu-item" data-action="view-entrar"><span class="icon">🚪</span>Entrar</div>
           <div class="gnome-menu-item" data-action="view-mezzanino"><span class="icon">🛏️</span>Mezanino</div>
@@ -1085,6 +1087,14 @@
         </div>
       </div>
 
+      <div class="hud-sec">
+        <div class="hud-sec-label">Projeto (atalhos)</div>
+        <div id="project-shortcuts" style="display:flex;gap:8px;flex-wrap:wrap">
+          <button id="btn-new-project" class="cat-btn">novo projeto</button>
+          <button id="btn-open-project" class="cat-btn">importar JSON</button>
+        </div>
+      </div>
+
       <div id="auth-section">
         <div id="auth-content"></div>
       </div>
@@ -1123,13 +1133,42 @@
         </div>
         <div id="cut-table-wrap" class="cut-table-wrap"></div>
         <div class="cut-info" id="cut-info"></div>
+        <div class="cut-info" id="cut-material-panel">
+          <div style="font-weight:700;margin-bottom:6px">Materiais para exportação</div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px">
+            <label style="font-size:11px">Estratégia:</label>
+            <select id="cut-material-mode" style="padding:4px 6px">
+              <option value="economic">Mais Econômico</option>
+              <option value="manual">Escolher cada material</option>
+              <option value="ai">IA escolhe materiais</option>
+            </select>
+            <button type="button" id="cut-preset-economic" style="padding:3px 6px;font-size:11px">Preset Econômico</button>
+            <button type="button" id="cut-preset-light" style="padding:3px 6px;font-size:11px">Preset Leve</button>
+            <button type="button" id="cut-preset-premium" style="padding:3px 6px;font-size:11px">Preset Premium</button>
+            <label style="font-size:11px">Material global:</label>
+            <select id="cut-material-global" style="padding:4px 6px"></select>
+          </div>
+          <div style="margin-bottom:8px">
+            <div style="font-size:11px">IA mais livre para escolher os materiais &lt;--&gt; Mais Econômico</div>
+            <input id="cut-ai-temp" type="range" min="0" max="1" step="0.05" value="0.2" style="width:100%">
+            <div id="cut-ai-temp-label" style="font-size:10px;color:#77767b">Temperatura IA: 0.20</div>
+          </div>
+          <div style="margin-bottom:8px;display:flex;align-items:center;gap:6px">
+            <input id="cut-include-holes" type="checkbox" checked>
+            <label for="cut-include-holes" style="font-size:11px">Incluir furos (janela, porta e outros) na exportação</label>
+          </div>
+          <div id="cut-material-by-function" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px"></div>
+          <div id="cut-material-summary" style="margin-top:8px;font-size:11px;color:#4a5366"></div>
+        </div>
       </div>
-      <div class="cut-modal-foot">
-        <button id="cut-csv" class="cut-btn cut-btn-primary">Baixar CSV</button>
-        <button id="cut-csv-leroy" class="cut-btn cut-btn-primary">CSV Leroy Merlin</button>
-        <button id="cut-copy" class="cut-btn">Copiar Lista</button>
-        <button id="cut-print" class="cut-btn">Imprimir / PDF</button>
-      </div>
+<div class="cut-modal-foot">
+         <button id="cut-csv" class="cut-btn cut-btn-primary">Baixar CSV</button>
+         <button id="cut-csv-leroy" class="cut-btn cut-btn-primary">CSV Leroy Merlin</button>
+         <button id="cut-excel" class="cut-btn cut-btn-primary">Excel (.xls)</button>
+         <button id="cut-json" class="cut-btn cut-btn-primary">Baixar JSON</button>
+         <button id="cut-copy" class="cut-btn">Copiar Lista</button>
+         <button id="cut-print" class="cut-btn">Imprimir / PDF</button>
+       </div>
     </div>
   </div>
 
@@ -1641,7 +1680,7 @@
 <script src="trailer_lib/three.min.js"></script>
 <script src="trailer_lib/OrbitControls.js"></script>
 <script src="trailer_lib/TransformControls.js"></script>
-<script type="module" src="src/main.js?v=20260906-2010"></script>
+<script type="module" src="src/main.js?v=20260909-2315"></script>
 <script>
 window.addEventListener('error', function(e) {
   var el = document.createElement('div');
@@ -1774,6 +1813,11 @@ var CUT_KX = 0.58, CUT_KY = 0.85, CUT_KZ = 0.22;
 var CUT_STAIR_W = 0.30, CUT_TREAD_D = 0.32, CUT_STAIR_RISE = 0.2525;
 var CUT_SKIRT_H = 0.27, CUT_SKIRT_D = 1.08, CUT_SKIRT_T = 0.03;
 var CUT_WING_W = 0.20;
+var CUT_SHEET_NOMINAL_COMP_MM = 2200;
+var CUT_SHEET_NOMINAL_LARG_MM = 1100;
+var CUT_SHEET_COMP_MM = 2170;
+var CUT_SHEET_LARG_MM = 1070;
+var CUT_SHEET_NAME = 'Chapa 2200x1100mm (util 2170x1070mm)';
 
 // Lista de peças de madeira para corte
 // Cada peça: { nome, qtd, comp, larg, esp, material, grupo, obs }
@@ -1851,11 +1895,11 @@ CUT_PIECES.push(
 
 // Chapas-padrão disponíveis no mercado brasileiro (Leroy Merlin, Madeira Madeira, etc.)
 var CUT_SHEETS = {
-  10: { comp: 2.44, larg: 1.22, nome: "Chapa 2440×1220mm" },  // 8'×4'
-  15: { comp: 2.44, larg: 1.22, nome: "Chapa 2440×1220mm" },
-  18: { comp: 2.44, larg: 1.22, nome: "Chapa 2440×1220mm" },
-  25: { comp: 2.44, larg: 1.22, nome: "Chapa 2440×1220mm" },
-  40: { comp: 2.44, larg: 1.22, nome: "Chapa 2440×1220mm" },
+  10: { comp: 2.2, larg: 1.1, nome: CUT_SHEET_NAME },
+  15: { comp: 2.2, larg: 1.1, nome: CUT_SHEET_NAME },
+  18: { comp: 2.2, larg: 1.1, nome: CUT_SHEET_NAME },
+  25: { comp: 2.2, larg: 1.1, nome: CUT_SHEET_NAME },
+  40: { comp: 2.2, larg: 1.1, nome: CUT_SHEET_NAME },
 };
 
 // Agrupa peças por espessura
@@ -1883,86 +1927,189 @@ function mm(v) { return Math.round(v * 1000); }
 function fmtM(v) { return v.toFixed(3).replace(/0+$/, '').replace(/\.$/, '.0'); }
 
 // Gera a tabela HTML para uma espessura
-function cutTableHTML(thickness) {
-  var groups = cutGroupByThickness(CUT_PIECES);
-  var items = groups[String(thickness)] || [];
-  if (items.length === 0) return '<p style="color:var(--ink-3);text-align:center;padding:20px">Nenhuma peça nesta espessura.</p>';
-
-  var sheet = CUT_SHEETS[thickness] || CUT_SHEETS[15];
-  var sheetArea = sheet.comp * sheet.larg;
-  var totalArea = cutTotalArea(items);
-  var sheets = Math.ceil(totalArea / sheetArea);
-  var efficiency = ((totalArea / (sheets * sheetArea)) * 100).toFixed(0);
-
-  var html = '';
-  html += '<div class="cut-info"><b>Chapa de referência:</b> ' + sheet.nome + ' (' + mm(sheet.comp) + '×' + mm(sheet.larg) + 'mm) — ' + (sheetArea * 1e6).toFixed(0) + ' cm²/chapa<br>';
-  html += '<b>Área total das peças:</b> ' + (totalArea * 1e6).toFixed(0) + ' cm² · <b>Chapas estimadas:</b> ' + sheets + ' (' + efficiency + '% de aproveitamento)</div>';
-
-  html += '<table class="cut-table"><thead><tr>';
-  html += '<th class="col-n">#</th><th>Peça</th><th>Grupo</th><th class="col-dim">Comp. (mm)</th><th class="col-dim">Larg. (mm)</th><th>Esp. (mm)</th><th class="col-qty">Qtd</th><th class="col-area">Área (cm²)</th><th>Obs</th>';
-  html += '</tr></thead><tbody>';
-  var n = 1;
-  items.forEach(function(p) {
-    var area = cutPieceArea(p);
-    html += '<tr>';
-    html += '<td class="col-n">' + (n++) + '</td>';
-    html += '<td class="col-name">' + p.nome + '</td>';
-    html += '<td>' + p.grupo + '</td>';
-    html += '<td class="col-dim">' + mm(p.comp) + '</td>';
-    html += '<td class="col-dim">' + mm(p.larg) + '</td>';
-    html += '<td>' + mm(p.esp) + '</td>';
-    html += '<td class="col-qty">' + p.qtd + '</td>';
-    html += '<td class="col-area">' + (area * 1e4).toFixed(0) + '</td>';
-    html += '<td style="font-size:10px;color:var(--ink-3)">' + (p.obs || '') + '</td>';
-    html += '</tr>';
+function collectScenePiecesForCut() {
+  var app = window.trailerApp;
+  if (!app || !app.editableMeshes) return [];
+  var pieces = [];
+  var seen = {};
+  app.editableMeshes.forEach(function(m) {
+    if (!m || !m.geometry) return;
+    var name = m.name || m.userData?.pieceName || m.userData?.kind || 'Peca';
+    var box = m.geometry.parameters || {};
+    var comp = box.width || box.depth || 0;
+    var larg = box.depth || box.width || 0;
+    var esp = box.height || 0.015;
+    var key = name + '|' + comp.toFixed(3) + '|' + larg.toFixed(3) + '|' + esp.toFixed(3);
+    if (seen[key]) { seen[key].qtd++; return; }
+    seen[key] = { nome: name, qtd: 1, comp: comp, larg: larg, esp: esp, material: 'Compensado Naval 15mm', grupo: 'Projeto', obs: '' };
+    pieces.push(seen[key]);
   });
-  html += '</tbody></table>';
-  return html;
+  return pieces;
+}
+function cutTableHTML(thickness) {
+    var exportService = window.trailerApp ? window.trailerApp.services.export : null;
+    var pieces = exportService ? exportService.getPieces() : [];
+    var sheets = exportService ? exportService.CUT_SHEETS : {};
+    var groups = cutGroupByThickness(pieces);
+    var items = groups[String(thickness)] || [];
+    if (items.length === 0) return '<p style="color:var(--ink-3);text-align:center;padding:20px">Nenhuma peça nesta espessura.</p>';
+
+    var sheet = sheets[thickness] || sheets[15] || {comp:0, larg:0, nome:''};
+    var sheetArea = (sheet.comp || 0) * (sheet.larg || 0);
+    var totalArea = cutTotalArea(items);
+    var sheetsCount = sheetArea > 0 ? Math.ceil(totalArea / sheetArea) : 0;
+    var efficiency = sheetArea > 0 ? ((totalArea / (sheetsCount * sheetArea)) * 100).toFixed(0) : 0;
+
+    var html = '';
+    html += '<div class="cut-info"><b>Chapa de referência:</b> ' + sheet.nome + ' (' + mm(sheet.comp) + '×' + mm(sheet.larg) + 'mm) — ' + (sheetArea * 1e6).toFixed(0) + ' cm²/chapa<br>';
+    html += '<b>Área total das peças:</b> ' + (totalArea * 1e6).toFixed(0) + ' cm² · <b>Chapas estimadas:</b> ' + sheetsCount + ' (' + efficiency + '% de aproveitamento)</div>';
+
+    html += '<table class="cut-table"><thead><tr>';
+    html += '<th class="col-n">#</th><th>Peça</th><th>Grupo</th><th class="col-dim">Comp. (mm)</th><th class="col-dim">Larg. (mm)</th><th>Esp. (mm)</th><th class="col-qty">Qtd</th><th class="col-area">Área (cm²)</th><th>Obs</th>';
+    html += '</tr></thead><tbody>';
+    var n = 1;
+    items.forEach(function(p) {
+        var area = cutPieceArea(p);
+        html += '<tr>';
+        html += '<td class="col-n">' + (n++) + '</td>';
+        html += '<td class="col-name">' + p.nome + '</td>';
+        html += '<td>' + p.grupo + '</td>';
+        html += '<td class="col-dim">' + mm(p.comp) + '</td>';
+        html += '<td class="col-dim">' + mm(p.larg) + '</td>';
+        html += '<td>' + mm(p.esp) + '</td>';
+        html += '<td class="col-qty">' + p.qtd + '</td>';
+        html += '<td class="col-area">' + (area * 1e4).toFixed(0) + '</td>';
+        html += '<td style="font-size:10px;color:var(--ink-3)">' + (p.obs || '') + '</td>';
+        html += '</tr>';
+    });
+    html += '</tbody></table>';
+    return html;
 }
 
 // Gera o resumo (total por espessura)
 function cutSummaryHTML() {
-  var groups = cutGroupByThickness(CUT_PIECES);
-  var totalPieces = 0, totalArea = 0;
-  var html = '';
-  Object.keys(groups).sort(function(a, b) { return parseInt(a) - parseInt(b); }).forEach(function(t) {
-    var items = groups[t];
-    var area = cutTotalArea(items);
-    var count = items.reduce(function(s, p) { return s + p.qtd; }, 0);
-    totalPieces += count;
-    totalArea += area;
-    var sheets = Math.ceil(area / ((CUT_SHEETS[t] || CUT_SHEETS[15]).comp * (CUT_SHEETS[t] || CUT_SHEETS[15]).larg));
-    html += '<div class="cut-stat"><div class="val">' + t + 'mm</div><div class="lbl">' + count + ' peça(s) · ' + sheets + ' chapa(s)</div></div>';
-  });
-  html = '<div class="cut-stat"><div class="val">' + totalPieces + '</div><div class="lbl">Total de peças</div></div>' + html;
-  html += '<div class="cut-stat"><div class="val">' + (totalArea * 1e6).toFixed(0) + ' cm²</div><div class="lbl">Área total madeira</div></div>';
-  return html;
+    var exportService = window.trailerApp ? window.trailerApp.services.export : null;
+    var pieces = exportService ? exportService.getPieces() : [];
+    var sheets = exportService ? exportService.CUT_SHEETS : {};
+    var groups = cutGroupByThickness(pieces);
+    var totalPieces = 0, totalArea = 0;
+    var html = '';
+    Object.keys(groups).sort(function(a, b) { return parseInt(a) - parseInt(b); }).forEach(function(t) {
+        var items = groups[t];
+        var area = cutTotalArea(items);
+        var count = items.reduce(function(s, p) { return s + p.qtd; }, 0);
+        totalPieces += count;
+        totalArea += area;
+        var sheet = sheets[t] || sheets[15] || {comp:0, larg:0};
+        var sheetArea = (sheet.comp || 0) * (sheet.larg || 0);
+        var sheetCount = sheetArea > 0 ? Math.ceil(area / sheetArea) : 0;
+        html += '<div class="cut-stat"><div class="val">' + t + 'mm</div><div class="lbl">' + count + ' peça(s) · ' + sheetCount + ' chapa(s)</div></div>';
+    });
+    html = '<div class="cut-stat"><div class="val">' + totalPieces + '</div><div class="lbl">Total de peças</div></div>' + html;
+    html += '<div class="cut-stat"><div class="val">' + (totalArea * 1e6).toFixed(0) + ' cm²</div><div class="lbl">Área total madeira</div></div>';
+    return html;
 }
 
 // Gera CSV (formato genérico — CutList Optimizer, etc.)
-function cutCSV(leroyFormat) {
+async function cutCSV(leroyFormat) {
   var sep = leroyFormat ? ';' : ',';
   var lines = [];
   if (leroyFormat) {
-    lines.push('Peça;Quantidade;Comprimento (mm);Largura (mm);Espessura (mm);Material;Grupo;Observacao');
+    lines.push('Peça;Quantidade;Comprimento (mm);Largura (mm);Espessura (mm);Material;Funcao da Peca;Grupo Origem;Parte;Tipo Registro;Observacao');
   } else {
-    lines.push('Nome,Quantidade,Comprimento_mm,Largura_mm,Espessura_mm,Material,Grupo,Observacao');
+    lines.push('Nome,Quantidade,Comprimento_mm,Largura_mm,Espessura_mm,Material,Funcao_Peca,Grupo_Origem,Parte,Tipo_Registro,Observacao');
   }
-  var n = 1;
-  CUT_PIECES.forEach(function(p) {
+  var exportService = window.trailerApp ? window.trailerApp.services.export : null;
+  var rawPieces = exportService ? exportService.CUT_PIECES : [];
+  var exportData = cutGetExportData(null, 'csv');
+  var pieces = await cutGetGpuPreparedPieces(rawPieces, 'csv-' + (leroyFormat ? 'leroy' : 'default'), { sheetCompMm: CUT_SHEET_COMP_MM, sheetLargMm: CUT_SHEET_LARG_MM, kerfMm: 3 });
+  cutValidatePreparedPiecesFit(pieces, CUT_SHEET_COMP_MM, CUT_SHEET_LARG_MM, 'csv');
+  cutPreparedPiecesToRows(pieces).forEach(function(p) {
     var row = [
       p.nome,
-      p.qtd,
-      mm(p.comp),
-      mm(p.larg),
-      mm(p.esp),
+      p.quantidade,
+      p.comp_mm,
+      p.larg_mm,
+      p.esp_mm,
       p.material,
-      p.grupo,
-      (p.obs || '').replace(/[,;]/g, ' ')
+      p.funcao_peca,
+      p.grupo_origem,
+      p.parte,
+      'peca',
+      p.observacao
     ];
     lines.push(row.join(sep));
   });
+  if (exportData.includeHoles && exportData.holes.length) {
+    exportData.holes.forEach(function(h) {
+      var hr = cutHoleToRow(h);
+      var row = [
+        hr.nome,
+        hr.quantidade,
+        hr.comp_mm,
+        hr.larg_mm,
+        hr.esp_mm,
+        hr.material,
+        hr.funcao_peca,
+        hr.grupo_origem,
+        hr.parte,
+        hr.tipo_registro,
+        hr.observacao
+      ];
+      lines.push(row.join(sep));
+    });
+  }
   return lines.join('\n');
+}
+ 
+// Exporta JSON para consumo por outras aplicações
+async function cutJSON() {
+    var exportService = window.trailerApp ? window.trailerApp.services.export : null;
+var rawPieces = exportService ? exportService.getPieces() : [];
+    var exportData = cutGetExportData(null, 'json');
+    var pieces = await cutGetGpuPreparedPieces(rawPieces, 'json', { sheetCompMm: CUT_SHEET_COMP_MM, sheetLargMm: CUT_SHEET_LARG_MM, kerfMm: 3 });
+    cutValidatePreparedPiecesFit(pieces, CUT_SHEET_COMP_MM, CUT_SHEET_LARG_MM, 'json');
+    var jsonPieces = cutPreparedPiecesToRows(pieces).map(function(p) {
+      return {
+        nome: p.nome,
+        qtd: p.quantidade,
+        comp_mm: p.comp_mm,
+        larg_mm: p.larg_mm,
+        esp_mm: p.esp_mm,
+        material: p.material,
+        funcao_peca: p.funcao_peca,
+        grupo_origem: p.grupo_origem,
+        obs: p.observacao,
+        parte: p.parte,
+        canto_raio_mm: p.canto_raio_mm,
+        girar: p.girar,
+      };
+    });
+    
+    var out = {
+      versao: '2',
+      chapa_nominal_mm: { comp: CUT_SHEET_NOMINAL_COMP_MM, larg: CUT_SHEET_NOMINAL_LARG_MM },
+      chapa_util_mm: { comp: CUT_SHEET_COMP_MM, larg: CUT_SHEET_LARG_MM },
+      include_furos: exportData.includeHoles,
+      pecas: jsonPieces,
+      furos: exportData.includeHoles ? exportData.holes : [],
+      operacoes_usinagem: exportData.includeHoles ? exportData.holes.map(function(h) {
+        return {
+          id: h.id,
+          nome: h.nome,
+          operacao: h.operacao,
+          tipo: h.type,
+          parede: h.wall,
+          largura_mm: h.largura_mm,
+          altura_mm: h.altura_mm,
+          y0_mm: h.y0_mm,
+          y1_mm: h.y1_mm,
+          span0_mm: h.span0_mm,
+          span1_mm: h.span1_mm,
+        };
+      }) : []
+    };
+    return JSON.stringify(out, null, 2);
 }
 
 // Estado do modal
@@ -1976,9 +2123,60 @@ function cutShowSheet(t) {
 }
 
 // Abre modal
-function cutOpenModal() {
+async function cutOpenModal() {
+  console.log('[cutOpenModal] INICIO');
+  var app = window.trailerApp;
+  var exportService = app ? app.services.export : null;
+
+  // Busca o projeto atual (JSON completo) para o LLM gerar o plano de corte
+  var projectJson = {};
+  try {
+    if (app && app.services && app.services.project) {
+      projectJson = app.services.project.getProject();
+      console.log('[cutOpenModal] projectJson keys:', Object.keys(projectJson));
+    }
+  } catch (e) { console.log('[cutOpenModal] erro getProject:', e.message); }
+
+  if (!projectJson.geometry) {
+    console.log('[cutOpenModal] no geometry, fallback');
+    if (exportService && app.editableMeshes && app.editableMeshes.length) {
+      var scenePieces = collectScenePiecesForCut();
+      if (scenePieces.length) exportService.setScenePieces(scenePieces);
+    } else if (exportService) {
+      exportService.setScenePieces(null);
+    }
+  }
+
+  document.getElementById('cut-summary').innerHTML = '<div style="text-align:center;padding:20px">Gerando plano de corte via IA…</div>';
+  cutShowSheet(10);
+
+  try {
+    console.log('[cutOpenModal] fetching /cut-plan');
+    var resp = await fetch('/cut-plan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(projectJson)
+    });
+    var plan = await resp.json();
+    console.log('[cutOpenModal] plan parts:', plan.parts?.length, plan.error || '');
+    if (plan && plan.parts && plan.parts.length) {
+      exportService.setScenePieces(plan.parts.map(function(p) {
+        return {
+          nome: p.name, qtd: p.qty || 1,
+          comp: (p.w_mm || 0) / 1000, larg: (p.h_mm || 0) / 1000,
+          esp: (p.t_mm || 15) / 1000,
+          material: p.material || 'Compensado Naval 15mm',
+          grupo: 'Projeto', obs: ''
+        };
+      }));
+    }
+  } catch (e) {
+    console.warn('[cutOpenModal] erro fetch:', e.message);
+  }
+
   document.getElementById('cut-summary').innerHTML = cutSummaryHTML();
   cutShowSheet(10);
+  cutBuildMaterialPanel();
   document.getElementById('cut-export-modal').style.display = 'flex';
 }
 
@@ -1988,36 +2186,1000 @@ function cutCloseModal() {
 }
 
 // Download CSV
-function cutDownloadCSV(leroy) {
-  var csv = cutCSV(leroy);
+async function cutDownloadCSV(leroy) {
+   var csv = await cutCSV(leroy);
+   var bom = '\uFEFF';
+   var blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8' });
+   var url = URL.createObjectURL(blob);
+   var a = document.createElement('a');
+   a.href = url;
+   a.download = leroy ? 'plano_corte_leroy_merlin.csv' : 'plano_corte_trailer.csv';
+   document.body.appendChild(a);
+   a.click();
+   document.body.removeChild(a);
+   setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+}
+
+function cutEscHtml(v) {
+  return String(v == null ? '' : v)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+var CUT_GPU0_URL = 'http://192.168.15.2:11544';
+var CUT_GPU0_MODEL = 'trailer3d-assistant:latest';
+var CUT_MATERIAL_DEFAULT = 'C7117 - Compensado 5 Mm Cru Nu Multimarcas ( 2200 X 1100 ) Br';
+var CUT_MATERIAL_OPTIONS = [
+  'C7117 - Compensado 5 Mm Cru Nu Multimarcas ( 2200 X 1100 ) Br',
+  'COMPENSADO CRU NU 6 mm MULTIMARCAS BR',
+  'COMPENSADO CRU NU 10 mm MULTIMARCAS BR',
+  'COMPENSADO CRU NU 15 mm MULTIMARCAS BR',
+  'COMPENSADO CRU NU 18 mm MULTIMARCAS BR',
+  'MDF CRU 15 mm MULTIMARCAS BR',
+  'MDF CRU 18 mm MULTIMARCAS BR',
+  'MDP BRANCO TX 15 mm MULTIMARCAS BR',
+  'MDP BRANCO TX 18 mm MULTIMARCAS BR'
+];
+var CUT_MATERIAL_UI_KEY = 'trailer3d-cut-material-ui-v1';
+var CUT_FUNCTION_CANONICAL = [
+  'base',
+  'contra frente',
+  'contra fundo',
+  'lateral direita',
+  'lateral esquerda',
+  'lateral de gaveta',
+  'porta',
+  'tampo',
+  'tira',
+  'travessa',
+  'divisoria',
+  'prateleira'
+];
+
+function cutFold(s) {
+  return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+}
+
+function cutInferFunctionLabel(name, group, note) {
+  var t = cutFold(String(name || '') + ' ' + String(group || '') + ' ' + String(note || ''));
+  if (t.indexOf('porta') >= 0) return 'porta';
+  if (t.indexOf('gaveta') >= 0 && t.indexOf('lateral') >= 0) return 'lateral de gaveta';
+  if (t.indexOf('contra frente') >= 0) return 'contra frente';
+  if (t.indexOf('contra fundo') >= 0) return 'contra fundo';
+  if (t.indexOf('lateral esquerda') >= 0) return 'lateral esquerda';
+  if (t.indexOf('lateral direita') >= 0) return 'lateral direita';
+  if (t.indexOf('tampo') >= 0) return 'tampo';
+  if (t.indexOf('travessa') >= 0) return 'travessa';
+  if (t.indexOf('prateleira') >= 0) return 'prateleira';
+  if (t.indexOf('divisoria') >= 0 || t.indexOf('divisória') >= 0) return 'divisoria';
+  if (t.indexOf('base') >= 0 || t.indexOf('piso') >= 0) return 'base';
+  if (t.indexOf('tira') >= 0) return 'tira';
+  return 'base';
+}
+
+function cutGetUiMaterialConfig() {
+  var modeEl = document.getElementById('cut-material-mode');
+  var globalEl = document.getElementById('cut-material-global');
+  var byFnWrap = document.getElementById('cut-material-by-function');
+  var tempEl = document.getElementById('cut-ai-temp');
+  var holesEl = document.getElementById('cut-include-holes');
+  var byFunction = {};
+  if (byFnWrap) {
+    CUT_FUNCTION_CANONICAL.forEach(function(fn) {
+      var sel = byFnWrap.querySelector('select[data-fn="' + fn + '"]');
+      if (sel) byFunction[fn] = sel.value;
+    });
+  }
+  return {
+    mode: modeEl ? modeEl.value : 'economic',
+    globalMaterial: globalEl ? globalEl.value : CUT_MATERIAL_DEFAULT,
+    byFunction: byFunction,
+    temperature: tempEl ? parseFloat(tempEl.value || '0.2') : 0.2,
+    includeHoles: holesEl ? !!holesEl.checked : true,
+  };
+}
+
+function cutSaveUiMaterialConfig() {
+  try {
+    localStorage.setItem(CUT_MATERIAL_UI_KEY, JSON.stringify(cutGetUiMaterialConfig()));
+  } catch (e) {}
+}
+
+function cutLoadUiMaterialConfig() {
+  try {
+    var raw = localStorage.getItem(CUT_MATERIAL_UI_KEY);
+    if (!raw) return null;
+    var parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== 'object') return null;
+    return parsed;
+  } catch (e) {
+    return null;
+  }
+}
+
+function cutApplyPreset(name) {
+  var modeEl = document.getElementById('cut-material-mode');
+  var globalEl = document.getElementById('cut-material-global');
+  var byFnWrap = document.getElementById('cut-material-by-function');
+  var tempEl = document.getElementById('cut-ai-temp');
+  if (!modeEl || !globalEl || !byFnWrap || !tempEl) return;
+
+  var map = {};
+  CUT_FUNCTION_CANONICAL.forEach(function(fn) {
+    map[fn] = CUT_MATERIAL_DEFAULT;
+  });
+
+  if (name === 'economic') {
+    modeEl.value = 'economic';
+    globalEl.value = CUT_MATERIAL_DEFAULT;
+    tempEl.value = '0.10';
+  } else if (name === 'light') {
+    modeEl.value = 'manual';
+    globalEl.value = CUT_MATERIAL_DEFAULT;
+    tempEl.value = '0.20';
+    map.base = 'COMPENSADO CRU NU 15 mm MULTIMARCAS BR';
+    map.prateleira = 'COMPENSADO CRU NU 10 mm MULTIMARCAS BR';
+    map.tampo = 'COMPENSADO CRU NU 18 mm MULTIMARCAS BR';
+    map.porta = 'COMPENSADO CRU NU 6 mm MULTIMARCAS BR';
+  } else if (name === 'premium') {
+    modeEl.value = 'manual';
+    globalEl.value = 'MDF CRU 18 mm MULTIMARCAS BR';
+    tempEl.value = '0.35';
+    map.base = 'COMPENSADO CRU NU 18 mm MULTIMARCAS BR';
+    map.tampo = 'MDF CRU 18 mm MULTIMARCAS BR';
+    map.porta = 'MDF CRU 15 mm MULTIMARCAS BR';
+    map['lateral direita'] = 'MDF CRU 18 mm MULTIMARCAS BR';
+    map['lateral esquerda'] = 'MDF CRU 18 mm MULTIMARCAS BR';
+    map.travessa = 'COMPENSADO CRU NU 15 mm MULTIMARCAS BR';
+  }
+
+  CUT_FUNCTION_CANONICAL.forEach(function(fn) {
+    var sel = byFnWrap.querySelector('select[data-fn="' + fn + '"]');
+    if (!sel) return;
+    sel.value = map[fn] || CUT_MATERIAL_DEFAULT;
+  });
+
+  if (typeof modeEl.onchange === 'function') modeEl.onchange();
+  if (typeof tempEl.oninput === 'function') tempEl.oninput();
+  cutSaveUiMaterialConfig();
+  cutRefreshMaterialSummary();
+}
+
+function cutCollectOpeningOperations(includeHoles) {
+  if (!includeHoles) return [];
+  var app = window.trailerApp;
+  if (!app) return [];
+  var body = app.models && app.models.body;
+  if (!body || typeof body.isWallOpeningKind !== 'function' || typeof body.openingFromMesh !== 'function' || typeof body.nearestWall !== 'function') return [];
+  var ops = [];
+  var seen = {};
+
+  function pushHole(raw, idxHint) {
+    if (!raw) return;
+    var wall = raw.wall || '';
+    var wMm = 0;
+    var hMm = Math.max(0, Math.round(((raw.y1 || 0) - (raw.y0 || 0)) * 1000));
+    if (raw.z0 != null && raw.z1 != null) wMm = Math.max(0, Math.round((raw.z1 - raw.z0) * 1000));
+    else if (raw.x0 != null && raw.x1 != null) wMm = Math.max(0, Math.round((raw.x1 - raw.x0) * 1000));
+    if (wMm <= 0 || hMm <= 0) return;
+    var holeType = raw.type || (hMm >= 1200 ? 'porta' : 'janela');
+    var span0 = Math.round(((raw.z0 != null ? raw.z0 : raw.x0) || 0) * 1000);
+    var y0 = Math.round((raw.y0 || 0) * 1000);
+    var key = [holeType, wall, wMm, hMm, span0, y0].join('|');
+    if (seen[key]) return;
+    seen[key] = 1;
+    ops.push({
+      id: 'F' + idxHint,
+      type: holeType,
+      wall: wall,
+      largura_mm: wMm,
+      altura_mm: hMm,
+      y0_mm: y0,
+      y1_mm: Math.round((raw.y1 || 0) * 1000),
+      span0_mm: span0,
+      span1_mm: Math.round(((raw.z1 != null ? raw.z1 : raw.x1) || 0) * 1000),
+      nome: raw.nome || raw.label || (holeType === 'porta' ? 'Porta' : 'Janela'),
+      observacao: raw.observacao || 'Abertura detectada no modelo 3D',
+    });
+  }
+
+  var editable = Array.isArray(app.editableMeshes) ? app.editableMeshes : [];
+  editable.forEach(function(mesh, idx) {
+    if (!mesh || !mesh.userData) return;
+    var kind = mesh.userData.kind || mesh.userData.funcKind || '';
+    var isOpening = body.isWallOpeningKind(kind) || kind === 'janela' || String(kind).indexOf('janela-') === 0;
+    if (!isOpening) return;
+    var wall = body.nearestWall(mesh);
+    if (!wall) return;
+    var op = body.openingFromMesh(mesh, wall) || {};
+    op.wall = wall;
+    op.type = kind === 'porta' ? 'porta' : (String(kind).indexOf('janela') === 0 || kind === 'janela' ? 'janela' : 'outro');
+    op.nome = (mesh.userData && (mesh.userData.name || mesh.userData.label)) || kind || ('Abertura ' + idx);
+    pushHole(op, idx);
+  });
+
+  function pushList(list, wall, labelPrefix) {
+    if (!Array.isArray(list)) return;
+    list.forEach(function(c, i) {
+      if (!c) return;
+      pushHole({
+        wall: wall,
+        z0: c.z0,
+        z1: c.z1,
+        x0: c.x0,
+        x1: c.x1,
+        y0: c.y0,
+        y1: c.y1,
+        nome: (labelPrefix || 'Abertura') + ' ' + (i + 1),
+      }, wall + '-' + i);
+    });
+  }
+
+  pushList(body._origWinLCuts, 'left', 'Janela esq');
+  pushList(body._origWinRCuts, 'right', 'Abertura dir');
+  if (body._origWinRear) pushList([body._origWinRear], 'rear', 'Abertura traseira');
+  if (body._origWinFront) pushList([body._origWinFront], 'front', 'Abertura frontal');
+  if (body._userCuts && typeof body._userCuts.forEach === 'function') {
+    var k = 0;
+    body._userCuts.forEach(function(v) {
+      if (!v || !v.opening) return;
+      var o = Object.assign({}, v.opening, { wall: v.wall, nome: 'Abertura usuario ' + (++k), observacao: 'Abertura adicionada pelo usuario' });
+      pushHole(o, 'u-' + k);
+    });
+  }
+  return ops;
+}
+
+function cutClassifyHoleOperation(h) {
+  if (!h) return 'recorte';
+  if (h.type === 'porta') return 'recorte';
+  var w = Math.max(0, Number(h.largura_mm) || 0);
+  var y = Math.max(0, Number(h.altura_mm) || 0);
+  if (w >= 900 && y <= 120) return 'rasgo';
+  if (Math.abs(w - y) <= 35 && Math.max(w, y) <= 550) return 'furo';
+  return 'recorte';
+}
+
+function cutHolesSummaryText(holes) {
+  if (!holes || !holes.length) return 'Sem furos incluídos.';
+  var doors = holes.filter(function(h) { return h.type === 'porta'; }).length;
+  var wins = holes.filter(function(h) { return h.type === 'janela'; }).length;
+  var other = holes.filter(function(h) { return h.type === 'outro'; }).length;
+  return holes.length + ' furo(s): ' + doors + ' porta(s), ' + wins + ' janela(s), ' + other + ' outro(s).';
+}
+
+function cutEstimateMaterialSummary() {
+  var exportService = window.trailerApp ? window.trailerApp.services.export : null;
+  var rawPieces = exportService ? exportService.CUT_PIECES : [];
+  var ui = cutGetUiMaterialConfig();
+  var totals = {};
+  var parts = 0;
+  var areaM2 = 0;
+  rawPieces.forEach(function(p) {
+    var qty = Math.max(1, parseInt(p.qtd, 10) || 1);
+    for (var i = 0; i < qty; i++) {
+      var fn = cutInferFunctionLabel(p.nome, p.grupo, p.obs);
+      var material = CUT_MATERIAL_DEFAULT;
+      if (ui.mode === 'manual') material = ui.byFunction[fn] || ui.globalMaterial || CUT_MATERIAL_DEFAULT;
+      else if (ui.mode === 'economic') material = CUT_MATERIAL_DEFAULT;
+      else material = ui.globalMaterial || CUT_MATERIAL_DEFAULT;
+      totals[material] = (totals[material] || 0) + (p.comp * p.larg);
+      parts += 1;
+      areaM2 += (p.comp * p.larg);
+    }
+  });
+  return { totals: totals, parts: parts, areaM2: areaM2 };
+}
+
+function cutRefreshMaterialSummary() {
+  var el = document.getElementById('cut-material-summary');
+  if (!el) return;
+  var ui = cutGetUiMaterialConfig();
+  var holes = cutCollectOpeningOperations(ui.includeHoles);
+  var data = cutEstimateMaterialSummary();
+  var mats = Object.keys(data.totals).sort(function(a, b) { return data.totals[b] - data.totals[a]; });
+  if (!mats.length) {
+    el.innerHTML = 'Resumo de materiais: sem peças carregadas.<br><b>Furos:</b> ' + cutEscHtml(cutHolesSummaryText(holes));
+    return;
+  }
+  var chunks = mats.map(function(m) {
+    return cutEscHtml(m) + ': ' + data.totals[m].toFixed(2) + ' m²';
+  });
+  el.innerHTML = '<b>Resumo estimado:</b> ' + data.parts + ' peça(s), ' + data.areaM2.toFixed(2) + ' m² totais.<br>' + chunks.join(' · ') + '<br><b>Furos:</b> ' + cutEscHtml(cutHolesSummaryText(holes));
+}
+
+function cutBuildMaterialPanel() {
+  var globalEl = document.getElementById('cut-material-global');
+  var byFnWrap = document.getElementById('cut-material-by-function');
+  var modeEl = document.getElementById('cut-material-mode');
+  var tempEl = document.getElementById('cut-ai-temp');
+  var holesEl = document.getElementById('cut-include-holes');
+  var tempLabel = document.getElementById('cut-ai-temp-label');
+  var btnPresetEconomic = document.getElementById('cut-preset-economic');
+  var btnPresetLight = document.getElementById('cut-preset-light');
+  var btnPresetPremium = document.getElementById('cut-preset-premium');
+  if (!globalEl || !byFnWrap || !modeEl || !tempEl || !tempLabel || !holesEl) return;
+
+  if (!globalEl.options.length) {
+    CUT_MATERIAL_OPTIONS.forEach(function(m) {
+      var opt = document.createElement('option');
+      opt.value = m;
+      opt.textContent = m;
+      globalEl.appendChild(opt);
+    });
+    globalEl.value = CUT_MATERIAL_DEFAULT;
+  }
+
+  if (!byFnWrap.children.length) {
+    CUT_FUNCTION_CANONICAL.forEach(function(fn) {
+      var row = document.createElement('div');
+      row.style.display = 'flex';
+      row.style.gap = '6px';
+      row.style.alignItems = 'center';
+      var lab = document.createElement('label');
+      lab.textContent = fn;
+      lab.style.fontSize = '10px';
+      lab.style.minWidth = '90px';
+      var sel = document.createElement('select');
+      sel.dataset.fn = fn;
+      sel.style.flex = '1';
+      CUT_MATERIAL_OPTIONS.forEach(function(m) {
+        var opt = document.createElement('option');
+        opt.value = m;
+        opt.textContent = m;
+        sel.appendChild(opt);
+      });
+      sel.value = CUT_MATERIAL_DEFAULT;
+      row.appendChild(lab);
+      row.appendChild(sel);
+      byFnWrap.appendChild(row);
+      sel.addEventListener('change', function() {
+        cutSaveUiMaterialConfig();
+        cutRefreshMaterialSummary();
+      });
+    });
+  }
+
+  function applyMode() {
+    var mode = modeEl.value;
+    var manual = mode === 'manual';
+    var ai = mode === 'ai';
+    byFnWrap.style.opacity = manual ? '1' : '0.6';
+    Array.prototype.forEach.call(byFnWrap.querySelectorAll('select'), function(sel) {
+      sel.disabled = !manual;
+    });
+    tempEl.disabled = !ai;
+    tempLabel.style.opacity = ai ? '1' : '0.6';
+    cutRefreshMaterialSummary();
+  }
+
+  modeEl.onchange = applyMode;
+  if (!modeEl.dataset.boundSave) {
+    modeEl.dataset.boundSave = '1';
+    modeEl.addEventListener('change', function() {
+      cutSaveUiMaterialConfig();
+      cutRefreshMaterialSummary();
+    });
+  }
+  if (!globalEl.dataset.boundSave) {
+    globalEl.dataset.boundSave = '1';
+    globalEl.addEventListener('change', function() {
+      cutSaveUiMaterialConfig();
+      cutRefreshMaterialSummary();
+    });
+  }
+  tempEl.oninput = function() {
+    tempLabel.textContent = 'Temperatura IA: ' + Number(tempEl.value).toFixed(2);
+    cutSaveUiMaterialConfig();
+    cutRefreshMaterialSummary();
+  };
+
+  if (!holesEl.dataset.boundSave) {
+    holesEl.dataset.boundSave = '1';
+    holesEl.addEventListener('change', function() {
+      cutSaveUiMaterialConfig();
+      cutRefreshMaterialSummary();
+    });
+  }
+
+  if (btnPresetEconomic && !btnPresetEconomic.dataset.bound) {
+    btnPresetEconomic.dataset.bound = '1';
+    btnPresetEconomic.addEventListener('click', function() { cutApplyPreset('economic'); });
+  }
+  if (btnPresetLight && !btnPresetLight.dataset.bound) {
+    btnPresetLight.dataset.bound = '1';
+    btnPresetLight.addEventListener('click', function() { cutApplyPreset('light'); });
+  }
+  if (btnPresetPremium && !btnPresetPremium.dataset.bound) {
+    btnPresetPremium.dataset.bound = '1';
+    btnPresetPremium.addEventListener('click', function() { cutApplyPreset('premium'); });
+  }
+
+  var saved = cutLoadUiMaterialConfig();
+  if (saved) {
+    if (saved.mode) modeEl.value = saved.mode;
+    if (saved.globalMaterial) globalEl.value = saved.globalMaterial;
+    if (saved.temperature != null && !Number.isNaN(saved.temperature)) tempEl.value = String(saved.temperature);
+    if (saved.includeHoles != null) holesEl.checked = !!saved.includeHoles;
+    if (saved.byFunction && typeof saved.byFunction === 'object') {
+      CUT_FUNCTION_CANONICAL.forEach(function(fn) {
+        var sel = byFnWrap.querySelector('select[data-fn="' + fn + '"]');
+        if (!sel) return;
+        if (saved.byFunction[fn]) sel.value = saved.byFunction[fn];
+      });
+    }
+  }
+
+  tempEl.oninput();
+  applyMode();
+  cutRefreshMaterialSummary();
+}
+
+function cutSetInfoMessage(msg, isError) {
+  var info = document.getElementById('cut-info');
+  if (!info) return;
+  info.textContent = msg;
+  info.style.color = isError ? '#c01c28' : '#1a7c47';
+}
+
+function cutExtractJsonObject(raw) {
+  var text = String(raw || '').trim();
+  if (!text) return null;
+  try { return JSON.parse(text); } catch (e) {}
+  var a = text.indexOf('{');
+  var b = text.lastIndexOf('}');
+  if (a >= 0 && b > a) {
+    try { return JSON.parse(text.slice(a, b + 1)); } catch (e) {}
+  }
+  return null;
+}
+
+function cutPrepareItemsForGPU(pieces, options) {
+  var opt = options || {};
+  var sheetComp = opt.sheetCompMm || CUT_SHEET_COMP_MM;
+  var sheetLarg = opt.sheetLargMm || CUT_SHEET_LARG_MM;
+  var kerf = opt.kerfMm || 3;
+
+  function inferRoundRadiusMm(name, note, compMm, largMm) {
+    var txt = (String(name || '') + ' ' + String(note || '')).toLowerCase();
+    if (txt.indexOf('curv') === -1 && txt.indexOf('telhado') === -1 && txt.indexOf('para-lama') === -1 && txt.indexOf('asa') === -1 && txt.indexOf('soffit') === -1 && txt.indexOf('arredond') === -1) return 0;
+    var r = Math.round(Math.min(compMm, largMm) * 0.12);
+    return Math.max(20, Math.min(160, r));
+  }
+
+  function splitToSheet(compMm, largMm) {
+    var maxComp = sheetComp - kerf;
+    var maxLarg = sheetLarg - kerf;
+    var nx = Math.max(1, Math.ceil(compMm / maxComp));
+    var ny = Math.max(1, Math.ceil(largMm / maxLarg));
+    var out = [];
+    for (var ix = 0; ix < nx; ix++) {
+      var cPart = (ix === nx - 1) ? (compMm - maxComp * (nx - 1)) : maxComp;
+      for (var iy = 0; iy < ny; iy++) {
+        var lPart = (iy === ny - 1) ? (largMm - maxLarg * (ny - 1)) : maxLarg;
+        out.push({ comp: cPart, larg: lPart, idx: (ix * ny + iy + 1), total: nx * ny });
+      }
+    }
+    return out;
+  }
+
+  var list = [];
+  pieces.forEach(function(p) {
+    var c0 = mm(p.comp);
+    var l0 = mm(p.larg);
+    var base = { comp: c0, larg: l0, rot: false };
+    var chunks = splitToSheet(base.comp, base.larg);
+    var qty = Math.max(1, parseInt(p.qtd, 10) || 1);
+    var rr = inferRoundRadiusMm(p.nome, p.obs, c0, l0);
+    for (var q = 0; q < qty; q++) {
+      for (var i = 0; i < chunks.length; i++) {
+        list.push({
+          comp: chunks[i].comp,
+          larg: chunks[i].larg,
+          name: p.nome,
+          group: p.grupo,
+          note: p.obs || '',
+          part: chunks[i].total > 1 ? (chunks[i].idx + '/' + chunks[i].total) : '',
+          roundMm: rr,
+          baseRotated: base.rot,
+        });
+      }
+    }
+  });
+  list.sort(function(a, b) { return (b.comp * b.larg) - (a.comp * a.larg); });
+  return list;
+}
+
+function cutPackSheets(items, options) {
+  var opt = options || {};
+  var sheetComp = opt.sheetCompMm || CUT_SHEET_COMP_MM;
+  var sheetLarg = opt.sheetLargMm || CUT_SHEET_LARG_MM;
+  var kerf = opt.kerfMm || 3;
+  var sheetsOut = [];
+
+  function newSheet() { return { placements: [], freeRects: [{ x: 0, y: 0, w: sheetComp, h: sheetLarg }] }; }
+
+  function enumerateCandidates(sheet, item) {
+    var out = [];
+    var variants = [
+      { w: item.comp, h: item.larg, rotated: false }
+    ];
+    sheet.freeRects.forEach(function(fr, frIdx) {
+      variants.forEach(function(v) {
+        if (v.w <= fr.w && v.h <= fr.h) {
+          var waste = (fr.w * fr.h) - (v.w * v.h);
+          var shortSide = Math.min(fr.w - v.w, fr.h - v.h);
+          var longSide = Math.max(fr.w - v.w, fr.h - v.h);
+          out.push({
+            sheet: sheet,
+            freeRectIndex: frIdx,
+            x: fr.x,
+            y: fr.y,
+            w: v.w,
+            h: v.h,
+            rotated: v.rotated,
+            score: waste * 1000 + shortSide * 10 + longSide,
+          });
+        }
+      });
+    });
+    return out;
+  }
+
+  function intersects(a, b) {
+    return !(a.x + a.w <= b.x || b.x + b.w <= a.x || a.y + a.h <= b.y || b.y + b.h <= a.y);
+  }
+
+  function splitRectByUsed(fr, used) {
+    if (!intersects(fr, used)) return [fr];
+    var pieces = [];
+    var rightEdge = used.x + used.w + kerf;
+    var bottomEdge = used.y + used.h + kerf;
+
+    var topH = used.y - fr.y;
+    if (topH > 0) pieces.push({ x: fr.x, y: fr.y, w: fr.w, h: topH });
+
+    var bottomY = bottomEdge;
+    var bottomH = (fr.y + fr.h) - bottomY;
+    if (bottomH > 0) pieces.push({ x: fr.x, y: bottomY, w: fr.w, h: bottomH });
+
+    var leftW = used.x - fr.x;
+    var midTop = Math.max(fr.y, used.y);
+    var midBottom = Math.min(fr.y + fr.h, bottomEdge);
+    var midH = midBottom - midTop;
+    if (leftW > 0 && midH > 0) pieces.push({ x: fr.x, y: midTop, w: leftW, h: midH });
+
+    var rightX = rightEdge;
+    var rightW = (fr.x + fr.w) - rightX;
+    if (rightW > 0 && midH > 0) pieces.push({ x: rightX, y: midTop, w: rightW, h: midH });
+
+    return pieces.filter(function(r) { return r.w > 0 && r.h > 0; });
+  }
+
+  function pruneFreeRects(rects) {
+    var out = [];
+    for (var i = 0; i < rects.length; i++) {
+      var a = rects[i];
+      var contained = false;
+      for (var j = 0; j < rects.length; j++) {
+        if (i === j) continue;
+        var b = rects[j];
+        if (a.x >= b.x && a.y >= b.y && a.x + a.w <= b.x + b.w && a.y + a.h <= b.y + b.h) {
+          contained = true;
+          break;
+        }
+      }
+      if (!contained) out.push(a);
+    }
+    return out;
+  }
+
+  function place(c, item) {
+    c.sheet.placements.push({ item: item, x: c.x, y: c.y, comp: c.w, larg: c.h, rotated: c.rotated });
+    var used = { x: c.x, y: c.y, w: c.w, h: c.h };
+    var nextFree = [];
+    c.sheet.freeRects.forEach(function(fr) {
+      splitRectByUsed(fr, used).forEach(function(p) { nextFree.push(p); });
+    });
+    c.sheet.freeRects = pruneFreeRects(nextFree);
+  }
+
+  items.forEach(function(item) {
+    var best = null;
+    sheetsOut.forEach(function(s) {
+      enumerateCandidates(s, item).forEach(function(c) {
+        if (!best || c.score < best.score) best = c;
+      });
+    });
+    if (!best) {
+      var ns = newSheet();
+      sheetsOut.push(ns);
+      enumerateCandidates(ns, item).forEach(function(c) {
+        if (!best || c.score < best.score) best = c;
+      });
+    }
+    if (best) place(best, item);
+  });
+
+  return sheetsOut;
+}
+
+async function cutOptimizeOrderGPU0(items, label) {
+  var ui = cutGetUiMaterialConfig();
+  var payload = {
+    model: CUT_GPU0_MODEL,
+    stream: false,
+    format: 'json',
+    options: { temperature: ui.temperature },
+    prompt: [
+      'Você é um otimizador de plano de corte.',
+      'Reordene itens para maximizar aproveitamento de chapas uteis 2170x1070 (nominal 2200x1100) com kerf 3mm.',
+      'NÃO altere dimensões.',
+      'Retorne SOMENTE JSON válido no formato: {"ordered_ids":["id1","id2",...]}',
+      'Contexto: ' + label,
+      'Itens:',
+      JSON.stringify(items.map(function(it, i) {
+        return {
+          id: 'P' + i,
+          comp: it.comp,
+          larg: it.larg,
+          roundMm: it.roundMm || 0,
+          name: it.name,
+          group: it.group,
+          note: it.note,
+          part: it.part,
+        };
+      }))
+    ].join('\n')
+  };
+
+  var resp;
+  try {
+    resp = await fetch(CUT_GPU0_URL + '/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+  } catch (e) {
+    var msgNet = 'Falha ao conectar na GPU0 (' + CUT_GPU0_URL + '). Exportacao cancelada.';
+    cutSetInfoMessage(msgNet, true);
+    throw new Error(msgNet);
+  }
+
+  if (!resp.ok) {
+    var msgHttp = 'Falha na GPU0: HTTP ' + resp.status + '. Exportacao cancelada.';
+    cutSetInfoMessage(msgHttp, true);
+    throw new Error(msgHttp);
+  }
+
+  var data = await resp.json();
+  var parsed = cutExtractJsonObject(data && data.response);
+  if (!parsed || !Array.isArray(parsed.ordered_ids)) {
+    var msgFmt = 'Falha na resposta do modelo da GPU0. Exportacao cancelada.';
+    cutSetInfoMessage(msgFmt, true);
+    throw new Error(msgFmt);
+  }
+
+  var indexed = items.map(function(it, i) {
+    var copy = Object.assign({}, it);
+    copy.__id = 'P' + i;
+    return copy;
+  });
+  var map = {};
+  indexed.forEach(function(it) { map[it.__id] = it; });
+  var ordered = [];
+  parsed.ordered_ids.forEach(function(id) {
+    if (map[id]) {
+      ordered.push(map[id]);
+      delete map[id];
+    }
+  });
+  Object.keys(map).forEach(function(id) { ordered.push(map[id]); });
+  ordered.forEach(function(it) { delete it.__id; });
+  cutSetInfoMessage('Otimização IA GPU0 aplicada com sucesso.', false);
+  return ordered;
+}
+
+async function cutChooseMaterialsGPU0(items, label) {
+  var ui = cutGetUiMaterialConfig();
+  if (ui.mode === 'economic') {
+    return items.map(function(it) {
+      var cp = Object.assign({}, it);
+      cp.material = CUT_MATERIAL_DEFAULT;
+      cp.function = cutInferFunctionLabel(it.name, it.group, it.note);
+      return cp;
+    });
+  }
+  if (ui.mode === 'manual') {
+    return items.map(function(it) {
+      var cp = Object.assign({}, it);
+      cp.function = cutInferFunctionLabel(it.name, it.group, it.note);
+      cp.material = ui.byFunction[cp.function] || ui.globalMaterial || CUT_MATERIAL_DEFAULT;
+      return cp;
+    });
+  }
+
+  var promptItems = items.map(function(it, i) {
+    return {
+      id: 'M' + i,
+      function: cutInferFunctionLabel(it.name, it.group, it.note),
+      comp: it.comp,
+      larg: it.larg,
+      roundMm: it.roundMm || 0,
+      name: it.name,
+      group: it.group,
+      note: it.note,
+    };
+  });
+  var payload = {
+    model: CUT_GPU0_MODEL,
+    stream: false,
+    format: 'json',
+    options: { temperature: ui.temperature },
+    prompt: [
+      'Você é um especialista em materiais para marcenaria e corte de chapas.',
+      'Escolha o melhor material para cada peça priorizando custo/benefício de acordo com a temperatura.',
+      'Temperatura baixa = mais econômico e conservador. Temperatura alta = mais livre para escolher materiais.',
+      'Materiais permitidos:',
+      JSON.stringify(CUT_MATERIAL_OPTIONS),
+      'Retorne SOMENTE JSON no formato: {"materials":{"M0":"...","M1":"..."}}',
+      'Contexto: ' + label,
+      'Itens:',
+      JSON.stringify(promptItems)
+    ].join('\n')
+  };
+  var resp;
+  try {
+    resp = await fetch(CUT_GPU0_URL + '/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+  } catch (e) {
+    var msgNet = 'Falha ao escolher materiais na GPU0. Exportacao cancelada.';
+    cutSetInfoMessage(msgNet, true);
+    throw new Error(msgNet);
+  }
+  if (!resp.ok) {
+    var msgHttp = 'Falha na escolha de materiais: HTTP ' + resp.status + '. Exportacao cancelada.';
+    cutSetInfoMessage(msgHttp, true);
+    throw new Error(msgHttp);
+  }
+  var data = await resp.json();
+  var parsed = cutExtractJsonObject(data && data.response);
+  if (!parsed || !parsed.materials || typeof parsed.materials !== 'object') {
+    var msgFmt = 'Resposta inválida da IA para materiais. Exportacao cancelada.';
+    cutSetInfoMessage(msgFmt, true);
+    throw new Error(msgFmt);
+  }
+  return items.map(function(it, i) {
+    var cp = Object.assign({}, it);
+    cp.function = cutInferFunctionLabel(it.name, it.group, it.note);
+    cp.material = parsed.materials['M' + i] || ui.globalMaterial || CUT_MATERIAL_DEFAULT;
+    if (CUT_MATERIAL_OPTIONS.indexOf(cp.material) < 0) cp.material = ui.globalMaterial || CUT_MATERIAL_DEFAULT;
+    return cp;
+  });
+}
+
+async function cutGetGpuPreparedPieces(pieces, label, options) {
+  var prepared = cutPrepareItemsForGPU(pieces, options || {});
+  var ordered = await cutOptimizeOrderGPU0(prepared, label);
+  return await cutChooseMaterialsGPU0(ordered, label + '-materials');
+}
+
+function cutValidatePreparedPiecesFit(items, sheetCompMm, sheetLargMm, contextLabel) {
+  var tooBig = items.filter(function(it) {
+    return it.comp > sheetCompMm || it.larg > sheetLargMm;
+  });
+  if (!tooBig.length) return;
+  var ex = tooBig[0];
+  var name = ex && ex.name ? ex.name : 'peca';
+  var msg = 'Peca maior que a chapa util (' + sheetCompMm + 'x' + sheetLargMm + '): ' + name + ' ' + ex.comp + 'x' + ex.larg + ' mm. Exportacao cancelada.';
+  cutSetInfoMessage(msg, true);
+  throw new Error(msg + (contextLabel ? ' [' + contextLabel + ']' : ''));
+}
+
+function cutPreparedPiecesToRows(items) {
+  var rows = [];
+  items.forEach(function(p) {
+    rows.push({
+      nome: p.name,
+      quantidade: 1,
+      comp_mm: p.comp,
+      larg_mm: p.larg,
+      esp_mm: 5,
+      material: p.material || CUT_MATERIAL_DEFAULT,
+      funcao_peca: p.function || p.group,
+      grupo_origem: p.group || '',
+      parte: p.part || '',
+      observacao: (p.note || '').replace(/[,;]/g, ' '),
+      girar: p.baseRotated ? 'SIM' : 'NAO',
+      canto_raio_mm: p.roundMm || 0,
+    });
+  });
+  return rows;
+}
+
+function cutHoleToRow(h) {
+  return {
+    nome: 'Furo ' + h.type + ' - ' + (h.nome || h.id),
+    quantidade: 1,
+    comp_mm: h.largura_mm,
+    larg_mm: h.altura_mm,
+    esp_mm: 0,
+    material: '',
+    funcao_peca: h.type === 'porta' ? 'furo porta' : (h.type === 'janela' ? 'furo janela' : 'furo outro'),
+    grupo_origem: h.wall || '',
+    parte: '',
+    observacao: 'operacao=' + (h.operacao || 'recorte') + ' y0=' + h.y0_mm + ' y1=' + h.y1_mm + ' span=' + h.span0_mm + '..' + h.span1_mm,
+    girar: 'NAO',
+    canto_raio_mm: 0,
+    tipo_registro: 'furo',
+  };
+}
+
+function cutGetExportData(includeHoles, holesContextLabel) {
+  var ui = cutGetUiMaterialConfig();
+  var holes = cutCollectOpeningOperations(includeHoles != null ? includeHoles : ui.includeHoles);
+  var holesWithOp = holes.map(function(h) {
+    var cp = Object.assign({}, h);
+    cp.operacao = cutClassifyHoleOperation(cp);
+    return cp;
+  });
+  return {
+    includeHoles: includeHoles != null ? includeHoles : ui.includeHoles,
+    holes: holesWithOp,
+    holesContextLabel: holesContextLabel || '',
+  };
+}
+
+// Export para Excel seguindo layout solicitado
+async function cutExcelHtmlTable() {
+  var exportService = window.trailerApp ? window.trailerApp.services.export : null;
+  var pieces = exportService ? exportService.getPieces() : [];
+  var SHEET_COMP_MM = CUT_SHEET_COMP_MM;
+  var SHEET_LARG_MM = CUT_SHEET_LARG_MM;
+  var KERF_MM = 3;
+  var EXCEL_MATERIAL = CUT_MATERIAL_DEFAULT;
+  var exportData = cutGetExportData(null, 'excel');
+
+  var prepared = await cutGetGpuPreparedPieces(pieces, 'excel', { sheetCompMm: SHEET_COMP_MM, sheetLargMm: SHEET_LARG_MM, kerfMm: KERF_MM });
+  cutValidatePreparedPiecesFit(prepared, SHEET_COMP_MM, SHEET_LARG_MM, 'excel');
+  var packedSheets = cutPackSheets(prepared, { sheetCompMm: SHEET_COMP_MM, sheetLargMm: SHEET_LARG_MM, kerfMm: KERF_MM });
+  var rows = [];
+
+  rows.push('<tr>' +
+    '<th>Quantidade</th>' +
+    '<th>Comprimento</th>' +
+    '<th>Largura</th>' +
+    '<th>Função</th>' +
+    '<th>Grupo Origem</th>' +
+    '<th>Parte</th>' +
+    '<th>Tipo Registro</th>' +
+    '<th>Fita C1</th>' +
+    '<th>Fita C2</th>' +
+    '<th>Fita L1</th>' +
+    '<th>Fita L2</th>' +
+    '<th>Material</th>' +
+    '<th>Complemento</th>' +
+    '<th>Girar</th>' +
+  '</tr>');
+
+  packedSheets.forEach(function(sheet, sIdx) {
+    sheet.placements.forEach(function(pl) {
+      var complemento = [
+        pl.item.group,
+        pl.item.note,
+        pl.item.part ? ('parte ' + pl.item.part) : '',
+        pl.item.roundMm > 0 ? ('canto R' + pl.item.roundMm + 'mm') : '',
+        'chapa ' + (sIdx + 1),
+        'x=' + pl.x + ',y=' + pl.y
+      ].filter(Boolean).join(' - ');
+      rows.push('<tr>' +
+        '<td>1</td>' +
+        '<td>' + cutEscHtml(pl.comp) + '</td>' +
+        '<td>' + cutEscHtml(pl.larg) + '</td>' +
+        '<td>' + cutEscHtml(pl.item.function || pl.item.name) + '</td>' +
+        '<td>' + cutEscHtml(pl.item.group || '') + '</td>' +
+        '<td>' + cutEscHtml(pl.item.part || '') + '</td>' +
+        '<td>peca</td>' +
+        '<td></td>' +
+        '<td></td>' +
+        '<td></td>' +
+        '<td></td>' +
+        '<td>' + cutEscHtml(pl.item.material || EXCEL_MATERIAL) + '</td>' +
+        '<td>' + cutEscHtml(complemento) + '</td>' +
+        '<td>' + (pl.rotated || pl.item.baseRotated ? 'SIM' : 'NAO') + '</td>' +
+      '</tr>');
+    });
+  });
+
+  if (exportData.includeHoles && exportData.holes.length) {
+    exportData.holes.forEach(function(h) {
+      var hr = cutHoleToRow(h);
+      rows.push('<tr>' +
+        '<td>1</td>' +
+        '<td>' + cutEscHtml(hr.comp_mm) + '</td>' +
+        '<td>' + cutEscHtml(hr.larg_mm) + '</td>' +
+        '<td>' + cutEscHtml(hr.funcao_peca) + '</td>' +
+        '<td>' + cutEscHtml(hr.grupo_origem) + '</td>' +
+        '<td>' + cutEscHtml(hr.parte) + '</td>' +
+        '<td>' + cutEscHtml(hr.tipo_registro) + '</td>' +
+        '<td></td>' +
+        '<td></td>' +
+        '<td></td>' +
+        '<td></td>' +
+        '<td></td>' +
+        '<td>' + cutEscHtml(hr.observacao) + '</td>' +
+        '<td>NAO</td>' +
+      '</tr>');
+    });
+  }
+
+  return [
+    '<html><head><meta charset="utf-8"></head><body>',
+    '<table border="1">',
+    rows.join(''),
+    '</table>',
+    '</body></html>'
+  ].join('');
+}
+
+async function cutDownloadExcel() {
+  var html = await cutExcelHtmlTable();
   var bom = '\uFEFF';
-  var blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8' });
+  var blob = new Blob([bom + html], { type: 'application/vnd.ms-excel;charset=utf-8;' });
   var url = URL.createObjectURL(blob);
   var a = document.createElement('a');
   a.href = url;
-  a.download = leroy ? 'plano_corte_leroy_merlin.csv' : 'plano_corte_trailer.csv';
+  a.download = 'plano_de_corte.xls';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
 }
 
+// Download JSON
+async function cutDownloadJSON() {
+   var json = await cutJSON();
+   var bom = '\uFEFF';
+   var blob = new Blob([bom + json], { type: 'application/json;charset=utf-8;' });
+   var url = URL.createObjectURL(blob);
+   var a = document.createElement('a');
+   a.href = url;
+   a.download = 'plano_de_corte.json';
+   document.body.appendChild(a);
+   a.click();
+   document.body.removeChild(a);
+   setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+}
+
 // Copiar para clipboard
 function cutCopyList() {
-  var csv = cutCSV(false);
-  navigator.clipboard.writeText(csv).then(function() {
+  cutCSV(false).then(function(csv) {
+    return navigator.clipboard.writeText(csv).then(function() {
     var btn = document.getElementById('cut-copy');
     var orig = btn.textContent;
     btn.textContent = 'Copiado!';
     setTimeout(function() { btn.textContent = orig; }, 1500);
+    });
   }).catch(function() {
     // fallback
-    var ta = document.createElement('textarea');
-    ta.value = csv;
-    document.body.appendChild(ta);
-    ta.select();
-    try { document.execCommand('copy'); } catch (e) {}
-    document.body.removeChild(ta);
+    cutCSV(false).then(function(csv2) {
+      var ta = document.createElement('textarea');
+      ta.value = csv2;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+    }).catch(function(err) {
+      var msg = (err && err.message) ? err.message : 'Falha ao gerar CSV pela GPU0.';
+      cutSetInfoMessage(msg, true);
+      return;
+    });
     var btn = document.getElementById('cut-copy');
     var orig = btn.textContent;
     btn.textContent = 'Copiado!';
@@ -2027,9 +3189,63 @@ function cutCopyList() {
 
 // Imprimir / PDF
 function cutPrint() {
+  var exportService = window.trailerApp ? window.trailerApp.services.export : null;
+  var pieces = exportService ? exportService.getPieces() : [];
+  var sheets = exportService ? exportService.CUT_SHEETS : {};
+  var exportData = cutGetExportData(null, 'print');
   var w = window.open('', '_blank');
-  var groups = cutGroupByThickness(CUT_PIECES);
-  var sheets = Object.keys(groups).sort(function(a,b) { return parseInt(a) - parseInt(b); });
+  var groups = cutGroupByThickness(pieces);
+  var sheetKeys = Object.keys(groups).sort(function(a, b) { return parseInt(a) - parseInt(b); });
+  var SHEET_COMP_MM = CUT_SHEET_COMP_MM;
+  var SHEET_LARG_MM = CUT_SHEET_LARG_MM;
+  var KERF_MM = 3;
+
+  
+
+  function puzzlePreviewHtml(sheetsPacked) {
+    var scale = 0.16;
+    var palette = ['#d7e9ff', '#dff7df', '#fff2cc', '#fce1e4', '#e7e2ff', '#dff5f3'];
+    var out = '<div class="cut-puzzle-grid">';
+    if (!sheetsPacked.length) {
+      out += '<div class="cut-puzzle-card"><div class="cut-puzzle-head">Nenhuma chapa gerada para este grupo.</div></div>';
+    }
+    sheetsPacked.forEach(function(sheet, si) {
+      var sw = Math.round(SHEET_COMP_MM * scale);
+      var sh = Math.round(SHEET_LARG_MM * scale);
+      out += '<div class="cut-puzzle-card">';
+      out += '<div class="cut-puzzle-head">Chapa ' + (si + 1) + ' · util 2170x1070 mm (nominal 2200x1100) · serra ' + KERF_MM + ' mm</div>';
+      out += '<svg class="cut-puzzle-svg" viewBox="0 0 ' + (sw + 2) + ' ' + (sh + 2) + '" xmlns="http://www.w3.org/2000/svg">';
+      out += '<rect x="1" y="1" width="' + sw + '" height="' + sh + '" fill="#ffffff" stroke="#3a4252" stroke-width="1.2"/>';
+      sheet.placements.forEach(function(pl, pi) {
+        var x = 1 + Math.round(pl.x * scale);
+        var y = 1 + Math.round(pl.y * scale);
+        var wRect = Math.max(1, Math.round(pl.comp * scale));
+        var hRect = Math.max(1, Math.round(pl.larg * scale));
+        var rRect = Math.max(0, Math.round((pl.item.roundMm || 0) * scale));
+        var fill = palette[pi % palette.length];
+        out += '<rect x="' + x + '" y="' + y + '" width="' + wRect + '" height="' + hRect + '" fill="' + fill + '" stroke="#4f5d75" stroke-width="0.8"/>';
+        if (rRect > 0 && wRect > 10 && hRect > 10) {
+          var rr = Math.min(rRect, Math.floor(wRect / 3), Math.floor(hRect / 3));
+          var x0 = x + wRect - rr;
+          var y0 = y;
+          var x1 = x + wRect;
+          var y1 = y + rr;
+          out += '<path d="M ' + x0 + ' ' + y0 + ' A ' + rr + ' ' + rr + ' 0 0 1 ' + x1 + ' ' + y1 + '" fill="none" stroke="#203040" stroke-width="1.1"/>';
+        }
+        if (wRect > 40 && hRect > 16) {
+          var txt = cutEscHtml(pl.comp + 'x' + pl.larg);
+          if (pl.item.roundMm > 0) txt += ' R' + pl.item.roundMm;
+          out += '<text x="' + (x + 3) + '" y="' + (y + 12) + '" font-size="9" fill="#203040">' + txt + '</text>';
+        }
+      });
+      out += '</svg>';
+      out += '<div class="cut-puzzle-legend">Preview heurístico: arco em 1 canto indica peça com raio (não significa 4 cantos arredondados).</div>';
+      out += '</div>';
+    });
+    out += '</div>';
+    return out;
+  }
+
   var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Plano de Corte — Trailer Nelcyr-Nardelli RL</title>';
   html += '<style>';
   html += '*{margin:0;padding:0;box-sizing:border-box}';
@@ -2045,7 +3261,12 @@ function cutPrint() {
   html += '.stat{background:#fff;border:1px solid #d9dee8;border-radius:8px;padding:8px 16px;text-align:center}';
   html += '.stat .v{font-size:20px;font-weight:700;color:#1b4fc0;font-family:monospace}';
   html += '.stat .l{font-size:9px;color:#8b93a7;text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}';
-  html += '@media print{body{background:#fff;padding:10mm}h3{page-break-after:avoid}table{page-break-inside:avoid}}';
+  html += '.cut-puzzle-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px;margin:8px 0 14px}';
+  html += '.cut-puzzle-card{background:#fff;border:1px solid #d9dee8;border-radius:8px;padding:8px}';
+  html += '.cut-puzzle-head{font-size:10px;color:#4a5366;margin-bottom:6px}';
+  html += '.cut-puzzle-svg{width:100%;height:auto;display:block;background:#fcfdff}';
+  html += '.cut-puzzle-legend{font-size:9px;color:#8b93a7;margin-top:4px}';
+  html += '@media print{body{background:#fff;padding:10mm}h3{page-break-after:avoid}table{page-break-inside:avoid}.cut-puzzle-card{page-break-inside:avoid}}';
   html += '</style></head><body>';
   html += '<h1>Plano de Corte — Trailer Nelcyr-Nardelli RL</h1>';
   html += '<h2>Compensado Naval · Cortes para envio à empresa de corte</h2>';
@@ -2053,40 +3274,71 @@ function cutPrint() {
   html += '<b>Projeto:</b> Trailer 3D — rev 23 · Família: 1 casal + 1 filha<br>';
   html += '<b>Dimensões externas:</b> 3,00 × 1,90m (chassi 1,50m) · Pé-direito: 1,80m · Mezanino: 1,88×1,80m<br>';
   html += '<b>Madeira:</b> Compensado Naval (espessuras 10/15/18/25mm)<br>';
-  html += '<b>Chapa de referência:</b> 2440×1220mm (8×4 pés) — ajustar conforme disponibilidade do fornecedor<br>';
-  html += '<b>Observações:</b> Cortes curvos (telhado, para-lamas) devem ser marcados no local. Medidas em mm. tolerância ±1mm.';
+  html += '<b>Chapa de referência:</b> nominal 2200x1100mm · area util 2170x1070mm · preview com serra de ' + KERF_MM + 'mm<br>';
+  html += '<b>Observações:</b> Preview de encaixe é heurístico para conferência visual.<br>';
+  html += '<b>Furos na exportação:</b> ' + (exportData.includeHoles ? cutEscHtml(cutHolesSummaryText(exportData.holes)) : 'desativado');
   html += '</div>';
 
   var totalP = 0, totalA = 0;
-  sheets.forEach(function(t) {
+  var jobs = sheetKeys.map(async function(t) {
     var items = groups[t];
-    var sheet = CUT_SHEETS[t] || CUT_SHEETS[15];
+    var sheet = sheets[t] || sheets[15] || { comp: 0, larg: 0 };
     var area = cutTotalArea(items);
     var count = items.reduce(function(s, p) { return s + p.qtd; }, 0);
-    var sheets2 = Math.ceil(area / (sheet.comp * sheet.larg));
-    totalP += count; totalA += area;
-    html += '<h3>Compensado ' + t + 'mm — ' + count + ' peça(s) · ' + sheets2 + ' chapa(s) estimada(s)</h3>';
-    html += '<table><thead><tr><th>#</th><th>Peça</th><th>Grupo</th><th>Comp (mm)</th><th>Larg (mm)</th><th>Esp (mm)</th><th>Qtd</th><th>Área (cm²)</th><th>Observação</th></tr></thead><tbody>';
+    var sheetArea = (sheet.comp || 0) * (sheet.larg || 0);
+    var exploded = await cutGetGpuPreparedPieces(items, 'print-' + t + 'mm', { sheetCompMm: SHEET_COMP_MM, sheetLargMm: SHEET_LARG_MM, kerfMm: KERF_MM });
+    cutValidatePreparedPiecesFit(exploded, SHEET_COMP_MM, SHEET_LARG_MM, 'print-' + t + 'mm');
+    var packedSheets = cutPackSheets(exploded, { sheetCompMm: SHEET_COMP_MM, sheetLargMm: SHEET_LARG_MM, kerfMm: KERF_MM });
+    var sheets2 = packedSheets.length;
+    var efficiency = sheets2 > 0 && sheetArea > 0 ? ((area / (sheets2 * sheetArea)) * 100).toFixed(0) : '0';
+    totalP += count;
+    totalA += area;
+
+    var block = '';
+    block += '<h3>Compensado ' + t + 'mm — ' + count + ' peça(s) · ' + sheets2 + ' chapa(s) no preview (' + efficiency + '% teórico)</h3>';
+    block += '<div style="font-size:11px;color:#4a5366;margin:4px 0 6px">Quebra-cabeça de montagem das peças (preview)</div>';
+    block += puzzlePreviewHtml(packedSheets);
+    block += '<table><thead><tr><th>#</th><th>Peça</th><th>Grupo</th><th>Comp (mm)</th><th>Larg (mm)</th><th>Esp (mm)</th><th>Qtd</th><th>Área (cm²)</th><th>Observação</th></tr></thead><tbody>';
     var n = 1;
     items.forEach(function(p) {
-      html += '<tr><td>' + (n++) + '</td><td>' + p.nome + '</td><td>' + p.grupo + '</td>';
-      html += '<td>' + mm(p.comp) + '</td><td>' + mm(p.larg) + '</td><td>' + mm(p.esp) + '</td>';
-      html += '<td style="text-align:center;font-weight:700">' + p.qtd + '</td>';
-      html += '<td style="text-align:right">' + (cutPieceArea(p) * 1e4).toFixed(0) + '</td>';
-      html += '<td style="font-size:10px;color:#888">' + (p.obs || '') + '</td></tr>';
+      block += '<tr><td>' + (n++) + '</td><td>' + cutEscHtml(p.nome) + '</td><td>' + cutEscHtml(p.grupo) + '</td>';
+      block += '<td>' + mm(p.comp) + '</td><td>' + mm(p.larg) + '</td><td>' + mm(p.esp) + '</td>';
+      block += '<td style="text-align:center;font-weight:700">' + p.qtd + '</td>';
+      block += '<td style="text-align:right">' + (cutPieceArea(p) * 1e4).toFixed(0) + '</td>';
+      block += '<td style="font-size:10px;color:#888">' + cutEscHtml(p.obs || '') + '</td></tr>';
     });
-    html += '</tbody></table>';
+    block += '</tbody></table>';
+    return { t: parseInt(t, 10), block: block };
   });
 
-  html += '<div class="stats">';
-  html += '<div class="stat"><div class="v">' + totalP + '</div><div class="l">Total de peças</div></div>';
-  html += '<div class="stat"><div class="v">' + (totalA * 1e6).toFixed(0) + ' cm²</div><div class="l">Área total madeira</div></div>';
-  html += '</div>';
-  html += '<p style="font-size:10px;color:#8b93a7;margin-top:16px">Gerado por Trailer 3D Studio · ' + new Date().toLocaleString('pt-BR') + '</p>';
-  html += '</body></html>';
-  w.document.write(html);
-  w.document.close();
-  setTimeout(function() { w.print(); }, 250);
+  Promise.all(jobs).then(function(done) {
+    done.sort(function(a, b) { return a.t - b.t; });
+    done.forEach(function(entry) { html += entry.block; });
+
+    html += '<div class="stats">';
+    html += '<div class="stat"><div class="v">' + totalP + '</div><div class="l">Total de peças</div></div>';
+    html += '<div class="stat"><div class="v">' + (totalA * 1e6).toFixed(0) + ' cm²</div><div class="l">Área total madeira</div></div>';
+    html += '</div>';
+    if (exportData.includeHoles && exportData.holes.length) {
+      html += '<h3>Furos (janelas, portas e outros)</h3>';
+      html += '<table><thead><tr><th>#</th><th>Operação</th><th>Tipo</th><th>Nome</th><th>Parede</th><th>Larg (mm)</th><th>Alt (mm)</th><th>Span (mm)</th><th>Y (mm)</th></tr></thead><tbody>';
+      exportData.holes.forEach(function(h, i) {
+        html += '<tr><td>' + (i + 1) + '</td><td>' + cutEscHtml(h.operacao || 'recorte') + '</td><td>' + cutEscHtml(h.type) + '</td><td>' + cutEscHtml(h.nome || h.id) + '</td><td>' + cutEscHtml(h.wall || '') + '</td><td>' + h.largura_mm + '</td><td>' + h.altura_mm + '</td><td>' + h.span0_mm + ' .. ' + h.span1_mm + '</td><td>' + h.y0_mm + ' .. ' + h.y1_mm + '</td></tr>';
+      });
+      html += '</tbody></table>';
+    }
+    html += '<p style="font-size:10px;color:#8b93a7;margin-top:16px">Gerado por Trailer 3D Studio · ' + new Date().toLocaleString('pt-BR') + '</p>';
+    html += '</body></html>';
+    w.document.write(html);
+    w.document.close();
+    w.onload = function() {
+      setTimeout(function() { w.print(); }, 200);
+    };
+  }).catch(function(err) {
+    var msg = (err && err.message) ? err.message : 'Falha ao gerar preview de impressão pela GPU0.';
+    cutSetInfoMessage(msg, true);
+    if (w && !w.closed) w.close();
+  });
 }
 
 // Bind dos eventos do modal
@@ -2096,10 +3348,39 @@ document.getElementById('cut-close').addEventListener('click', cutCloseModal);
 document.getElementById('cut-export-modal').addEventListener('click', function(e) {
   if (e.target === this) cutCloseModal();
 });
-document.getElementById('cut-csv').addEventListener('click', function() { cutDownloadCSV(false); });
-document.getElementById('cut-csv-leroy').addEventListener('click', function() { cutDownloadCSV(true); });
+document.getElementById('cut-csv').addEventListener('click', function() {
+  cutSetInfoMessage('Executando otimização IA na GPU0...', false);
+  cutDownloadCSV(false).catch(function(err) {
+    var msg = (err && err.message) ? err.message : 'Falha ao exportar CSV pela GPU0.';
+    cutSetInfoMessage(msg, true);
+  });
+});
+document.getElementById('cut-csv-leroy').addEventListener('click', function() {
+  cutSetInfoMessage('Executando otimização IA na GPU0...', false);
+  cutDownloadCSV(true).catch(function(err) {
+    var msg = (err && err.message) ? err.message : 'Falha ao exportar CSV Leroy pela GPU0.';
+    cutSetInfoMessage(msg, true);
+  });
+});
+document.getElementById('cut-excel').addEventListener('click', function() {
+  cutSetInfoMessage('Executando otimização IA na GPU0...', false);
+  cutDownloadExcel().catch(function(err) {
+    var msg = (err && err.message) ? err.message : 'Falha ao exportar Excel pela GPU0.';
+    cutSetInfoMessage(msg, true);
+  });
+});
 document.getElementById('cut-copy').addEventListener('click', cutCopyList);
-document.getElementById('cut-print').addEventListener('click', cutPrint);
+document.getElementById('cut-print').addEventListener('click', function() {
+  cutSetInfoMessage('Executando otimização IA na GPU0...', false);
+  cutPrint();
+});
+document.getElementById('cut-json').addEventListener('click', function() {
+  cutSetInfoMessage('Executando otimização IA na GPU0...', false);
+  cutDownloadJSON().catch(function(err) {
+    var msg = (err && err.message) ? err.message : 'Falha ao exportar JSON pela GPU0.';
+    cutSetInfoMessage(msg, true);
+  });
+});
 document.querySelectorAll('.cut-tab').forEach(function(tab) {
   tab.addEventListener('click', function() { cutShowSheet(parseInt(tab.dataset.sheet)); });
 });
@@ -2109,6 +3390,29 @@ document.addEventListener('keydown', function(e) {
     cutCloseModal();
   }
 });
+</script>
+<script>
+(function() {
+  let lastVersion = null;
+  const DEV_POLL_MS = 3000;
+  async function checkVersion() {
+    try {
+      const r = await fetch('/dev-version', { cache: 'no-store' });
+      const d = await r.json();
+      console.log('[auto-reload] poll:', d.version);
+      if (lastVersion && d.version !== lastVersion) {
+        console.log('[auto-reload] Versão mudou:', lastVersion, '->', d.version);
+        location.reload();
+      }
+      lastVersion = d.version;
+    } catch (e) {
+      console.log('[auto-reload] erro:', e.message);
+    }
+  }
+  checkVersion();
+  setInterval(checkVersion, DEV_POLL_MS);
+  console.log('[auto-reload] ativo');
+})();
 </script>
 </body>
 </html>

@@ -182,7 +182,7 @@ export default class UserFilesService {
    * Abre um projeto a partir de um arquivo .json importado.
    */
   importProject(data) {
-    if (!data || !data.dimensions) throw new Error('Projeto inválido');
+    if (!data || (!data.dimensions && !data.geometry)) throw new Error('Projeto inválido');
     this.projectService.loadProject(data);
     this._currentFileId = null;
     this._currentProjectName = data.meta?.name || 'Importado';

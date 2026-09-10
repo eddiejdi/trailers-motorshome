@@ -15,7 +15,7 @@ import EditorService from './services/EditorService.js';
 import SaveService from './services/SaveService.js';
 import MaterialService from './services/MaterialService.js';
 import WalkthroughService from './services/WalkthroughService.js';
-import AIService from './services/AIService.js?v=20260831-2050';
+import AIService from './services/AIService.js?v=20260909-2230';
 import ExportService from './services/ExportService.js';
 import PaletteService from './services/PaletteService.js';
 import MarcenariaService from './services/MarcenariaService.js';
@@ -287,7 +287,9 @@ class TrailerApp {
       });
 
       this.services.save = new SaveService({
-        editableMeshes: this.editableMeshes
+        editableMeshes: this.editableMeshes,
+        scene,
+        body
       });
 
       this.services.material = new MaterialService(this.services.editor);
@@ -316,6 +318,8 @@ class TrailerApp {
       this.services.ai = new AIService({
         editableMeshes: this.editableMeshes,
         trailer: this.trailer,
+        ollamaUrl: 'http://192.168.15.4:11436',
+        ollamaModel: 'trailer-editor:latest',
         setWorldPosFn: (obj, x, y, z) => { obj.position.set(x, y, z); },
         resolvePlacementFn: (obj) => ed.resolvePlacement(obj),
         pushUndoFn: () => ed.pushUndo(),
@@ -370,10 +374,11 @@ class TrailerApp {
         loadDeps: {},
       });
 
-      this.initUI();
-      this._collectAllEditable();
-      this.startLoop();
-      console.log('Trailer 3D Studio inicializado com sucesso!');
+this.initUI();
+       this._collectAllEditable();
+       this.startLoop();
+       window.trailerApp = this;
+       console.log('Trailer 3D Studio inicializado com sucesso!');
     } catch (err) {
       console.error('TRAILER 3D ERROR:', err);
       const wrap = document.getElementById('canvas-wrap');
@@ -450,9 +455,10 @@ class TrailerApp {
   initUI() {
     const { editor, walkthrough, palette, save, ai, material, marcenaria } = this.services;
     const THREE = window.THREE;
-    const scene = this.sceneManager.getScene();
-    const camera = this.sceneManager.getCamera();
-    const controls = this.sceneManager.getControls();
+    const sceneManager = this.sceneManager;
+    const scene = sceneManager.getScene();
+    const camera = sceneManager.getCamera();
+    const controls = sceneManager.getControls();
     const body = this.models.body;
     const roof = this.models.roof;
     const labels = this.models.labels;
@@ -523,10 +529,20 @@ class TrailerApp {
         const crosshair = document.getElementById('crosshair');
         walkthrough.exitWalk(btn, walkHud, crosshair, null);
       }
-      camera.position.set(0, 8, 0.01);
-      controls.target.set(0, 0, 0);
+      sceneManager.repositionCamera(0, 8, 0.01, 0, 0, 0);
       const vi = document.getElementById('view-info');
       if (vi) vi.textContent = 'vista: PLANTA (top-down) · ESC 1:50';
+    });
+    bind('btn-bottom', () => {
+      if (walkthrough.walkMode) {
+        const btn = document.getElementById('btn-enter');
+        const walkHud = document.getElementById('walk-hud');
+        const crosshair = document.getElementById('crosshair');
+        walkthrough.exitWalk(btn, walkHud, crosshair, null);
+      }
+      sceneManager.repositionCamera(0, -8, 0.01, 0, 0.3, 0);
+      const vi = document.getElementById('view-info');
+      if (vi) vi.textContent = 'vista: BAIXO (bottom-up) · ESC 1:50';
     });
     bind('btn-iso', () => {
       if (walkthrough.walkMode) {
@@ -535,8 +551,7 @@ class TrailerApp {
         const crosshair = document.getElementById('crosshair');
         walkthrough.exitWalk(btn, walkHud, crosshair, null);
       }
-      camera.position.set(5, 4, 5);
-      controls.target.set(0, 0.6, 0);
+      sceneManager.repositionCamera(5, 4, 5, 0, 0.6, 0);
       const vi = document.getElementById('view-info');
       if (vi) vi.textContent = 'vista: isométrica · ESC 1:50';
     });
@@ -547,8 +562,7 @@ class TrailerApp {
         const crosshair = document.getElementById('crosshair');
         walkthrough.exitWalk(btn, walkHud, crosshair, null);
       }
-      camera.position.set(0, D.mzFloorH + 1.25, -D.Lt / 2 - D.mzL / 2 + 0.05);
-      controls.target.set(0, D.mzFloorH + 0.15, -D.Lt / 2 - D.mzL / 2 + 0.05);
+      sceneManager.repositionCamera(0, D.mzFloorH + 1.25, -D.Lt / 2 - D.mzL / 2 + 0.05, 0, D.mzFloorH + 0.15, -D.Lt / 2 - D.mzL / 2 + 0.05);
       const vi = document.getElementById('view-info');
       if (vi) vi.textContent = 'vista: MEZANINO · ESC 1:50';
     });
@@ -586,8 +600,7 @@ class TrailerApp {
         const viewInfo = document.getElementById('view-info');
         walkthrough.exitWalk(btn, walkHud, crosshair, viewInfo);
       }
-      camera.position.set(5, 4, 5);
-      controls.target.set(0, 0.6, 0);
+      sceneManager.repositionCamera(5, 4, 5, 0, 0.6, 0);
       controls.autoRotate = false;
       const r = document.getElementById('btn-rotate');
       if (r) r.classList.remove('active');
@@ -863,6 +876,33 @@ class TrailerApp {
 
     if (typeof this.ensureEnvelopeVisibility === 'function') this.ensureEnvelopeVisibility(true, true);
 
+    // ── Iniciar com cena vazia (projeto em branco) ──
+    if (this.trailer) {
+      while (this.trailer.children.length) this.trailer.remove(this.trailer.children[0]);
+    }
+    this.editableMeshes.length = 0;
+    const sceneRoot = this.sceneManager ? this.sceneManager.getScene() : null;
+    if (sceneRoot) {
+      const keepMeshes = new Set();
+      sceneRoot.traverse((o) => {
+        if (o && o.isMesh && o.geometry && o.geometry.type === 'PlaneGeometry' && Math.abs(o.position.y) < 0.01) keepMeshes.add(o);
+      });
+      const toRemove = [];
+      sceneRoot.traverse((o) => {
+        if (o && o.isMesh && !keepMeshes.has(o)) toRemove.push(o);
+      });
+      toRemove.forEach((o) => { if (o.parent) o.parent.remove(o); });
+    }
+    this._collectAllEditable();
+    this.editableMeshes.length = 0;
+    if (labels && labels.labelsGroup) labels.labelsGroup.visible = false;
+    if (labels && labels.cotasGroup) labels.cotasGroup.visible = false;
+    showWalls = false;
+    showRoof = false;
+    showCotas = false;
+    showLabels = false;
+    if (typeof this.ensureEnvelopeVisibility === 'function') this.ensureEnvelopeVisibility(false, false);
+
     // ── GNOME Panel Menu Actions ──
     const gnomeMenus = document.querySelectorAll('.gnome-menu');
     gnomeMenus.forEach((menu) => {
@@ -881,8 +921,179 @@ class TrailerApp {
     });
 
     const gnomePanel = document.getElementById('gnome-panel');
+    let emptyProjectStash = null;
+
+    const stashSceneBeforeEmpty = () => {
+      if (emptyProjectStash) return;
+      emptyProjectStash = {
+        trailerChildren: this.trailer ? this.trailer.children.slice() : [],
+        labelsGroup: labels && labels.labelsGroup ? labels.labelsGroup : null,
+        cotasGroup: labels && labels.cotasGroup ? labels.cotasGroup : null,
+      };
+    };
+
+    const restoreSceneFromEmpty = () => {
+      if (!emptyProjectStash) return;
+      if (this.trailer) {
+        emptyProjectStash.trailerChildren.forEach((obj) => {
+          if (obj && !obj.parent) this.trailer.add(obj);
+        });
+      }
+      const sceneRoot = this.sceneManager ? this.sceneManager.getScene() : null;
+      if (sceneRoot && emptyProjectStash.labelsGroup && !emptyProjectStash.labelsGroup.parent) {
+        sceneRoot.add(emptyProjectStash.labelsGroup);
+      }
+      if (sceneRoot && emptyProjectStash.cotasGroup && !emptyProjectStash.cotasGroup.parent) {
+        sceneRoot.add(emptyProjectStash.cotasGroup);
+      }
+      this._collectAllEditable();
+      emptyProjectStash = null;
+    };
+
+    const hardResetUiForNewProject = () => {
+      showWalls = false;
+      showRoof = false;
+      showCotas = false;
+      showLabels = false;
+      this.ensureEnvelopeVisibility(false, false);
+      if (labels.cotasGroup) labels.cotasGroup.visible = false;
+      if (labels.labelsGroup) labels.labelsGroup.visible = false;
+      document.getElementById('btn-cotas')?.classList.remove('active');
+      document.getElementById('btn-labels')?.classList.remove('active');
+      document.querySelectorAll('.cat-btn').forEach((el) => el.classList.remove('active'));
+      document.querySelectorAll('.gnome-menu-item[data-action^="cat-"]').forEach((el) => el.classList.remove('checked'));
+      const miCotas = document.querySelector('.gnome-menu-item[data-action="toggle-cotas"]');
+      if (miCotas) miCotas.classList.remove('checked');
+      const miLabels = document.querySelector('.gnome-menu-item[data-action="toggle-labels"]');
+      if (miLabels) miLabels.classList.remove('checked');
+
+      const cutModal = document.getElementById('cut-export-modal');
+      if (cutModal) cutModal.style.display = 'none';
+      document.getElementById('marcenaria-overlay')?.classList.remove('open');
+      document.getElementById('rpa-fs')?.classList.remove('open');
+    };
+
+    const hardClearSceneForNewProject = () => {
+      stashSceneBeforeEmpty();
+      editor.deselectObject();
+      if (this.trailer) {
+        while (this.trailer.children.length) this.trailer.remove(this.trailer.children[0]);
+      }
+      if (labels && labels.labelsGroup && labels.labelsGroup.parent) labels.labelsGroup.parent.remove(labels.labelsGroup);
+      if (labels && labels.cotasGroup && labels.cotasGroup.parent) labels.cotasGroup.parent.remove(labels.cotasGroup);
+      if (body && typeof body.clearUserOpenings === 'function') body.clearUserOpenings();
+      this.editableMeshes.length = 0;
+      if (app.services.export) app.services.export.setScenePieces(null);
+    };
+
+    const runNewProject = () => {
+      if (confirm('Criar novo projeto? As alterações não salvas serão perdidas.')) {
+        userFiles.newProject();
+        weight.setProjectWeights(project.getWeights());
+        this.renderSpecPanel(document.getElementById('specs-list'));
+        weight.resetPaletteItems();
+        try { localStorage.removeItem(save.SAVE_KEY); } catch (e) {}
+        hardClearSceneForNewProject();
+        hardResetUiForNewProject();
+        updateCurrentProjectName();
+        ai && ai.aiLog('Novo projeto vazio criado.', 'sys');
+      }
+    };
+    const buildGeometryFromProject = (proj) => {
+      const THREE = window.THREE;
+      const geo = proj.geometry;
+      if (!geo || !Array.isArray(geo.parts) || geo.parts.length === 0) return false;
+
+      editor.deselectObject();
+      if (this.trailer) {
+        while (this.trailer.children.length) this.trailer.remove(this.trailer.children[0]);
+      }
+      this.editableMeshes.length = 0;
+
+      const matDef = geo.material || {};
+      const mat = new THREE.MeshStandardMaterial({
+        color: matDef.color || '#c9a86c',
+        roughness: matDef.roughness ?? 0.85,
+      });
+
+      const partsGroup = new THREE.Group();
+      partsGroup.name = 'project-parts';
+
+      geo.parts.forEach((p) => {
+        const b = p.box || [1, 1, 1];
+        const geoMesh = new THREE.BoxGeometry(b[0], b[1], b[2]);
+        const mesh = new THREE.Mesh(geoMesh, mat);
+        mesh.name = p.name || 'part';
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        mesh.userData.kind = 'project-part';
+        mesh.userData.pieceName = p.name;
+
+        if (p.position) mesh.position.set(p.position[0], p.position[1], p.position[2]);
+        if (p.rotation) mesh.rotation.set(p.rotation[0], p.rotation[1], p.rotation[2]);
+
+        partsGroup.add(mesh);
+        this.editableMeshes.push(mesh);
+      });
+
+      this.trailer.add(partsGroup);
+      if (typeof this.ensureEnvelopeVisibility === 'function') this.ensureEnvelopeVisibility(true, true);
+      this._collectAllEditable();
+      return true;
+    };
+
+    const runOpenProject = () => {
+      project.openProjectFile().then((proj) => {
+        if (proj) {
+          try { project.loadProject(proj); } catch (e) {}
+          if (app.services.export) app.services.export.setScenePieces(null);
+          const built = buildGeometryFromProject(proj);
+          if (!built) {
+            restoreSceneFromEmpty();
+            save.resetLayout((text, cls) => ai && aiLog(text, cls), { forceFactory: true });
+            this.ensureEnvelopeVisibility(true, true);
+          }
+          weight.setProjectWeights(project.getWeights());
+          this.renderSpecPanel(document.getElementById('specs-list'));
+          updateCurrentProjectName();
+          ai && ai.aiLog('Projeto importado: ' + (proj.meta?.name || ''), 'sys');
+        }
+      }).catch((err) => alert('Erro: ' + err.message));
+    };
+    const btnNewProject = document.getElementById('btn-new-project');
+    if (btnNewProject && btnNewProject.dataset.boundDirectAction !== '1') {
+      btnNewProject.dataset.boundDirectAction = '1';
+      btnNewProject.addEventListener('click', (e) => {
+        e.preventDefault();
+        runNewProject();
+      });
+    }
+    const btnOpenProject = document.getElementById('btn-open-project');
+    if (btnOpenProject && btnOpenProject.dataset.boundDirectAction !== '1') {
+      btnOpenProject.dataset.boundDirectAction = '1';
+      btnOpenProject.addEventListener('click', (e) => {
+        e.preventDefault();
+        runOpenProject();
+      });
+    }
+
+    function bindMenuActionFallback(action, runner) {
+      document.querySelectorAll('.gnome-menu-item[data-action="' + action + '"]').forEach((el) => {
+        if (el.dataset.boundDirectAction === '1') return;
+        el.dataset.boundDirectAction = '1';
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          runner();
+        });
+      });
+    }
+    bindMenuActionFallback('new-project', runNewProject);
+    bindMenuActionFallback('open-project', runOpenProject);
+
     if (gnomePanel) {
       gnomePanel.addEventListener('click', (e) => {
+        if (e.defaultPrevented) return;
         const item = e.target.closest('.gnome-menu-item:not(.disabled)');
         if (!item) return;
         const action = item.dataset.action;
@@ -890,15 +1101,7 @@ class TrailerApp {
 
         switch (action) {
           case 'new-project':
-            if (confirm('Criar novo projeto? As alterações não salvas serão perdidas.')) {
-              userFiles.newProject();
-              weight.setProjectWeights(project.getWeights());
-              this.renderSpecPanel(document.getElementById('specs-list'));
-              weight.resetPaletteItems();
-              save.resetLayout();
-              updateCurrentProjectName();
-              ai && ai.aiLog('Novo projeto criado.', 'sys');
-            }
+            runNewProject();
             break;
           case 'save':
             save.saveLayout();
@@ -921,14 +1124,7 @@ class TrailerApp {
             ai && ai.aiLog('Projeto baixado como arquivo .json.', 'sys');
             break;
           case 'open-project':
-            project.openProjectFile().then((proj) => {
-              if (proj) {
-                weight.setProjectWeights(project.getWeights());
-                this.renderSpecPanel(document.getElementById('specs-list'));
-                updateCurrentProjectName();
-                ai && ai.aiLog('Projeto importado: ' + (proj.meta?.name || ''), 'sys');
-              }
-            }).catch((err) => alert('Erro: ' + err.message));
+            runOpenProject();
             break;
           case 'reset':
             save.resetLayout();
@@ -938,14 +1134,13 @@ class TrailerApp {
             }, 100);
             break;
           case 'view-planta':
-            camera.position.set(0, 8, 0.01);
-            controls.target.set(0, 0, 0);
-            controls.update();
+            sceneManager.repositionCamera(0, 8, 0.01, 0, 0, 0);
+            break;
+          case 'view-baixo':
+            sceneManager.repositionCamera(0, -8, 0.01, 0, 0.3, 0);
             break;
           case 'view-isometrica':
-            camera.position.set(5, 4, 5);
-            controls.target.set(0, 0.6, 0);
-            controls.update();
+            sceneManager.repositionCamera(5, 4, 5, 0, 0.6, 0);
             break;
           case 'view-entrar':
             document.getElementById('btn-enter')?.click();
@@ -1369,10 +1564,11 @@ class TrailerApp {
   }
 
   startLoop() {
-    const renderer = this.sceneManager.getRenderer();
-    const scene = this.sceneManager.getScene();
-    const camera = this.sceneManager.getCamera();
-    const controls = this.sceneManager.getControls();
+    const sceneManager = this.sceneManager;
+    const renderer = sceneManager.getRenderer();
+    const scene = sceneManager.getScene();
+    const camera = sceneManager.getCamera();
+    const controls = sceneManager.getControls();
     const { walkthrough } = this.services;
 
     let lastTime = performance.now();

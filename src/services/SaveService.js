@@ -1,6 +1,8 @@
 export default class SaveService {
-  constructor({ editableMeshes, SAVE_KEY = 'trailer3d-layout-v7' }) {
+  constructor({ editableMeshes, scene = null, body = null, SAVE_KEY = 'trailer3d-layout-v7' }) {
     this.editableMeshes = editableMeshes;
+    this.scene = scene;
+    this.body = body;
     this.SAVE_KEY = SAVE_KEY;
     this.factoryLayout = null;
   }
@@ -117,21 +119,75 @@ export default class SaveService {
     } catch (err) { console.warn('loadLayout', err); }
   }
 
-  resetLayout(aiLog) {
-    const raw = localStorage.getItem(this.SAVE_KEY);
+  _removeExtraByName(allowedNames) {
+    if (!allowedNames || !allowedNames.size) return;
+    for (let i = this.editableMeshes.length - 1; i >= 0; i--) {
+      const m = this.editableMeshes[i];
+      const name = m && m.userData ? m.userData.name : null;
+      if (!name || allowedNames.has(name)) continue;
+      if (m.parent) m.parent.remove(m);
+      this.editableMeshes.splice(i, 1);
+    }
+  }
+
+  _removeExtraByMesh(allowedMeshes) {
+    if (!allowedMeshes || !allowedMeshes.size) return;
+    for (let i = this.editableMeshes.length - 1; i >= 0; i--) {
+      const m = this.editableMeshes[i];
+      if (allowedMeshes.has(m)) continue;
+      if (m.parent) m.parent.remove(m);
+      this.editableMeshes.splice(i, 1);
+    }
+  }
+
+  _cleanupOrphans() {
+    if (this.scene && typeof this.scene.traverse === 'function') {
+      const keep = new Set(this.editableMeshes.filter(Boolean));
+      const toRemove = [];
+      this.scene.traverse((obj) => {
+        if (!obj || !obj.userData || !obj.userData.editable) return;
+        if (keep.has(obj)) return;
+        if (!obj.parent) return;
+        toRemove.push(obj);
+      });
+      toRemove.forEach((obj) => {
+        if (obj.parent) obj.parent.remove(obj);
+      });
+    }
+    if (this.body && typeof this.body.clearUserOpenings === 'function') {
+      this.body.clearUserOpenings();
+    }
+  }
+
+  resetLayout(aiLog, options = {}) {
+    const forceFactory = options === true || !!options.forceFactory;
+    const raw = !forceFactory ? localStorage.getItem(this.SAVE_KEY) : null;
     if (raw) {
-      const n = this.applySaved(JSON.parse(raw), {});
+      const parsed = JSON.parse(raw);
+      const allowed = new Set((parsed.objects || []).map((o) => o && o.name).filter(Boolean));
+      this._removeExtraByName(allowed);
+      const n = this.applySaved(parsed, {});
+      (parsed.objects || []).forEach((o) => {
+        if (!o || !o.name) return;
+        const m = this.editableMeshes.find((x) => x && x.userData && x.userData.name === o.name);
+        if (m && this.editableMeshes.indexOf(m) < 0) this.editableMeshes.push(m);
+      });
+      this._cleanupOrphans();
       if (typeof aiLog === 'function') aiLog('Reset: última posição salva (' + n + ' objetos).', 'sys');
       return;
     }
     if (this.factoryLayout) {
+      const allowedMeshes = new Set(this.factoryLayout.map((st) => st.mesh));
+      this._removeExtraByMesh(allowedMeshes);
       this.factoryLayout.forEach((st) => {
         if (!st.mesh) return;
         if (st.parent && st.mesh.parent !== st.parent) st.parent.add(st.mesh);
         st.mesh.position.copy(st.p);
         st.mesh.rotation.copy(st.r);
         st.mesh.scale.copy(st.s);
+        if (this.editableMeshes.indexOf(st.mesh) < 0) this.editableMeshes.push(st.mesh);
       });
+      this._cleanupOrphans();
       if (typeof aiLog === 'function') aiLog('Reset: layout original.', 'sys');
     }
   }

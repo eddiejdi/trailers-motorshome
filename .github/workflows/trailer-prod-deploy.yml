@@ -12,6 +12,7 @@ on:
       - "trailer_lib/**"
       - "docs/**"
       - "hooks/**"
+      - "scripts/validate_exports.py"
       - ".github/workflows/trailer-prod-deploy.yml"
   workflow_dispatch:
     inputs:
@@ -25,7 +26,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  validate-exports:
+    runs-on: [self-hosted, linux, x64]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate export regression gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/validate_exports.py
+
   deploy:
+    needs: validate-exports
     runs-on: [self-hosted, linux, x64]
 
     steps:

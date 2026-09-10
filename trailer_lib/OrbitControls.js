@@ -141,12 +141,15 @@
 
 				const offset = new THREE.Vector3(); // so camera.up is the orbit axis
 
-				const quat = new THREE.Quaternion().setFromUnitVectors( object.up, new THREE.Vector3( 0, 1, 0 ) );
-				const quatInverse = quat.clone().invert();
+				const quat = new THREE.Quaternion();
+				const quatInverse = new THREE.Quaternion();
 				const lastPosition = new THREE.Vector3();
 				const lastQuaternion = new THREE.Quaternion();
 				const twoPI = 2 * Math.PI;
 				return function update() {
+
+					quat.setFromUnitVectors( object.up, new THREE.Vector3( 0, 1, 0 ) );
+					quatInverse.copy( quat ).invert();
 
 					const position = scope.object.position;
 					offset.copy( position ).sub( scope.target ); // rotate offset to "y-axis-is-up" space
