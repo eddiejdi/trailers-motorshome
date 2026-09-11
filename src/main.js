@@ -1,3 +1,19 @@
+
+function escHtml(v) {
+  return String(v ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+function safeUrl(u) {
+  try {
+    const x = new URL(String(u || ''), location.origin);
+    return (x.protocol === 'http:' || x.protocol === 'https:') ? x.href : '';
+  } catch { return ''; }
+}
+
 /**
  * main.js — Orquestrador do Trailer 3D Studio
  * Inicializa todos os módulos, computa valores derivados, e conecta a aplicação.
@@ -25,7 +41,6 @@ import WeightService from './services/WeightService.js';
 import ProjectService from './services/ProjectService.js';
 
 const PALLET_DATA = {
-  'pia':            { name:'Pia inox Ø28',            cat:'Móveis & Eletro', w:1.8, mat:'Inox 304',       v:null,    dims:'280×280×150mm', desc:'Pia redonda em aço inoxidável, ideal para cozinhas de trailer.' },
   'comoda':         { name:'Cômoda 3 gav.',           cat:'Móveis & Eletro', w:12,  mat:'Compensado',     v:null,    dims:'600×400×500mm', desc:'Cômoda com 3 gavetas de compensado naval, acabamento em laca.' },
   'armario':        { name:'Armário 40×60',           cat:'Móveis & Eletro', w:14,  mat:'Compensado',     v:null,    dims:'400×600×350mm', desc:'Armário de parede com duas portas, prateleira interna.' },
   'banco':          { name:'Banco-baú',               cat:'Móveis & Eletro', w:8,   mat:'Compensado',     v:null,    dims:'1200×450×450mm', desc:'Banco com tampa articulada, espaço interno para armazenamento.' },
@@ -71,7 +86,7 @@ const PALLET_DATA = {
   'calco-inox':     { name:'Calço Inox KG 50cm',       cat:'Acessórios', w:1.0,  mat:'Aço Inoxidável', v:null,    dims:'500×80×60mm', desc:'Calço inox articulado KG 50cm, trava de segurança.' },
   'pingadeira':     { name:'Kit Pingadeira 1400',      cat:'Acessórios', w:0.6,  mat:'Alumínio',       v:null,    dims:'1400×50×30mm', desc:'Kit pingadeira em alumínio extrudado, perfil em L, 1.4m.' },
   'boiler':         { name:'Boiler 10L 12V/220V',      cat:'Acessórios', w:4.5,  mat:'Inox',           v:'12V/220V', dims:'Ø250×380mm', desc:'Boiler 10L bivolt, aquecimento rápido, isolamento térmico.' },
-  'cozinha-compacta':{ name:'Cozinha compacta 120',    cat:'Acessórios', w:18,   mat:'MDF/Inox',       v:null,    dims:'1200×450×900mm', desc:'Módulo de cozinha compacto 120cm, pia + fogareiro + armário.' },
+  'cozinha-compacta':{ name:'Cozinha compacta 120',    cat:'Acessórios', w:18,   mat:'MDF/Inox',       v:null,    dims:'1200×450×900mm', desc:'Módulo de cozinha compacto 120cm, fogareiro + armário.' },
   'trava-porta':    { name:'Trava Push-Lock',          cat:'Acessórios', w:0.2,  mat:'Nylon/Aço',      v:null,    dims:'80×60×40mm', desc:'Trava Push-Lock para porta de trailer, trava por pressão.' },
   'caixa-gas':      { name:'Caixa de Gás 88×61',      cat:'Acessórios', w:3.0,  mat:'Compensado',     v:null,    dims:'880×610×400mm', desc:'Caixa de armazenamento de gás, ventilação inferior, acesso rápido.' },
   'clima-evap':     { name:'Climatiz. Evap. 12V',     cat:'Climatização', w:5.5,  mat:'Plástico',       v:'12V DC', dims:'500×300×400mm', desc:'Climatizador evaporativo 12V, tanque 6L, 3 velocidades.' },
@@ -230,6 +245,7 @@ class TrailerApp {
 
       this.models.body = body;
       const bodyResult = body.build(null, winLCuts, winRCuts, chassisG);
+      this.entryDoor = bodyResult.entryDoor;
       this.trailer.add(bodyResult.group);
 
       const roof = new Roof(THREE, M, {
@@ -309,7 +325,7 @@ class TrailerApp {
       });
       this.services.walkthrough.setEntryDoor(bodyResult.entryDoor);
       this.services.walkthrough.setMZFloorY(interiorResult.colTopY + 0.04);
-      [interiorResult.counter, interiorResult.counterTop, interiorResult.freshWater, interiorResult.kidBed,
+      [interiorResult.counter, interiorResult.counterTop, interiorResult.kidBed,
         interiorResult.potti, interiorResult.stairCabs, interiorResult.guard].forEach((obj) => {
         this.services.walkthrough.addWalkSolid(obj, 'cabin');
       });
@@ -339,7 +355,10 @@ class TrailerApp {
         pushUndoFn: () => ed.pushUndo(),
         resolvePlacementFn: (obj) => ed.resolvePlacement(obj),
         selectObjectFn: (obj) => ed.selectObject(obj),
-        addEditableFn: (mesh) => { if (!this.editableMeshes.includes(mesh)) this.editableMeshes.push(mesh); },
+        addEditableFn: (mesh, name, cat, kind) => {
+          ed.addEditable(mesh, name || (mesh.userData && mesh.userData.name) || 'Objeto', cat, kind);
+          if (!this.editableMeshes.includes(mesh)) this.editableMeshes.push(mesh);
+        },
         uniqueNameFn: (base) => {
           let n = base, i = 2;
           while (this.editableMeshes.some(m => m.userData && m.userData.name === n)) n = base + ' ' + i++;
@@ -398,7 +417,7 @@ this.initUI();
 
     const NAMES = {
       bath: ['Vaso sanitário', 'Tampa vaso', 'Ducha higiênica', 'Mangueira ducha', 'Espelho banheiro', 'Cuba banheiro'],
-      kitchen: ['Balcão cozinha', 'Tampo balcão', 'Geladeira 37L', 'Alça geladeira', 'Pia inox', 'Torneira', 'Cabeça torneira', 'Armário superior', 'Galão água 20L', 'Fogareiro 1', 'Fogareiro 2'],
+      kitchen: ['Balcão cozinha', 'Tampo balcão', 'Geladeira 37L', 'Alça geladeira', 'Galão água 20L', 'Fogareiro 1', 'Fogareiro 2'],
       stairCabs: ['Armário-degrau 1', 'Armário-degrau 2', 'Armário-degrau 3', 'Armário-degrau 4'],
       mezz: ['Coluna mez. esq. frente', 'Coluna mez. dir. frente', 'Coluna mez. esq. trás', 'Coluna mez. dir. trás', 'Viga mez. frente', 'Viga mez. trás', 'Piso mezanino', 'Cama casal', 'Travesseiro esq.', 'Travesseiro dir.', 'Guarda-corpo'],
       wallsInt: ['Parede banheiro fundo', 'Parede banheiro frente', 'Parede banheiro lateral'],
@@ -431,8 +450,26 @@ this.initUI();
       });
     }
 
-    this.editableMeshes = meshes;
-    console.log('Editable meshes:', meshes.length);
+    // Janelas e porta de entrada são movíveis pelo layout (projeto manda):
+    const addGroup = (g) => {
+      if (g && g.userData && g.userData.name && meshes.indexOf(g) < 0) {
+        g.userData.editable = true;
+        meshes.push(g);
+      }
+    };
+    if (this.models.windows) this.models.windows.windowGroups.forEach(addGroup);
+    addGroup(this.entryDoor);
+
+    // Mutate in place — never reassign: Editor/Save/Palette hold the same array ref.
+    this.editableMeshes.length = 0;
+    for (let i = 0; i < meshes.length; i++) this.editableMeshes.push(meshes[i]);
+    if (this.services) {
+      if (this.services.editor) this.services.editor.editableMeshes = this.editableMeshes;
+      if (this.services.save) this.services.save.editableMeshes = this.editableMeshes;
+      if (this.services.palette) this.services.palette.editableMeshes = this.editableMeshes;
+      if (this.services.ai) this.services.ai.editableMeshes = this.editableMeshes;
+    }
+    console.log('Editable meshes:', this.editableMeshes.length);
   }
 
   _collectAllEditable() {
@@ -750,6 +787,13 @@ this.initUI();
     editor.onSelectionChange = updateEditorPanel;
     if (ai) ai.updateEditorPanel = updateEditorPanel;
 
+    const updateUndoMenu = (canUndo, canRedo) => {
+      document.querySelectorAll('.gnome-menu-item[data-action="undo"]').forEach((el) => el.classList.toggle('disabled', !canUndo));
+      document.querySelectorAll('.gnome-menu-item[data-action="redo"]').forEach((el) => el.classList.toggle('disabled', !canRedo));
+    };
+    editor.onUndoChange = updateUndoMenu;
+    editor.updateUndoState();
+
     // Gera geometry.parts de caixa aberta: fundo base full + 4 paredes
     const buildOpenBoxProjectParts = (Lmm, Pmm, Hmm, tmm) => {
       const L = Lmm / 1000, P = Pmm / 1000, H = Hmm / 1000, t = tmm / 1000;
@@ -847,14 +891,14 @@ this.initUI();
         document.getElementById(id)?.classList.add('active');
       });
     });
-    const bindNum = (id, fn) => {
+    const bindNum = (id, fn, opts = {}) => {
       const el = document.getElementById(id);
       if (!el) return;
       el.addEventListener('change', () => {
         if (!editor.selected) return;
         editor.pushUndo();
         fn(editor.selected, parseFloat(el.value) || 0);
-        editor.resolvePlacement(editor.selected);
+        if (opts.resolve !== false) editor.resolvePlacement(editor.selected);
         updateEditorPanel();
       });
     };
@@ -864,9 +908,9 @@ this.initUI();
     bindNum('scl-x', (o, v) => { o.scale.x = Math.max(0.01, v); });
     bindNum('scl-y', (o, v) => { o.scale.y = Math.max(0.01, v); });
     bindNum('scl-z', (o, v) => { o.scale.z = Math.max(0.01, v); });
-    bindNum('rot-x', (o, v) => { o.rotation.x = v * Math.PI / 180; });
-    bindNum('rot-y', (o, v) => { o.rotation.y = v * Math.PI / 180; });
-    bindNum('rot-z', (o, v) => { o.rotation.z = v * Math.PI / 180; });
+    bindNum('rot-x', (o, v) => { o.rotation.x = v * Math.PI / 180; }, { resolve: false });
+    bindNum('rot-y', (o, v) => { o.rotation.y = v * Math.PI / 180; }, { resolve: false });
+    bindNum('rot-z', (o, v) => { o.rotation.z = v * Math.PI / 180; }, { resolve: false });
     document.querySelectorAll('.rot-snap').forEach((btn) => {
       btn.onclick = () => {
         if (!editor.selected) return;
@@ -885,6 +929,7 @@ this.initUI();
       const idx = this.editableMeshes.indexOf(obj);
       if (idx >= 0) this.editableMeshes.splice(idx, 1);
       editor.deselectObject();
+      try { save.saveLayout(); } catch (e) { console.warn(e); }
     });
     bind('btn-fill', () => {
       if (!editor.selected) return;
@@ -1053,16 +1098,18 @@ this.initUI();
         const savedProj = JSON.parse(rawProj);
         if (savedProj && savedProj.geometry && Array.isArray(savedProj.geometry.parts) && savedProj.geometry.parts.length) {
           this.services.project.loadProject(savedProj);
-          // rebuild happens when buildGeometryFromProject is assigned later — queue microtask after initUI continues
+          // rebuild/setup happens when initUI continues — queue microtask after the scene helpers exist
           queueMicrotask(() => {
-            if (typeof this.rebuildProjectGeometry === 'function') {
-              this.rebuildProjectGeometry(savedProj);
-              if (this.services.export) {
-                const parts = this.services.export.extractPartsFromProject(savedProj);
-                this.services.export.setScenePieces(parts.length ? parts : null);
+            if (savedProj.geometry.kind === 'open-box' || savedProj.geometry.projectType === 'box') {
+              if (typeof this.rebuildProjectGeometry === 'function') {
+                this.rebuildProjectGeometry(savedProj);
+                if (this.services.export) {
+                  const parts = this.services.export.extractPartsFromProject(savedProj);
+                  this.services.export.setScenePieces(parts.length ? parts : null);
+                }
               }
-              ai && ai.aiLog('Projeto restaurado do salvamento local (rev' + (savedProj.meta?.rev||'?') + ').', 'sys');
             }
+            ai && ai.aiLog('Projeto restaurado do salvamento local (rev' + (savedProj.meta?.rev||'?') + ').', 'sys');
           });
         }
       }
@@ -1223,6 +1270,8 @@ this.initUI();
       const THREE = window.THREE;
       const geo = proj.geometry;
       if (!geo || !Array.isArray(geo.parts) || geo.parts.length === 0) return false;
+      const isOpenBox = geo.kind === 'open-box' || geo.projectType === 'box';
+      if (!isOpenBox) return false;
 
       editor.deselectObject();
       if (this.trailer) {
@@ -1366,27 +1415,6 @@ this.initUI();
       project.openProjectFile().then((proj) => {
         if (!proj) return;
         try { project.loadProject(proj); } catch (e) { return; }
-        // Projeto antigo (envelope trailer3d-project v2): restaura o layout salvo na cena
-        const legacy = project.getLegacyLayout && project.getLegacyLayout();
-        let layoutRestored = false;
-        if (legacy && Array.isArray(legacy.objects) && legacy.objects.length) {
-          try {
-            materializeFactory();
-            // Boot esvaziou a cena: re-materializa a árvore de fábrica ANTES de posicionar
-            save.resetLayout((text, cls) => ai && ai.aiLog(text, cls), { forceFactory: true });
-            save.applyCapturedFromLayout(legacy, {
-              spawnPaletteItem: (kind) => palette.spawnPaletteItem(kind),
-              attachProductMeta: (mesh, kind) => palette.attachProductMeta(mesh, kind),
-              attachCarpentryPart: (parent, spec, worldPoint) => marcenaria.attachCarpentryPart(parent, spec, worldPoint),
-            });
-            save.captureFactoryLayout(() => editor.captureLayout());
-            save.saveLayout((text, cls) => ai && ai.aiLog(text, cls));
-            ai && ai.aiLog('Layout antigo restaurado (' + legacy.objects.length + ' objetos).', 'sys');
-            layoutRestored = true;
-          } catch (e2) {
-            console.warn('legacy layout apply', e2);
-          }
-        }
         if (app.services.export) {
           // Força plano de corte a partir do JSON importado (nunca trailer default)
           const fromFile = app.services.export.extractPartsFromProject
@@ -1395,16 +1423,28 @@ this.initUI();
           app.services.export.setScenePieces(fromFile.length ? fromFile : null);
         }
         const built = buildGeometryFromProject(proj);
-        if (!built) {
-          if (!layoutRestored) {
-            materializeFactory();
-          }
+        if (!built && (proj.dimensions || proj.weights_kg || proj.specs)) {
+          materializeFactory();
           restoreSceneFromEmpty();
-          if (!layoutRestored) {
-            save.resetLayout((text, cls) => ai && ai.aiLog(text, cls), { forceFactory: true });
-          }
           this.ensureEnvelopeVisibility(true, true);
         }
+
+        // ── HOOK: aberturas 100% derivadas do JSON do projeto ──
+        // O layout posiciona as janelas/porta; o tool só corta o que está no layout.
+        const openSrc = this.editableMeshes.filter((m) => m && m.parent && m.userData && m.position
+          && m.position.y < 2
+          && (m.userData.kind === 'porta' || m.userData.funcKind === 'janela'));
+        if (openSrc.length && this.models.body && typeof this.models.body.setLayoutOpenings === 'function') {
+          this.models.body.setLayoutOpenings(openSrc);
+        }
+        const doorCfg = proj.structure && proj.structure.door;
+        const doorMesh = openSrc.find((m) => m.userData && m.userData.kind === 'porta');
+        if (this.services.walkthrough) {
+          const wall = doorMesh ? this.models.body.nearestWall(doorMesh) : null;
+          this.services.walkthrough.setDoorGeo(wall, doorMesh ? doorMesh.position : null);
+          this.services.walkthrough.setDoorOpen(doorCfg && doorCfg.open === 'out' ? 'out' : 'in');
+        }
+
         weight.setProjectWeights(project.getWeights());
         this.renderSpecPanel(document.getElementById('specs-list'));
         updateCurrentProjectName();
@@ -1470,6 +1510,14 @@ this.initUI();
               renameInput.value = userFiles.getCurrentProjectName() || '';
               renameInput.focus();
             }
+            break;
+          case 'undo':
+            editor.undoEdit();
+            this._afterUndoRedo();
+            break;
+          case 'redo':
+            editor.redoEdit();
+            this._afterUndoRedo();
             break;
           case 'export-corte':
             document.getElementById('cut-export-modal').style.display = '';
@@ -1576,6 +1624,174 @@ this.initUI();
     this._initFilesUI();
     this._initRPA();
     this._initPaletteInteractions();
+    this._initContextMenu();
+    this._initEditorShortcuts();
+  }
+
+  _afterUndoRedo() {
+    const edtr = this.services.editor;
+    if (!edtr) return;
+    edtr.updateUndoState();
+    if (typeof edtr.onSelectionChange === 'function') edtr.onSelectionChange(edtr.selected || null);
+    const kinds = this.editableMeshes.filter((m) => m.userData && m.userData.kind).map((m) => m.userData.kind);
+    try { this.services.weight && this.services.weight.syncFromKinds(kinds); } catch (e) { console.warn(e); }
+  }
+
+  _flashHint(msg) {
+    const vi = document.getElementById('view-info');
+    if (!vi) return;
+    const prev = vi.textContent;
+    vi.style.transition = 'background .2s';
+    vi.style.background = 'rgba(229,165,0,0.95)';
+    vi.textContent = msg;
+    clearTimeout(this._flashT);
+    this._flashT = setTimeout(() => { vi.textContent = prev; vi.style.background = ''; }, 2400);
+  }
+
+  _focusEntryDoor() {
+    const sm = this.sceneManager;
+    const door = this.entryDoor || (this.editableMeshes || []).find((m) => m.userData && m.userData.kind === 'porta');
+    if (!sm) return;
+    if (!door) {
+      sm.repositionCamera(5, 4, 5, 0, 0.6, 0);
+      this._flashHint('Nenhuma porta no projeto');
+      return;
+    }
+    door.updateWorldMatrix(true, false);
+    const wp = new THREE.Vector3();
+    door.getWorldPosition(wp);
+    const halfL = (D.Li || 1.6) / 2;
+    const halfT = (D.Lt || 2.5) / 2;
+    let dirX = 0, dirZ = 0;
+    if (Math.abs(Math.abs(wp.z) - halfT) < 0.35) dirZ = wp.z > 0 ? 1 : -1;
+    else if (Math.abs(Math.abs(wp.x) - halfL) < 0.35) dirX = wp.x > 0 ? 1 : -1;
+    else dirZ = 1;
+    const doorH = D.DOOR_H || 1.6;
+    const dw = D.DOOR_W || 0.62;
+    const off = dw * 0.5 + 0.7;
+    sm.repositionCamera(wp.x + dirX * off, doorH * 0.42 + 0.05, wp.z + dirZ * off, wp.x, doorH * 0.5, wp.z);
+    const vi = document.getElementById('view-info');
+    if (vi) vi.textContent = 'vista: porta de entrada · ESC 1:50';
+  }
+
+  _initEditorShortcuts() {
+    document.addEventListener('keydown', (e) => {
+      if (e.isComposing) return;
+      const t = e.target;
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
+      if (this._rpaFsActive) return;
+      const edtr = this.services.editor;
+      const W = this.services.walkthrough;
+      if (W && W.walkMode) return;
+
+      const k = e.key.toLowerCase();
+
+      if (e.ctrlKey || e.metaKey) {
+        if (k === 's') { e.preventDefault(); if (this.persistProjectNow) this.persistProjectNow('teclado Ctrl+S'); return; }
+        if (k === 'z' && edtr) {
+          e.preventDefault();
+          if (e.shiftKey) edtr.redoEdit(); else edtr.undoEdit();
+          this._afterUndoRedo();
+          return;
+        }
+        if (k === 'y' && edtr) {
+          e.preventDefault();
+          edtr.redoEdit();
+          this._afterUndoRedo();
+          return;
+        }
+        return;
+      }
+      if (!edtr) return;
+
+      if (k === 'g') { document.getElementById('mode-move')?.click(); return; }
+      if (k === 'r') { document.getElementById('mode-rotate')?.click(); return; }
+      if (k === 's') { document.getElementById('mode-scale')?.click(); return; }
+      if (k === 'f') {
+        e.preventDefault();
+        if (!edtr.selected) { this._flashHint('Selecione um objeto antes de preencher o espaço'); return; }
+        document.getElementById('btn-fill')?.click();
+        return;
+      }
+      if (k === 'p') { e.preventDefault(); this._focusEntryDoor(); return; }
+      if (k === 'delete' || k === 'backspace') {
+        e.preventDefault();
+        if (!edtr.selected) { this._flashHint('Nada selecionado para excluir'); return; }
+        document.getElementById('btn-delete')?.click();
+        return;
+      }
+      if (k === 'escape') {
+        const cm = document.getElementById('ctx-menu');
+        if (cm && cm.style.display === 'block') { cm.style.display = 'none'; return; }
+        if (edtr.selected) { e.preventDefault(); edtr.deselectObject(); }
+        return;
+      }
+    });
+  }
+
+  _initContextMenu() {
+    const menu = document.getElementById('ctx-menu');
+    if (!menu) return;
+    const hide = () => { menu.style.display = 'none'; menu.innerHTML = ''; menu._ctxOpen = false; };
+
+    const buildItem = (label, icon, fn, accel) => {
+      const el = document.createElement('div');
+      el.className = 'gnome-menu-item';
+      el.innerHTML = '<span class="icon">' + (icon || '') + '</span>' + label
+        + (accel ? '<span class="shortcut">' + accel + '</span>' : '');
+      el.addEventListener('click', (e) => { e.stopPropagation(); hide(); fn(); });
+      return el;
+    };
+
+    document.addEventListener('pointerdown', (e) => {
+      if (menu._ctxOpen && !menu.contains(e.target)) hide();
+    });
+
+    const canvas = this.sceneManager ? this.sceneManager.getRenderer().domElement : null;
+    if (!canvas) return;
+
+    canvas.addEventListener('contextmenu', (e) => {
+      if (this.services.walkthrough && this.services.walkthrough.walkMode) return;
+      if (this._rpaFsActive) return;
+      e.preventDefault();
+      const edtr = this.services.editor;
+      if (!edtr) return;
+
+      const obj = edtr.pickAtPx(e.clientX, e.clientY);
+      const items = [];
+      const modeClick = (id) => () => { document.getElementById(id)?.click(); };
+
+      if (obj) {
+        edtr.selectObject(obj);
+        items.push(buildItem('Mover', '✥', modeClick('mode-move'), 'G'));
+        items.push(buildItem('Girar', '⟳', modeClick('mode-rotate'), 'R'));
+        items.push(buildItem('Escalar', '⤢', modeClick('mode-scale'), 'S'));
+        items.push('sep');
+        items.push(buildItem('Preencher espaço', '⬚', () => document.getElementById('btn-fill')?.click(), 'F'));
+        items.push(buildItem('Excluir', '🗑', () => document.getElementById('btn-delete')?.click(), 'Del'));
+        items.push('sep');
+        items.push(buildItem('Focar porta de entrada', '🚪', () => this._focusEntryDoor(), 'P'));
+      } else {
+        items.push(buildItem('Focar porta de entrada', '🚪', () => this._focusEntryDoor(), 'P'));
+        items.push(buildItem('Focar cena', '◇', () => this.sceneManager && this.sceneManager.repositionCamera(5, 4, 5, 0, 0.6, 0)));
+      }
+
+      menu.innerHTML = '';
+      items.forEach((it) => {
+        if (it === 'sep') {
+          const s = document.createElement('div');
+          s.className = 'gnome-menu-sep';
+          menu.appendChild(s);
+          return;
+        }
+        menu.appendChild(it);
+      });
+      menu.style.display = 'block';
+      menu._ctxOpen = true;
+      const r = menu.getBoundingClientRect();
+      menu.style.left = Math.min(e.clientX, window.innerWidth - r.width - 8) + 'px';
+      menu.style.top = Math.min(e.clientY, window.innerHeight - r.height - 8) + 'px';
+    });
   }
 
   _toggleWindow(winId, menuItem) {
@@ -1707,10 +1923,10 @@ this.initUI();
       if (user) {
         content.innerHTML = `
           <div class="auth-user">
-            <div class="auth-avatar">${user.avatar ? `<img src="${user.avatar}" alt="">` : (user.name || user.email).slice(0, 1).toUpperCase()}</div>
+            <div class="auth-avatar">${safeUrl(user.avatar) ? `<img src="${escHtml(safeUrl(user.avatar))}" alt="">` : escHtml((user.name || user.email || "?").slice(0, 1).toUpperCase())}</div>
             <div class="auth-info">
-              <div class="auth-name">${user.name || user.email}</div>
-              <div class="auth-email">${user.email}</div>
+              <div class="auth-name">${escHtml(user.name || user.email)}</div>
+              <div class="auth-email">${escHtml(user.email)}</div>
             </div>
             <div class="auth-actions">
               <button id="btn-logout" class="btn-mini">Sair</button>
@@ -1722,15 +1938,15 @@ this.initUI();
         if (btnLogout) btnLogout.onclick = () => auth.logout();
 
         const initials = (user.name || user.email || '?').slice(0, 1).toUpperCase();
-        gnomeAccountIcon.innerHTML = user.avatar ? `<img src="${user.avatar}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover">` : initials;
+        gnomeAccountIcon.innerHTML = safeUrl(user.avatar) ? `<img src="${escHtml(safeUrl(user.avatar))}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover">` : escHtml(initials);
         gnomeAccountText.textContent = user.name || user.email;
 
         gnomeAccountDropdown.innerHTML = `
           <div class="gnome-menu-item no-icon" data-action="account-info">
-            <span class="icon" style="font-size:16px">${user.avatar ? `<img src="${user.avatar}" alt="" style="width:20px;height:20px;border-radius:50%;object-fit:cover">` : initials}</span>
+            <span class="icon" style="font-size:16px">${safeUrl(user.avatar) ? `<img src="${escHtml(safeUrl(user.avatar))}" alt="" style="width:20px;height:20px;border-radius:50%;object-fit:cover">` : escHtml(initials)}</span>
             <div style="line-height:1.3">
-              <div style="font-weight:600;font-size:11.5px">${user.name || user.email}</div>
-              <div style="font-size:10px;color:var(--ink-3)">${user.email}</div>
+              <div style="font-weight:600;font-size:11.5px">${escHtml(user.name || user.email)}</div>
+              <div style="font-size:10px;color:var(--ink-3)">${escHtml(user.email)}</div>
             </div>
           </div>
           <div class="gnome-menu-sep"></div>
@@ -1964,5 +2180,6 @@ this.initUI();
 }
 
 const app = new TrailerApp();
+window.__app = app;
 window.trailerApp = app;
 app.init();

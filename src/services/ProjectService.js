@@ -1,3 +1,12 @@
+
+function escHtml(v) {
+  return String(v ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 /**
  * ProjectService — carrega e gerencia o arquivo de projeto.
  *
@@ -58,28 +67,13 @@ export default class ProjectService {
     /** @type {FileSystemFileHandle|null} */
     this._fileHandle = null;
     this._openFileName = null;
-    /** Layout serializado de projetos antigos (envelope trailer3d-project) — não persiste no JSON. */
-    this._legacyLayout = null;
   }
 
   /**
-   * Normaliza formatos antigos de projeto para o formato plano atual.
-   * Envelope antigo (v2): { v, type:'trailer3d-project', meta, project:{...}, layout:{...} }
-   * Retorna o conteúdo flat + _legacyLayout quando o layout antigo existir.
+   * Normaliza o projeto para o formato plano atual.
    */
   static normalize(data) {
     if (!data || typeof data !== 'object') return data;
-    if (data.type === 'trailer3d-project' && data.project && typeof data.project === 'object') {
-      const inner = JSON.parse(JSON.stringify(data.project));
-      if (!inner.meta && data.meta) inner.meta = JSON.parse(JSON.stringify(data.meta));
-      if (data.layout && typeof data.layout === 'object') inner._legacyLayout = data.layout;
-      return inner;
-    }
-    if (data.project && typeof data.project === 'object' && !data.dimensions && !data.geometry) {
-      const inner = JSON.parse(JSON.stringify(data.project));
-      if (data.layout && typeof data.layout === 'object') inner._legacyLayout = data.layout;
-      return inner;
-    }
     return data;
   }
 
@@ -104,22 +98,15 @@ export default class ProjectService {
     if (!data || typeof data !== 'object') throw new Error('Projeto inválido');
     data = ProjectService.normalize(data);
     if (!data.dimensions && !data.geometry) throw new Error('Projeto faltando dimensions ou geometry');
-    this._legacyLayout = data._legacyLayout || null;
-    delete data._legacyLayout;
     this.project = data;
     this._emit('change', this.project);
     return this.project;
-  }
-
-  getLegacyLayout() {
-    return this._legacyLayout || null;
   }
 
   resetToDefault() {
     this.project = JSON.parse(JSON.stringify(DEFAULT_PROJECT));
     this._fileHandle = null;
     this._openFileName = null;
-    this._legacyLayout = null;
     this._emit('change', this.project);
     return this.project;
   }
@@ -182,6 +169,8 @@ export default class ProjectService {
 
     if (!this.project.geometry) this.project.geometry = { format: 'parts', parts: [] };
     this.project.geometry.format = 'parts';
+    this.project.geometry.kind = 'open-box';
+    this.project.geometry.projectType = 'box';
     this.project.geometry.unit = 'm';
     this.project.geometry.parts = ProjectService.buildOpenBoxParts(L, P, H, t);
     if (!this.project.geometry.material) {
@@ -348,7 +337,7 @@ export default class ProjectService {
   renderSpecPanel(rootEl) {
     if (!rootEl) return;
     const rows = this.project.specs.map((s) => {
-      return '<div class="s"><span>' + s.label + '</span><strong>' + this.formatSpec(s) + '</strong></div>';
+      return '<div class="s"><span>' + escHtml(s.label) + '</span><strong>' + escHtml(this.formatSpec(s)) + '</strong></div>';
     }).join('');
     rootEl.innerHTML = rows;
   }
