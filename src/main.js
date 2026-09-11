@@ -318,8 +318,9 @@ class TrailerApp {
       this.services.ai = new AIService({
         editableMeshes: this.editableMeshes,
         trailer: this.trailer,
-        ollamaUrl: 'http://192.168.15.4:11436',
-        ollamaModel: 'trailer-editor:latest',
+        // Homelab GPU0 (RTX 3060 :11434) — NUNCA NAS :11436 (exclusivo trading)
+        ollamaUrl: 'http://192.168.15.2:11434',
+        ollamaModel: 'trailer3d-assistant:latest',
         setWorldPosFn: (obj, x, y, z) => { obj.position.set(x, y, z); },
         resolvePlacementFn: (obj) => ed.resolvePlacement(obj),
         pushUndoFn: () => ed.pushUndo(),
@@ -366,6 +367,9 @@ class TrailerApp {
 
       this.services.auth = new AuthService();
       this.services.project = new ProjectService();
+      if (this.services.export && this.services.export.setProjectService) {
+        this.services.export.setProjectService(this.services.project);
+      }
       this.services.weight = new WeightService(this.services.project.getWeights());
       this.services.userFiles = new UserFilesService({
         auth: this.services.auth,
@@ -611,7 +615,68 @@ this.initUI();
         weight.syncFromKinds(kinds);
       }, 100);
     });
-    bind('btn-save', () => save.saveLayout());
+    const persistProjectNow = async (reason) => {
+      let synced = null;
+      try { synced = this.syncProjectFromScene && this.syncProjectFromScene(); } catch (e) { console.warn(e); }
+      try { save.saveLayout(); } catch (e) { console.warn(e); }
+
+      // 1) Sobrescreve o .json que foi aberto (File System Access API)
+      let fileWrite = null;
+      try {
+        if (this.services.project && typeof this.services.project.saveToOpenFile === 'function') {
+          fileWrite = await this.services.project.saveToOpenFile();
+        }
+      } catch (e) {
+        console.warn('saveToOpenFile', e);
+        fileWrite = { ok: false, mode: 'none', error: e.message };
+      }
+
+      // 2) Lista de projetos (se logado)
+      let savedFile = null;
+      try {
+        const uf = this.services.userFiles;
+        if (uf && uf.auth && uf.auth.isAuthenticated()) {
+          const n = uf.getCurrentProjectName()
+            || this.services.project.getOpenFileName?.()
+            || this.services.project.getMeta()?.name
+            || 'Projeto';
+          savedFile = uf.saveCurrent(n);
+        } else {
+          try {
+            const proj = this.services.project.getProject();
+            localStorage.setItem('trailer3d-project-json-v1', JSON.stringify(proj));
+          } catch (e2) { console.warn(e2); }
+        }
+      } catch (e) {
+        console.warn('saveCurrent', e);
+      }
+
+      const dim = synced || null;
+      let msg;
+      if (fileWrite && fileWrite.ok && fileWrite.mode === 'overwrite') {
+        msg = 'Sobrescrito: ' + (fileWrite.name || 'arquivo')
+          + (dim ? (' · ' + dim.L + '×' + dim.P + '×' + dim.H + ' mm rev' + dim.rev) : '');
+      } else if (fileWrite && fileWrite.ok && fileWrite.mode === 'download') {
+        msg = 'JSON baixado (abra com o seletor moderno para poder sobrescrever no disco)'
+          + (dim ? (': ' + dim.L + '×' + dim.P + '×' + dim.H + ' mm') : '');
+      } else if (fileWrite && !fileWrite.ok) {
+        msg = 'Falha ao gravar arquivo: ' + (fileWrite.error || 'erro')
+          + (dim ? (' · em memória: ' + dim.L + '×' + dim.P + '×' + dim.H + ' mm') : '');
+      } else {
+        msg = dim
+          ? ('Salvo em memória: ' + dim.L + '×' + dim.P + '×' + dim.H + ' mm · rev' + dim.rev)
+          : 'Salvo';
+      }
+      if (reason) msg += ' (' + reason + ')';
+      if (savedFile) msg += ' · lista: ' + savedFile.name;
+      ai && ai.aiLog(msg, fileWrite && !fileWrite.ok ? 'err' : 'sys');
+      const vi = document.getElementById('view-info');
+      if (vi) vi.textContent = msg;
+      return { synced, savedFile, fileWrite };
+    };
+    this.persistProjectNow = persistProjectNow;
+
+    bind('btn-save', () => { persistProjectNow('Salvar'); });
 
     // ── Gerenciamento de projeto ──
     const { project, weight, userFiles } = this.services;
@@ -656,11 +721,124 @@ this.initUI();
       setVal('rot-x', (obj.rotation.x * 180 / Math.PI).toFixed(0));
       setVal('rot-y', (obj.rotation.y * 180 / Math.PI).toFixed(0));
       setVal('rot-z', (obj.rotation.z * 180 / Math.PI).toFixed(0));
+
+      // Painel mm da caixa (project-box)
+      const boxSec = document.getElementById('box-dims-section');
+      const dimsEl = document.getElementById('sel-dims');
+      const isBox = obj.userData && obj.userData.kind === 'project-box';
+      if (boxSec) boxSec.style.display = isBox ? 'block' : 'none';
+      if (isBox) {
+        const base = obj.userData.baseSizeMm || { L: 1000, P: 500, H: 500 };
+        const L = Math.round(base.L * obj.scale.x);
+        const H = Math.round(base.H * obj.scale.y);
+        const P = Math.round(base.P * obj.scale.z);
+        setVal('box-l', L);
+        setVal('box-p', P);
+        setVal('box-h', H);
+        setVal('box-t', obj.userData.thicknessMm || 15);
+        if (dimsEl) dimsEl.innerHTML = '<b>Larg ' + L + '</b> × <b>Prof ' + P + '</b> × <b>Alt ' + H + '</b> mm';
+      } else if (dimsEl && obj.userData && obj.userData.box_mm) {
+        const bm = obj.userData.box_mm;
+        dimsEl.innerHTML = 'peça <b>' + (obj.userData.name || '') + '</b> · ' + bm[0] + '×' + bm[1] + '×' + bm[2] + ' mm';
+      } else if (dimsEl) {
+        dimsEl.textContent = '';
+      }
+
       if (material) material.updateMatUI(obj);
       if (marcenaria) marcenaria.updateMarcenariaButton(obj, (o) => material.materialFamilyOf(o));
     };
     editor.onSelectionChange = updateEditorPanel;
     if (ai) ai.updateEditorPanel = updateEditorPanel;
+
+    // Gera geometry.parts de caixa aberta: fundo base full + 4 paredes
+    const buildOpenBoxProjectParts = (Lmm, Pmm, Hmm, tmm) => {
+      const L = Lmm / 1000, P = Pmm / 1000, H = Hmm / 1000, t = tmm / 1000;
+      const wallH = Math.max(t, H - t); // paredes sobre o fundo
+      const innerL = Math.max(t, L - 2 * t);
+      return [
+        {
+          name: 'Fundo', role: 'base',
+          box_mm: [Lmm, tmm, Pmm], box: [L, t, P],
+          position: [0, t / 2, 0], rotation: [0, 0, 0],
+          cut_mm: { comp: Math.max(Lmm, Pmm), larg: Math.min(Lmm, Pmm), esp: tmm },
+        },
+        {
+          name: 'Lateral 1', role: 'lateral_esquerda',
+          box_mm: [tmm, Math.round(wallH * 1000), Pmm], box: [t, wallH, P],
+          position: [-(L / 2 - t / 2), t + wallH / 2, 0], rotation: [0, 0, 0],
+          cut_mm: { comp: Math.round(wallH * 1000), larg: Pmm, esp: tmm },
+        },
+        {
+          name: 'Lateral 2', role: 'lateral_direita',
+          box_mm: [tmm, Math.round(wallH * 1000), Pmm], box: [t, wallH, P],
+          position: [+(L / 2 - t / 2), t + wallH / 2, 0], rotation: [0, 0, 0],
+          cut_mm: { comp: Math.round(wallH * 1000), larg: Pmm, esp: tmm },
+        },
+        {
+          name: 'Frente', role: 'frente',
+          box_mm: [Math.round(innerL * 1000), Math.round(wallH * 1000), tmm], box: [innerL, wallH, t],
+          position: [0, t + wallH / 2, -(P / 2 - t / 2)], rotation: [0, 0, 0],
+          cut_mm: { comp: Math.round(innerL * 1000), larg: Math.round(wallH * 1000), esp: tmm },
+        },
+        {
+          name: 'Trás', role: 'fundo_parede',
+          box_mm: [Math.round(innerL * 1000), Math.round(wallH * 1000), tmm], box: [innerL, wallH, t],
+          position: [0, t + wallH / 2, +(P / 2 - t / 2)], rotation: [0, 0, 0],
+          cut_mm: { comp: Math.round(innerL * 1000), larg: Math.round(wallH * 1000), esp: tmm },
+        },
+      ];
+    };
+
+    // Redimensionar caixa inteira por mm (Larg/Prof/Alt) → reconstrói peças + export
+    const applyBoxDimsBtn = document.getElementById('btn-apply-box-dims');
+    if (applyBoxDimsBtn) {
+      applyBoxDimsBtn.onclick = () => {
+        const obj = editor.selected;
+        if (!obj || !obj.userData || obj.userData.kind !== 'project-box') return;
+        const base = obj.userData.baseSizeMm || { L: 1200, P: 500, H: 950 };
+        const L = Math.max(50, parseFloat(document.getElementById('box-l')?.value) || base.L);
+        const P = Math.max(50, parseFloat(document.getElementById('box-p')?.value) || base.P);
+        const H = Math.max(50, parseFloat(document.getElementById('box-h')?.value) || base.H);
+        const t = Math.max(3, parseFloat(document.getElementById('box-t')?.value) || obj.userData.thicknessMm || 15);
+        editor.pushUndo();
+        try {
+          const proj = this.services.project && this.services.project.getProject();
+          if (!proj) return;
+          if (!proj.geometry) proj.geometry = { format: 'parts', parts: [] };
+          proj.geometry.format = 'parts';
+          proj.geometry.parts = (this.services.project.constructor.buildOpenBoxParts
+            ? this.services.project.constructor.buildOpenBoxParts(L, P, H, t)
+            : buildOpenBoxProjectParts(L, P, H, t));
+          if (!proj.geometry.material) {
+            proj.geometry.material = { type: 'standard', color: '#c9a86c', roughness: 0.85, thickness_mm: t };
+          } else {
+            proj.geometry.material.thickness_mm = t;
+            proj.geometry.material.label = 'COMPENSADO CRU NU ' + t + ' mm MULTIMARCAS BR';
+          }
+          if (!proj.dimensions_mm) proj.dimensions_mm = {};
+          proj.dimensions_mm.externo = { largura_X: L, profundidade_Z: P, altura_Y: H };
+          proj.dimensions_mm.espessura = t;
+          proj.dimensions_mm.interno = {
+            largura_X: Math.max(0, L - 2 * t),
+            profundidade_Z: Math.max(0, P - 2 * t),
+            altura_Y: Math.max(0, H - t),
+          };
+          if (proj.meta) proj.meta.rev = (Number(proj.meta.rev) || 0) + 1;
+          this.services.project.loadProject(proj);
+          if (this.services.export) {
+            const parts = this.services.export.extractPartsFromProject(proj);
+            this.services.export.setScenePieces(parts.length ? parts : null);
+          }
+          buildGeometryFromProject(proj);
+          ai && ai.aiLog('Caixa redimensionada: ' + L + '×' + P + '×' + H + ' mm · t=' + t + ' — clique Salvar (baixa JSON atualizado)', 'sys');
+          const vi2 = document.getElementById('view-info');
+          if (vi2) vi2.textContent = 'ALTERADO ' + L + '×' + P + '×' + H + ' mm — Salvar para gravar JSON';
+        } catch (e) {
+          console.error('apply box dims', e);
+          alert('Erro ao redimensionar: ' + e.message);
+        }
+      };
+    }
 
     [['mode-move', 'translate'], ['mode-rotate', 'rotate'], ['mode-scale', 'scale']].forEach(([id, mode]) => {
       bind(id, () => {
@@ -866,8 +1044,29 @@ this.initUI();
       attachCarpentryPart: (parent, spec, worldPoint, localPoint) => marcenaria.attachCarpentryPart(parent, spec, worldPoint, localPoint),
       aiLog: (text, cls) => ai && ai.aiLog(text, cls),
     };
-    save.captureFactoryLayout(() => editor.captureLayout());
+        save.captureFactoryLayout(() => editor.captureLayout());
     save.loadLayout(saveDeps);
+    // Restaura geometry.parts salvo (sem login) e reconstrói cena
+    try {
+      const rawProj = localStorage.getItem('trailer3d-project-json-v1');
+      if (rawProj) {
+        const savedProj = JSON.parse(rawProj);
+        if (savedProj && savedProj.geometry && Array.isArray(savedProj.geometry.parts) && savedProj.geometry.parts.length) {
+          this.services.project.loadProject(savedProj);
+          // rebuild happens when buildGeometryFromProject is assigned later — queue microtask after initUI continues
+          queueMicrotask(() => {
+            if (typeof this.rebuildProjectGeometry === 'function') {
+              this.rebuildProjectGeometry(savedProj);
+              if (this.services.export) {
+                const parts = this.services.export.extractPartsFromProject(savedProj);
+                this.services.export.setScenePieces(parts.length ? parts : null);
+              }
+              ai && ai.aiLog('Projeto restaurado do salvamento local (rev' + (savedProj.meta?.rev||'?') + ').', 'sys');
+            }
+          });
+        }
+      }
+    } catch (e) { console.warn('restore project-json', e); }
 
     const loadedKinds = this.editableMeshes
       .filter((m) => m.userData && m.userData.kind)
@@ -877,6 +1076,7 @@ this.initUI();
     if (typeof this.ensureEnvelopeVisibility === 'function') this.ensureEnvelopeVisibility(true, true);
 
     // ── Iniciar com cena vazia (projeto em branco) ──
+    const bootTrailerChildren = this.trailer ? this.trailer.children.slice() : [];
     if (this.trailer) {
       while (this.trailer.children.length) this.trailer.remove(this.trailer.children[0]);
     }
@@ -950,6 +1150,25 @@ this.initUI();
       emptyProjectStash = null;
     };
 
+    /** Re-materializa o trailer de fábrica inteiro (árvore, não só folhas) quando a cena foi esvaziada no boot.
+ *  Meshes estruturais fora do factoryLayout são marcados layoutProtected para nunca serem removidos pelo SaveService. */
+    const materializeFactory = () => {
+      if (this.trailer && bootTrailerChildren && bootTrailerChildren.length) {
+        const allowed = new Set((save.factoryLayout || []).map((st) => st && st.mesh).filter(Boolean));
+        bootTrailerChildren.forEach((obj) => {
+          if (obj && !obj.parent) this.trailer.add(obj);
+        });
+        if (allowed.size) {
+          this.trailer.traverse((c) => {
+            if (c && c.isMesh && !allowed.has(c) && !c.userData.layoutProtected) {
+              c.userData.layoutProtected = true;
+            }
+          });
+        }
+      }
+      this._collectEditableMeshes();
+    };
+
     const hardResetUiForNewProject = () => {
       showWalls = false;
       showRoof = false;
@@ -989,6 +1208,7 @@ this.initUI();
     const runNewProject = () => {
       if (confirm('Criar novo projeto? As alterações não salvas serão perdidas.')) {
         userFiles.newProject();
+        try { project.clearFileHandle && project.clearFileHandle(); } catch (e) {}
         weight.setProjectWeights(project.getWeights());
         this.renderSpecPanel(document.getElementById('specs-list'));
         weight.resetPaletteItems();
@@ -1018,46 +1238,181 @@ this.initUI();
 
       const partsGroup = new THREE.Group();
       partsGroup.name = 'project-parts';
+      partsGroup.userData.editable = true;
+      partsGroup.userData.kind = 'project-box';
+      partsGroup.userData.name = (proj.meta && proj.meta.name) || 'Caixa';
+      partsGroup.userData.category = 'projeto';
+      partsGroup.userData.collider = true;
 
       geo.parts.forEach((p) => {
-        const b = p.box || [1, 1, 1];
+        // Preferir box_mm (mm) → metros; evita ambiguidade
+        let b;
+        if (Array.isArray(p.box_mm) && p.box_mm.length >= 3) {
+          b = p.box_mm.map((v) => (Number(v) || 0) / 1000);
+        } else {
+          b = p.box || [1, 1, 1];
+        }
         const geoMesh = new THREE.BoxGeometry(b[0], b[1], b[2]);
         const mesh = new THREE.Mesh(geoMesh, mat);
         mesh.name = p.name || 'part';
         mesh.castShadow = true;
         mesh.receiveShadow = true;
+        mesh.userData.editable = true;
         mesh.userData.kind = 'project-part';
         mesh.userData.pieceName = p.name;
+        mesh.userData.name = p.name || 'part';
+        mesh.userData.category = 'projeto';
+        mesh.userData.collider = true;
+        mesh.userData.box_mm = [Math.round(b[0]*1000), Math.round(b[1]*1000), Math.round(b[2]*1000)];
 
         if (p.position) mesh.position.set(p.position[0], p.position[1], p.position[2]);
         if (p.rotation) mesh.rotation.set(p.rotation[0], p.rotation[1], p.rotation[2]);
+
+        // Arestas para ler proporção L/P/H
+        try {
+          const edges = new THREE.LineSegments(
+            new THREE.EdgesGeometry(geoMesh),
+            new THREE.LineBasicMaterial({ color: 0x333333 })
+          );
+          mesh.add(edges);
+        } catch (e) { /* ignore */ }
 
         partsGroup.add(mesh);
         this.editableMeshes.push(mesh);
       });
 
+      // Bbox base para redimensionar em mm
+      const baseBox = new THREE.Box3().setFromObject(partsGroup);
+      const baseSize = new THREE.Vector3();
+      baseBox.getSize(baseSize);
+      partsGroup.userData.baseSizeMm = {
+        L: Math.round(baseSize.x * 1000) || 1,
+        P: Math.round(baseSize.z * 1000) || 1,
+        H: Math.round(baseSize.y * 1000) || 1,
+      };
+      if (proj.dimensions_mm && proj.dimensions_mm.externo) {
+        const ex = proj.dimensions_mm.externo;
+        partsGroup.userData.baseSizeMm = {
+          L: ex.largura_X || ex.L || partsGroup.userData.baseSizeMm.L,
+          P: ex.profundidade_Z || ex.P || partsGroup.userData.baseSizeMm.P,
+          H: ex.altura_Y || ex.H || partsGroup.userData.baseSizeMm.H,
+        };
+      }
+      partsGroup.userData.thicknessMm = (proj.dimensions_mm && proj.dimensions_mm.espessura)
+        || (geo.material && geo.material.thickness_mm) || 15;
+
+      this.editableMeshes.push(partsGroup);
       this.trailer.add(partsGroup);
       if (typeof this.ensureEnvelopeVisibility === 'function') this.ensureEnvelopeVisibility(true, true);
       this._collectAllEditable();
+      // Seleciona a caixa inteira para o usuário redimensionar
+      try { editor.selectObject(partsGroup); } catch (e) { /* ignore */ }
+      this._projectBoxGroup = partsGroup;
+
+      // Enquadra câmera em vista 3/4 FRONTAL canônica:
+      // X = largura (esquerda-direita), Z = profundidade (para longe), Y = altura (cima)
+      try {
+        const box3 = new THREE.Box3().setFromObject(partsGroup);
+        const size = new THREE.Vector3();
+        const center = new THREE.Vector3();
+        box3.getSize(size);
+        box3.getCenter(center);
+        const mm = (v) => Math.round(v * 1000);
+        const Lmm = mm(size.x), Pmm = mm(size.z), Hmm = mm(size.y);
+
+        // Eixos de referência no centro do chão
+        const oldAx = this.trailer.getObjectByName('project-axes');
+        if (oldAx) this.trailer.remove(oldAx);
+        const axes = new THREE.AxesHelper(Math.max(size.x, size.y, size.z) * 0.6);
+        axes.name = 'project-axes';
+        axes.position.set(center.x, box3.min.y + 0.001, center.z);
+        this.trailer.add(axes);
+
+        // Câmera: olha de FRENte-direita-cima → profundidade no eixo Z visível como “para trás”
+        const dist = Math.max(size.x, size.y, size.z, 0.4) * 2.4;
+        if (this.sceneManager && this.sceneManager.repositionCamera) {
+          this.sceneManager.repositionCamera(
+            center.x + dist * 0.55,
+            center.y + dist * 0.4,
+            center.z + dist * 1.05,
+            center.x,
+            center.y + size.y * 0.35,
+            center.z
+          );
+        }
+        const vi = document.getElementById('view-info');
+        if (vi) {
+          vi.textContent = 'LARG ' + Lmm + ' × PROF ' + Pmm + ' × ALT ' + Hmm + ' mm · rev ' + (proj.meta?.rev || '?') + ' · eixos RGB=XYZ';
+        }
+        console.log('[buildGeometryFromProject] LARG(X)=', Lmm, 'PROF(Z)=', Pmm, 'ALT(Y)=', Hmm, 'rev', proj.meta?.rev);
+        if (proj.dimensions_mm && proj.dimensions_mm.externo) {
+          console.log('[buildGeometryFromProject] pedido externo', proj.dimensions_mm.externo);
+        }
+      } catch (e) {
+        console.warn('[buildGeometryFromProject] frame camera', e);
+      }
       return true;
+    };
+    // Expõe para save/load e redimensionamento
+    this.rebuildProjectGeometry = buildGeometryFromProject;
+    this.syncProjectFromScene = () => {
+      const box = (this.editableMeshes || []).find((m) => m && m.userData && m.userData.kind === 'project-box')
+        || this._projectBoxGroup;
+      if (!box || !this.services.project) return null;
+      return this.services.project.syncFromBoxGroup(box);
     };
 
     const runOpenProject = () => {
       project.openProjectFile().then((proj) => {
-        if (proj) {
-          try { project.loadProject(proj); } catch (e) {}
-          if (app.services.export) app.services.export.setScenePieces(null);
-          const built = buildGeometryFromProject(proj);
-          if (!built) {
-            restoreSceneFromEmpty();
-            save.resetLayout((text, cls) => ai && aiLog(text, cls), { forceFactory: true });
-            this.ensureEnvelopeVisibility(true, true);
+        if (!proj) return;
+        try { project.loadProject(proj); } catch (e) { return; }
+        // Projeto antigo (envelope trailer3d-project v2): restaura o layout salvo na cena
+        const legacy = project.getLegacyLayout && project.getLegacyLayout();
+        let layoutRestored = false;
+        if (legacy && Array.isArray(legacy.objects) && legacy.objects.length) {
+          try {
+            materializeFactory();
+            // Boot esvaziou a cena: re-materializa a árvore de fábrica ANTES de posicionar
+            save.resetLayout((text, cls) => ai && ai.aiLog(text, cls), { forceFactory: true });
+            save.applyCapturedFromLayout(legacy, {
+              spawnPaletteItem: (kind) => palette.spawnPaletteItem(kind),
+              attachProductMeta: (mesh, kind) => palette.attachProductMeta(mesh, kind),
+              attachCarpentryPart: (parent, spec, worldPoint) => marcenaria.attachCarpentryPart(parent, spec, worldPoint),
+            });
+            save.captureFactoryLayout(() => editor.captureLayout());
+            save.saveLayout((text, cls) => ai && ai.aiLog(text, cls));
+            ai && ai.aiLog('Layout antigo restaurado (' + legacy.objects.length + ' objetos).', 'sys');
+            layoutRestored = true;
+          } catch (e2) {
+            console.warn('legacy layout apply', e2);
           }
-          weight.setProjectWeights(project.getWeights());
-          this.renderSpecPanel(document.getElementById('specs-list'));
-          updateCurrentProjectName();
-          ai && ai.aiLog('Projeto importado: ' + (proj.meta?.name || ''), 'sys');
         }
+        if (app.services.export) {
+          // Força plano de corte a partir do JSON importado (nunca trailer default)
+          const fromFile = app.services.export.extractPartsFromProject
+            ? app.services.export.extractPartsFromProject(proj)
+            : [];
+          app.services.export.setScenePieces(fromFile.length ? fromFile : null);
+        }
+        const built = buildGeometryFromProject(proj);
+        if (!built) {
+          if (!layoutRestored) {
+            materializeFactory();
+          }
+          restoreSceneFromEmpty();
+          if (!layoutRestored) {
+            save.resetLayout((text, cls) => ai && ai.aiLog(text, cls), { forceFactory: true });
+          }
+          this.ensureEnvelopeVisibility(true, true);
+        }
+        weight.setProjectWeights(project.getWeights());
+        this.renderSpecPanel(document.getElementById('specs-list'));
+        updateCurrentProjectName();
+        const dim = proj.dimensions_mm && proj.dimensions_mm.externo;
+        const dimTxt = dim
+          ? ` ${dim.largura_X||dim.L||'?'}×${dim.profundidade_Z||dim.P||'?'}×${dim.altura_Y||dim.H||'?'} mm`
+          : '';
+        ai && ai.aiLog('Projeto importado: ' + (proj.meta?.name || '') + ' rev' + (proj.meta?.rev||'') + dimTxt, 'sys');
       }).catch((err) => alert('Erro: ' + err.message));
     };
     const btnNewProject = document.getElementById('btn-new-project');
@@ -1104,7 +1459,7 @@ this.initUI();
             runNewProject();
             break;
           case 'save':
-            save.saveLayout();
+            persistProjectNow('menu Salvar');
             break;
           case 'save-as':
             document.getElementById('files-section')?.scrollIntoView({ behavior: 'smooth' });
@@ -1120,6 +1475,10 @@ this.initUI();
             document.getElementById('cut-export-modal').style.display = '';
             break;
           case 'download-project':
+            try {
+              const synced = this.syncProjectFromScene && this.syncProjectFromScene();
+              if (synced) ai && ai.aiLog('Medidas sincronizadas: ' + synced.L + '×' + synced.P + '×' + synced.H + ' mm · rev' + synced.rev, 'sys');
+            } catch (e) { console.warn(e); }
             project.downloadProject();
             ai && ai.aiLog('Projeto baixado como arquivo .json.', 'sys');
             break;
@@ -1501,7 +1860,17 @@ this.initUI();
           e.stopPropagation();
           try {
             userFiles.load(id);
-            // Atualiza peso e spec panel com o projeto carregado
+            // Reconstrói geometry.parts na cena (senão reabre no tamanho antigo)
+            const loadedProj = project.getProject();
+            if (loadedProj && loadedProj.geometry && Array.isArray(loadedProj.geometry.parts) && loadedProj.geometry.parts.length) {
+              if (typeof this.rebuildProjectGeometry === 'function') {
+                this.rebuildProjectGeometry(loadedProj);
+              }
+              if (this.services.export) {
+                const parts = this.services.export.extractPartsFromProject(loadedProj);
+                this.services.export.setScenePieces(parts.length ? parts : null);
+              }
+            }
             weight.setProjectWeights(project.getWeights());
             this.renderSpecPanel(document.getElementById('specs-list'));
             updateCurrentName();
@@ -1523,11 +1892,12 @@ this.initUI();
 
     btnSave.onclick = () => {
       if (!auth.isAuthenticated()) { alert('Faça login primeiro'); return; }
-      const name = input.value.trim() || 'Projeto sem nome';
+      const name = input.value.trim() || userFiles.getCurrentProjectName() || project.getMeta()?.name || 'Projeto sem nome';
       try {
+        try { this.syncProjectFromScene && this.syncProjectFromScene(); } catch (e) {}
         const saved = userFiles.saveCurrent(name);
+        try { this.services.save.saveLayout(); } catch (e) {}
         input.value = '';
-        // Feedback visual + scroll para o item salvo
         render();
         setTimeout(() => {
           const item = list.querySelector(`[data-id="${saved.id}"]`);
@@ -1536,10 +1906,13 @@ this.initUI();
             item.classList.add('flash');
             setTimeout(() => item.classList.remove('flash'), 1200);
           }
-          // Garante que a seção de arquivos está visível
           const hud = document.getElementById('hud');
           if (hud) hud.scrollIntoView({ behavior: 'smooth', block: 'end' });
         }, 50);
+        const dim = project.getProject()?.dimensions_mm?.externo;
+        if (dim) {
+          ai && ai.aiLog('Salvo "' + saved.name + '": ' + dim.largura_X + '×' + dim.profundidade_Z + '×' + dim.altura_Y + ' mm', 'sys');
+        }
       } catch (e) { alert(e.message); }
     };
 

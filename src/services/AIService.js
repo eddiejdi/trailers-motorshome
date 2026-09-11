@@ -1,11 +1,17 @@
 const THREE = window.THREE;
 
 export default class AIService {
-  constructor({ editableMeshes, trailer, ollamaUrl = 'http://127.0.0.1:11440', ollamaModel = 'llama3.1:8b', setWorldPosFn, resolvePlacementFn, pushUndoFn, selectObjectFn, deselectObjectFn, updateEditorPanelFn, fillObjectFn, externalHistoryUrl = './command-journal.json', learningUrls = null }) {
+  constructor({ editableMeshes, trailer, ollamaUrl = 'http://192.168.15.2:11434', ollamaModel = 'trailer3d-assistant:latest', setWorldPosFn, resolvePlacementFn, pushUndoFn, selectObjectFn, deselectObjectFn, updateEditorPanelFn, fillObjectFn, externalHistoryUrl = './command-journal.json', learningUrls = null }) {
     this.editableMeshes = editableMeshes;
     this.trailer = trailer;
     this.ollamaUrl = ollamaUrl;
     this.ollamaModel = ollamaModel;
+    // Homelab GPUs only (3060 → 1050). Never NAS :11436 (trading).
+    this.ollamaFallbacks = [
+      ollamaUrl,
+      'http://192.168.15.2:11434',
+      'http://192.168.15.2:11435',
+    ].filter((u, i, a) => u && a.indexOf(u) === i && !String(u).includes(':11436') && !String(u).includes('192.168.15.4'));
     this.setWorldPos = setWorldPosFn;
     this.resolvePlacement = resolvePlacementFn;
     this.pushUndo = pushUndoFn;
@@ -406,19 +412,35 @@ export default class AIService {
     this.aiBusy(true);
     try {
       const sysPrompt = this.buildSystemPrompt();
-      const resp = await fetch(this.ollamaUrl + '/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: this.ollamaModel,
-          system: sysPrompt,
-          prompt: 'Comando: ' + userText + '\nJSON:',
-          stream: false,
-          format: 'json',
-          options: { temperature: 0.0, num_predict: 280 },
-        }),
-      });
-      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const body = {
+        model: this.ollamaModel,
+        system: sysPrompt,
+        prompt: 'Comando: ' + userText + '\nJSON:',
+        stream: false,
+        format: 'json',
+        options: { temperature: 0.0, num_predict: 280 },
+      };
+      let resp = null;
+      let lastErr = null;
+      for (const url of this.ollamaFallbacks) {
+        try {
+          resp = await fetch(url + '/api/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+          });
+          if (resp.ok) {
+            this.ollamaUrl = url;
+            break;
+          }
+          lastErr = new Error('HTTP ' + resp.status + ' @ ' + url);
+          resp = null;
+        } catch (e) {
+          lastErr = e;
+          resp = null;
+        }
+      }
+      if (!resp) throw lastErr || new Error('Homelab GPUs indisponíveis');
       const data = await resp.json();
       const raw = data.response || '';
       this.lastInteraction = { userText, mode: 'llm', response: raw.slice(0, 2000), finishedAt: new Date().toISOString() };

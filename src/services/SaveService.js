@@ -13,7 +13,7 @@ export default class SaveService {
 
   serializeLayout() {
     return {
-      v: 2,
+      v: 3,
       savedAt: new Date().toISOString(),
       objects: this.editableMeshes.filter((m) => m.parent).map((m) => {
         const obj = {
@@ -25,6 +25,10 @@ export default class SaveService {
           p: [m.position.x, m.position.y, m.position.z],
           r: [m.rotation.x, m.rotation.y, m.rotation.z],
           s: [m.scale.x, m.scale.y, m.scale.z],
+          // Caixa geometry.parts: guarda medidas base para reabrir corretamente
+          baseSizeMm: m.userData.baseSizeMm || null,
+          thicknessMm: m.userData.thicknessMm || null,
+          box_mm: m.userData.box_mm || null,
         };
         const mat = m.material;
         if (mat && mat.isMeshStandardMaterial) {
@@ -123,6 +127,10 @@ export default class SaveService {
     if (!allowedNames || !allowedNames.size) return;
     for (let i = this.editableMeshes.length - 1; i >= 0; i--) {
       const m = this.editableMeshes[i];
+      if (m && m.userData && m.userData.layoutProtected) {
+        this.editableMeshes.splice(i, 1);
+        continue;
+      }
       const name = m && m.userData ? m.userData.name : null;
       if (!name || allowedNames.has(name)) continue;
       if (m.parent) m.parent.remove(m);
@@ -134,6 +142,10 @@ export default class SaveService {
     if (!allowedMeshes || !allowedMeshes.size) return;
     for (let i = this.editableMeshes.length - 1; i >= 0; i--) {
       const m = this.editableMeshes[i];
+      if (m && m.userData && m.userData.layoutProtected) {
+        this.editableMeshes.splice(i, 1);
+        continue;
+      }
       if (allowedMeshes.has(m)) continue;
       if (m.parent) m.parent.remove(m);
       this.editableMeshes.splice(i, 1);
@@ -146,6 +158,7 @@ export default class SaveService {
       const toRemove = [];
       this.scene.traverse((obj) => {
         if (!obj || !obj.userData || !obj.userData.editable) return;
+        if (obj.userData.layoutProtected) return;
         if (keep.has(obj)) return;
         if (!obj.parent) return;
         toRemove.push(obj);

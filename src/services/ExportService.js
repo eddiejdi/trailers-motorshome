@@ -118,12 +118,144 @@ export default class ExportService {
 
   mm(v) { return Math.round(v * 1000); }
 
+  /** Referência opcional a ProjectService — evita fallback do trailer quando o projeto tem geometry.parts */
+  setProjectService(projectService) {
+    this._projectService = projectService || null;
+  }
+
   getPieces() {
-    return this._scenePieces && this._scenePieces.length ? this._scenePieces : this.CUT_PIECES;
+    // 1) Fonte de verdade: geometry.parts do projeto atual (caixa, etc.)
+    if (this._projectService && typeof this._projectService.getProject === 'function') {
+      try {
+        const proj = this._projectService.getProject();
+        const fromProj = this.extractPartsFromProject(proj);
+        if (fromProj && fromProj.length) return fromProj;
+        // Projeto no formato parts sem peças — NUNCA misturar com lista do trailer
+        if (proj && proj.geometry && (proj.geometry.format === 'parts' || Array.isArray(proj.geometry.parts))) {
+          return [];
+        }
+      } catch (e) { /* ignore */ }
+    }
+
+    // 2) Cache explícito (meshes / setScenePieces) só se não for projeto parts
+    if (this._scenePieces && this._scenePieces.length) return this._scenePieces;
+
+    // 3) Trailer de fábrica
+    return this.CUT_PIECES;
   }
 
   setScenePieces(pieces) {
     this._scenePieces = pieces;
+  }
+
+  /**
+   * Extrai peças de corte do JSON do projeto (geometry.parts).
+   * Determinístico — não depende de /cut-plan nem LLM (prod é estático).
+   * box[x,y,z] em metros; menor dimensão ≈ espessura.
+   */
+  extractPartsFromProject(proj) {
+    if (!proj || typeof proj !== 'object') return [];
+    const geometry = proj.geometry && typeof proj.geometry === 'object' ? proj.geometry : {};
+    let partsList = Array.isArray(geometry.parts) ? geometry.parts : null;
+    if (!partsList && Array.isArray(proj.parts)) partsList = proj.parts;
+    if (!partsList || !partsList.length) return [];
+
+    let material = 'Compensado Naval 15mm';
+    const specs = Array.isArray(proj.specs) ? proj.specs : [];
+    for (const s of specs) {
+      if (s && s.key === 'material' && s.format) {
+        material = String(s.format);
+        break;
+      }
+    }
+    if (material === 'Compensado Naval 15mm' && geometry.material) {
+      if (typeof geometry.material === 'string') material = geometry.material;
+      else if (geometry.material.label) material = String(geometry.material.label);
+    }
+
+    const nameCounts = {};
+    for (const p of partsList) {
+      if (!p || typeof p !== 'object') continue;
+      const name = p.name || 'Peça';
+      nameCounts[name] = (nameCounts[name] || 0) + 1;
+    }
+
+    const seen = new Set();
+    const out = [];
+    for (const p of partsList) {
+      if (!p || typeof p !== 'object') continue;
+      const name = p.name || 'Peça';
+      if (seen.has(name)) continue;
+      seen.add(name);
+
+      let comp = 0, larg = 0, t = 0.015;
+      // Preferência: cut_mm explícito no projeto (fonte de verdade para export)
+      const cut = p.cut_mm && typeof p.cut_mm === 'object' ? p.cut_mm : null;
+      if (cut && (cut.comp || cut.larg)) {
+        comp = (Number(cut.comp) || 0) / 1000;
+        larg = (Number(cut.larg) || 0) / 1000;
+        t = (Number(cut.esp) || 15) / 1000;
+      } else {
+        const boxMm = Array.isArray(p.box_mm) ? p.box_mm : null;
+        const box = boxMm
+          ? boxMm.map((v) => (Number(v) || 0) / 1000)
+          : (Array.isArray(p.box) ? p.box : [0, 0, 0]);
+        let w = 0, h = 0;
+        if (box.length >= 3) {
+          let tIdx = -1;
+          for (let i = 0; i < 3; i++) {
+            const d = Number(box[i]) || 0;
+            if (Math.abs(d - 0.015) < 0.005 || Math.abs(d - 0.010) < 0.005 || Math.abs(d - 0.018) < 0.005) {
+              tIdx = i;
+              break;
+            }
+          }
+          if (tIdx < 0) {
+            tIdx = 0;
+            for (let i = 1; i < 3; i++) {
+              if ((Number(box[i]) || 0) < (Number(box[tIdx]) || 0)) tIdx = i;
+            }
+          }
+          const other = [0, 1, 2].filter((i) => i !== tIdx);
+          w = Number(box[other[0]]) || 0;
+          h = Number(box[other[1]]) || 0;
+          t = Number(box[tIdx]) || 0.015;
+        }
+        comp = w;
+        larg = h;
+        if (larg > comp) { const tmp = comp; comp = larg; larg = tmp; }
+      }
+      if (larg > comp) { const tmp = comp; comp = larg; larg = tmp; }
+
+      const fold = String(name).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      let grupo = 'Projeto';
+      if (/fundo|base|piso/.test(fold)) grupo = 'Fundo';
+      else if (/lateral/.test(fold)) grupo = 'Lateral';
+      else if (/frente/.test(fold)) grupo = 'Frente';
+      else if (/tras|trás|traseira/.test(fold)) grupo = 'Trás';
+      else if (/tampa|tampo|topo/.test(fold)) grupo = 'Tampa';
+
+      let mat = p.material || material;
+      const tmm = Math.round(t * 1000);
+      if (!p.material) {
+        if (tmm === 15) mat = 'COMPENSADO CRU NU 15 mm MULTIMARCAS BR';
+        else if (tmm === 10) mat = 'COMPENSADO CRU NU 10 mm MULTIMARCAS BR';
+        else if (tmm === 18) mat = 'COMPENSADO CRU NU 18 mm MULTIMARCAS BR';
+        else if (tmm === 6 || tmm === 5) mat = 'COMPENSADO CRU NU 6 mm MULTIMARCAS BR';
+      }
+
+      out.push({
+        nome: name,
+        qtd: nameCounts[name] || 1,
+        comp,
+        larg,
+        esp: t,
+        material: mat,
+        grupo,
+        obs: '',
+      });
+    }
+    return out;
   }
 
   cutTableHTML(thickness) {
@@ -139,7 +271,7 @@ export default class ExportService {
 
     let html = '';
     html += '<div class="cut-info"><b>Chapa de referência:</b> ' + sheet.nome + ' (' + this.mm(sheet.comp) + '×' + this.mm(sheet.larg) + 'mm)<br>';
-    html += '<b>Área total:</b> ' + (totalArea * 1e6).toFixed(0) + ' cm² · <b>Chapas:</b> ' + sheets + ' (' + efficiency + '% aproveitamento)</div>';
+    html += '<b>Área total:</b> ' + totalArea.toFixed(3) + ' m² (' + (totalArea * 1e4).toFixed(0) + ' cm²) · <b>Chapas:</b> ' + sheets + ' (' + efficiency + '% aproveitamento)</div>';
     html += '<table class="cut-table"><thead><tr>';
     html += '<th class="col-n">#</th><th>Peça</th><th>Grupo</th><th class="col-dim">Comp.</th><th class="col-dim">Larg.</th><th>Esp.</th><th class="col-qty">Qtd</th><th class="col-area">Área</th><th>Obs</th>';
     html += '</tr></thead><tbody>';
@@ -176,7 +308,7 @@ export default class ExportService {
       html += '<div class="cut-stat"><div class="val">' + t + 'mm</div><div class="lbl">' + count + ' peça(s) · ' + sheets + ' chapa(s)</div></div>';
     });
     html = '<div class="cut-stat"><div class="val">' + totalPieces + '</div><div class="lbl">Total de peças</div></div>' + html;
-    html += '<div class="cut-stat"><div class="val">' + (totalArea * 1e6).toFixed(0) + ' cm²</div><div class="lbl">Área total madeira</div></div>';
+    html += '<div class="cut-stat"><div class="val">' + totalArea.toFixed(3) + ' m²</div><div class="lbl">Área total madeira (' + (totalArea * 1e4).toFixed(0) + ' cm²)</div></div>';
     return html;
   }
 

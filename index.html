@@ -982,6 +982,83 @@
     background:#f0f0f0; border-radius:6px; margin-bottom:8px;
   }
   .cut-info b { color:#2e3436; }
+  .cut-progress-overlay {
+    position:absolute; inset:0; z-index:20;
+    background:rgba(250,250,250,0.92); backdrop-filter:blur(3px);
+    display:none; flex-direction:column; align-items:center; justify-content:center;
+    gap:14px; border-radius:12px;
+  }
+  .cut-progress-overlay.open { display:flex; }
+  .cut-hourglass {
+    width:72px; height:96px; position:relative;
+    filter:drop-shadow(0 2px 6px rgba(0,0,0,0.12));
+  }
+  .cut-hourglass svg { width:100%; height:100%; display:block; }
+  .cut-hg-sand-top {
+    transform-origin: 36px 28px;
+    transition: transform 0.35s ease-out;
+  }
+  .cut-hg-sand-bot {
+    transform-origin: 36px 78px;
+    transition: transform 0.35s ease-out;
+  }
+  .cut-hg-stream {
+    stroke:#c4a35a; stroke-width:2; stroke-linecap:round;
+    animation: cut-sand-drip 0.7s linear infinite;
+  }
+  @keyframes cut-sand-drip {
+    0% { stroke-dashoffset: 12; opacity: 0.35; }
+    50% { opacity: 1; }
+    100% { stroke-dashoffset: 0; opacity: 0.35; }
+  }
+  .cut-progress-pct {
+    font-family:var(--mono); font-size:28px; font-weight:700; color:#1c71d8;
+    letter-spacing:-0.5px; line-height:1;
+  }
+  .cut-progress-label {
+    font-size:12px; color:#5e5c64; max-width:420px; text-align:center; line-height:1.4;
+  }
+  .cut-progress-bar {
+    width:min(420px,85%); height:8px; background:#e0e0e0; border-radius:999px; overflow:hidden;
+  }
+  .cut-progress-bar > i {
+    display:block; height:100%; width:0%;
+    background:linear-gradient(90deg,#3584e4,#62a0ea);
+    border-radius:999px; transition:width 0.25s ease-out;
+  }
+  .cut-progress-row {
+    display:flex; align-items:center; gap:20px; flex-wrap:wrap; justify-content:center;
+    max-width:min(720px,94vw);
+  }
+  .cut-progress-left {
+    display:flex; flex-direction:column; align-items:center; gap:10px; min-width:120px;
+  }
+  .cut-puzzle-stage {
+    width:min(480px,88vw); min-height:160px; max-height:280px;
+    background:#fff; border:1px solid #d5d0cc; border-radius:10px;
+    box-shadow:inset 0 1px 0 #fff, 0 2px 8px rgba(0,0,0,.06);
+    overflow:auto; padding:8px 10px;
+  }
+  .cut-puzzle-stage svg { display:block; margin:0 auto 8px; }
+  .cut-puzzle-stage .cps-sheet-label {
+    font-size:10px; color:#5e5c64; margin:0 0 4px; font-weight:600;
+  }
+  .cut-puzzle-piece {
+    opacity:0; transform-origin:center;
+    animation: cut-piece-drop 0.45s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+  .cut-puzzle-piece.ghost {
+    opacity:0.18; animation:none; stroke-dasharray:4 3;
+  }
+  @keyframes cut-piece-drop {
+    0%   { opacity:0; transform: translateY(-18px) scale(0.85); }
+    60%  { opacity:1; transform: translateY(2px) scale(1.03); }
+    100% { opacity:1; transform: translateY(0) scale(1); }
+  }
+  .cut-puzzle-piece-label {
+    font-size:9px; fill:#203040; pointer-events:none;
+    font-family: ui-monospace, monospace;
+  }
   .cut-modal-foot {
     display:flex; gap:8px; padding:12px 20px; background:#f0f0f0;
     border-top:1px solid #d5d0cc; flex-wrap:wrap;
@@ -1118,7 +1195,35 @@
 
   <!-- Modal de exportação de plano de corte -->
   <div id="cut-export-modal" class="cut-modal-overlay" style="display:none;">
-    <div class="cut-modal">
+    <div class="cut-modal" style="position:relative">
+      <div id="cut-progress-overlay" class="cut-progress-overlay" aria-live="polite">
+        <div class="cut-progress-row">
+          <div class="cut-progress-left">
+            <div class="cut-hourglass" aria-hidden="true">
+              <svg viewBox="0 0 72 96" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14 8 H58 V20 L36 48 L58 76 V88 H14 V76 L36 48 L14 20 Z"
+                  fill="#f6f5f4" stroke="#5e5c64" stroke-width="2.5" stroke-linejoin="round"/>
+                <clipPath id="cut-hg-top-clip"><path d="M18 12 H54 V20 L36 44 L18 20 Z"/></clipPath>
+                <clipPath id="cut-hg-bot-clip"><path d="M18 84 H54 V76 L36 52 L18 76 Z"/></clipPath>
+                <g clip-path="url(#cut-hg-top-clip)">
+                  <rect id="cut-hg-sand-top" class="cut-hg-sand-top" x="18" y="12" width="36" height="32" fill="#d4a84b"/>
+                </g>
+                <g clip-path="url(#cut-hg-bot-clip)">
+                  <rect id="cut-hg-sand-bot" class="cut-hg-sand-bot" x="18" y="52" width="36" height="32" fill="#d4a84b"
+                    transform="scale(1,0)" style="transform-box:fill-box; transform-origin:bottom center"/>
+                </g>
+                <line id="cut-hg-stream" class="cut-hg-stream" x1="36" y1="44" x2="36" y2="56"
+                  stroke-dasharray="3 3"/>
+                <path d="M14 8 H58 M14 88 H58" stroke="#2e3436" stroke-width="3" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="cut-progress-pct" id="cut-progress-pct">0%</div>
+          </div>
+          <div class="cut-puzzle-stage" id="cut-puzzle-stage" aria-label="Montagem do plano de corte"></div>
+        </div>
+        <div class="cut-progress-bar"><i id="cut-progress-bar"></i></div>
+        <div class="cut-progress-label" id="cut-progress-label">Preparando exportação…</div>
+      </div>
       <div class="cut-modal-head">
         <span class="cut-modal-title">Plano de Corte — Compensado Naval</span>
         <button id="cut-close" class="cut-modal-close">×</button>
@@ -1481,6 +1586,14 @@
           <div class="pg-row"><label>Y</label><input type="number" id="pos-y" step="0.01"></div>
           <div class="pg-row"><label>Z</label><input type="number" id="pos-z" step="0.01"></div>
         </div>
+        <div class="prop-group" id="box-dims-section" style="display:none">
+          <div class="pg-label">Caixa externa (mm)</div>
+          <div class="pg-row"><label>Larg</label><input type="number" id="box-l" step="1" min="50" title="Largura X"></div>
+          <div class="pg-row"><label>Prof</label><input type="number" id="box-p" step="1" min="50" title="Profundidade Z"></div>
+          <div class="pg-row"><label>Alt</label><input type="number" id="box-h" step="1" min="50" title="Altura Y"></div>
+          <div class="pg-row"><label>t</label><input type="number" id="box-t" step="1" min="3" max="40" title="Espessura mm" value="15"></div>
+          <button type="button" id="btn-apply-box-dims" class="cat-btn" style="width:100%;margin-top:6px">Aplicar medidas</button>
+        </div>
         <div class="prop-group">
           <div class="pg-label">Escala</div>
           <div class="pg-row"><label>X</label><input type="number" id="scl-x" step="0.01" min="0.01"></div>
@@ -1680,7 +1793,7 @@
 <script src="trailer_lib/three.min.js"></script>
 <script src="trailer_lib/OrbitControls.js"></script>
 <script src="trailer_lib/TransformControls.js"></script>
-<script type="module" src="src/main.js?v=20260909-2315"></script>
+<script type="module" src="src/main.js?v=20260910-2684"></script>
 <script>
 window.addEventListener('error', function(e) {
   var el = document.createElement('div');
@@ -1961,8 +2074,8 @@ function cutTableHTML(thickness) {
     var efficiency = sheetArea > 0 ? ((totalArea / (sheetsCount * sheetArea)) * 100).toFixed(0) : 0;
 
     var html = '';
-    html += '<div class="cut-info"><b>Chapa de referência:</b> ' + sheet.nome + ' (' + mm(sheet.comp) + '×' + mm(sheet.larg) + 'mm) — ' + (sheetArea * 1e6).toFixed(0) + ' cm²/chapa<br>';
-    html += '<b>Área total das peças:</b> ' + (totalArea * 1e6).toFixed(0) + ' cm² · <b>Chapas estimadas:</b> ' + sheetsCount + ' (' + efficiency + '% de aproveitamento)</div>';
+    html += '<div class="cut-info"><b>Chapa de referência:</b> ' + sheet.nome + ' (' + mm(sheet.comp) + '×' + mm(sheet.larg) + 'mm) — ' + sheetArea.toFixed(3) + ' m²/chapa<br>';
+    html += '<b>Área total das peças:</b> ' + totalArea.toFixed(3) + ' m² (' + (totalArea * 1e4).toFixed(0) + ' cm²) · <b>Chapas estimadas:</b> ' + sheetsCount + ' (' + efficiency + '% de aproveitamento)</div>';
 
     html += '<table class="cut-table"><thead><tr>';
     html += '<th class="col-n">#</th><th>Peça</th><th>Grupo</th><th class="col-dim">Comp. (mm)</th><th class="col-dim">Larg. (mm)</th><th>Esp. (mm)</th><th class="col-qty">Qtd</th><th class="col-area">Área (cm²)</th><th>Obs</th>';
@@ -2006,7 +2119,7 @@ function cutSummaryHTML() {
         html += '<div class="cut-stat"><div class="val">' + t + 'mm</div><div class="lbl">' + count + ' peça(s) · ' + sheetCount + ' chapa(s)</div></div>';
     });
     html = '<div class="cut-stat"><div class="val">' + totalPieces + '</div><div class="lbl">Total de peças</div></div>' + html;
-    html += '<div class="cut-stat"><div class="val">' + (totalArea * 1e6).toFixed(0) + ' cm²</div><div class="lbl">Área total madeira</div></div>';
+    html += '<div class="cut-stat"><div class="val">' + totalArea.toFixed(3) + ' m²</div><div class="lbl">Área total madeira (' + (totalArea * 1e4).toFixed(0) + ' cm²)</div></div>';
     return html;
 }
 
@@ -2020,7 +2133,7 @@ async function cutCSV(leroyFormat) {
     lines.push('Nome,Quantidade,Comprimento_mm,Largura_mm,Espessura_mm,Material,Funcao_Peca,Grupo_Origem,Parte,Tipo_Registro,Observacao');
   }
   var exportService = window.trailerApp ? window.trailerApp.services.export : null;
-  var rawPieces = exportService ? exportService.CUT_PIECES : [];
+  var rawPieces = exportService ? exportService.getPieces() : [];
   var exportData = cutGetExportData(null, 'csv');
   var pieces = await cutGetGpuPreparedPieces(rawPieces, 'csv-' + (leroyFormat ? 'leroy' : 'default'), { sheetCompMm: CUT_SHEET_COMP_MM, sheetLargMm: CUT_SHEET_LARG_MM, kerfMm: 3 });
   cutValidatePreparedPiecesFit(pieces, CUT_SHEET_COMP_MM, CUT_SHEET_LARG_MM, 'csv');
@@ -2123,65 +2236,89 @@ function cutShowSheet(t) {
 }
 
 // Abre modal
+function cutResolveSourcePieces() {
+  var app = window.trailerApp;
+  var exportService = app && app.services ? app.services.export : null;
+  var projectJson = null;
+  try {
+    if (app && app.services && app.services.project) {
+      projectJson = app.services.project.getProject() || null;
+    }
+  } catch (e) {}
+
+  // 1) geometry.parts do projeto aberto (caixa, etc.)
+  if (exportService && projectJson && typeof exportService.extractPartsFromProject === 'function') {
+    try {
+      var fromProj = exportService.extractPartsFromProject(projectJson);
+      if (fromProj && fromProj.length) return { pieces: fromProj, source: 'project', project: projectJson };
+      if (projectJson.geometry && (projectJson.geometry.format === 'parts' || Array.isArray(projectJson.geometry.parts))) {
+        return { pieces: [], source: 'project-empty', project: projectJson };
+      }
+    } catch (e) {
+      console.warn('[cutResolve] extract:', e.message);
+    }
+  }
+
+  // 2) Peças já setadas no export service
+  if (exportService && exportService._scenePieces && exportService._scenePieces.length) {
+    return { pieces: exportService._scenePieces, source: 'scene-cache', project: projectJson };
+  }
+
+  // 3) Meshes editáveis da cena com nome de peça
+  if (app && app.editableMeshes && app.editableMeshes.length) {
+    var scenePieces = collectScenePiecesForCut();
+    if (scenePieces.length) return { pieces: scenePieces, source: 'meshes', project: projectJson };
+  }
+
+  // 4) Trailer de fábrica só se o projeto NÃO for geometry.parts
+  if (exportService && exportService.CUT_PIECES) {
+    return { pieces: exportService.CUT_PIECES, source: 'trailer-default', project: projectJson };
+  }
+  return { pieces: [], source: 'none', project: projectJson };
+}
+
+function cutFirstThicknessWithPieces(pieces) {
+  var groups = cutGroupByThickness(pieces || []);
+  var keys = Object.keys(groups).map(function(k) { return parseInt(k, 10); }).filter(function(n) { return !isNaN(n); }).sort(function(a, b) { return a - b; });
+  return keys.length ? keys[0] : 15;
+}
+
 async function cutOpenModal() {
   console.log('[cutOpenModal] INICIO');
   var app = window.trailerApp;
   var exportService = app ? app.services.export : null;
 
-  // Busca o projeto atual (JSON completo) para o LLM gerar o plano de corte
-  var projectJson = {};
-  try {
-    if (app && app.services && app.services.project) {
-      projectJson = app.services.project.getProject();
-      console.log('[cutOpenModal] projectJson keys:', Object.keys(projectJson));
-    }
-  } catch (e) { console.log('[cutOpenModal] erro getProject:', e.message); }
+  var resolved = cutResolveSourcePieces();
+  console.log('[cutOpenModal] source=', resolved.source, 'n=', resolved.pieces.length,
+    'project=', resolved.project && resolved.project.meta && resolved.project.meta.name);
 
-  if (!projectJson.geometry) {
-    console.log('[cutOpenModal] no geometry, fallback');
-    if (exportService && app.editableMeshes && app.editableMeshes.length) {
-      var scenePieces = collectScenePiecesForCut();
-      if (scenePieces.length) exportService.setScenePieces(scenePieces);
-    } else if (exportService) {
-      exportService.setScenePieces(null);
+  if (exportService) {
+    // Grava só peças do projeto atual — nunca deixa cache velho de outro projeto
+    if (resolved.source === 'project' || resolved.source === 'meshes' || resolved.source === 'project-empty') {
+      exportService.setScenePieces(resolved.pieces.length ? resolved.pieces : null);
+    } else if (resolved.source === 'trailer-default') {
+      exportService.setScenePieces(null); // getPieces cai no CUT_PIECES
     }
   }
 
-  document.getElementById('cut-summary').innerHTML = '<div style="text-align:center;padding:20px">Gerando plano de corte via IA…</div>';
-  cutShowSheet(10);
-
-  try {
-    console.log('[cutOpenModal] fetching /cut-plan');
-    var resp = await fetch('/cut-plan', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(projectJson)
-    });
-    var plan = await resp.json();
-    console.log('[cutOpenModal] plan parts:', plan.parts?.length, plan.error || '');
-    if (plan && plan.parts && plan.parts.length) {
-      exportService.setScenePieces(plan.parts.map(function(p) {
-        return {
-          nome: p.name, qtd: p.qty || 1,
-          comp: (p.w_mm || 0) / 1000, larg: (p.h_mm || 0) / 1000,
-          esp: (p.t_mm || 15) / 1000,
-          material: p.material || 'Compensado Naval 15mm',
-          grupo: 'Projeto', obs: ''
-        };
-      }));
-    }
-  } catch (e) {
-    console.warn('[cutOpenModal] erro fetch:', e.message);
+  var titleEl = document.querySelector('.cut-modal-title');
+  if (titleEl) {
+    var pname = (resolved.project && resolved.project.meta && resolved.project.meta.name) || '';
+    titleEl.textContent = pname
+      ? ('Plano de Corte — ' + pname)
+      : 'Plano de Corte — Compensado Naval';
   }
 
   document.getElementById('cut-summary').innerHTML = cutSummaryHTML();
-  cutShowSheet(10);
+  var thick = cutFirstThicknessWithPieces(resolved.pieces);
+  cutShowSheet(thick);
   cutBuildMaterialPanel();
   document.getElementById('cut-export-modal').style.display = 'flex';
 }
 
 // Fecha modal
 function cutCloseModal() {
+  cutHideProgress();
   document.getElementById('cut-export-modal').style.display = 'none';
 }
 
@@ -2209,9 +2346,49 @@ function cutEscHtml(v) {
     .replace(/'/g, '&#39;');
 }
 
-var CUT_GPU0_URL = 'http://192.168.15.2:11544';
+// Homelab only: GPU0 RTX 3060 (:11434) → fallback GPU1 GTX 1050 (:11435)
+// NUNCA NAS :11436 (trading-analyst exclusivo)
+var CUT_GPU_ENDPOINTS = [
+  { url: 'http://192.168.15.2:11434', label: 'GPU0-3060' },
+  { url: 'http://192.168.15.2:11435', label: 'GPU1-1050' }
+];
+var CUT_GPU0_URL = CUT_GPU_ENDPOINTS[0].url;
 var CUT_GPU0_MODEL = 'trailer3d-assistant:latest';
-var CUT_MATERIAL_DEFAULT = 'C7117 - Compensado 5 Mm Cru Nu Multimarcas ( 2200 X 1100 ) Br';
+
+/** POST /api/generate nas GPUs do homelab (3060 → 1050). Timeout curto — Nunca NAS. */
+async function cutFetchHomelabGenerate(payload, timeoutMs) {
+  var errors = [];
+  var ms = timeoutMs != null ? timeoutMs : 4000;
+  for (var i = 0; i < CUT_GPU_ENDPOINTS.length; i++) {
+    var ep = CUT_GPU_ENDPOINTS[i];
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = null;
+    try {
+      if (ctrl) timer = setTimeout(function() { try { ctrl.abort(); } catch (e) {} }, ms);
+      var resp = await fetch(ep.url + '/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: ctrl ? ctrl.signal : undefined,
+      });
+      if (timer) clearTimeout(timer);
+      if (resp.ok) {
+        CUT_GPU0_URL = ep.url;
+        return { resp: resp, endpoint: ep };
+      }
+      errors.push(ep.label + ' HTTP ' + resp.status);
+    } catch (e) {
+      if (timer) clearTimeout(timer);
+      var msg = (e && e.name === 'AbortError') ? ('timeout ' + ms + 'ms') : (e && e.message ? e.message : String(e));
+      errors.push(ep.label + ' ' + msg);
+    }
+  }
+  var err = new Error('Homelab GPUs indisponíveis (' + errors.join('; ') + '). NAS não é usado (trading).');
+  err.gpuErrors = errors;
+  throw err;
+}
+
+var CUT_MATERIAL_DEFAULT = 'COMPENSADO CRU NU 15 mm MULTIMARCAS BR';
 var CUT_MATERIAL_OPTIONS = [
   'C7117 - Compensado 5 Mm Cru Nu Multimarcas ( 2200 X 1100 ) Br',
   'COMPENSADO CRU NU 6 mm MULTIMARCAS BR',
@@ -2249,13 +2426,16 @@ function cutInferFunctionLabel(name, group, note) {
   if (t.indexOf('gaveta') >= 0 && t.indexOf('lateral') >= 0) return 'lateral de gaveta';
   if (t.indexOf('contra frente') >= 0) return 'contra frente';
   if (t.indexOf('contra fundo') >= 0) return 'contra fundo';
-  if (t.indexOf('lateral esquerda') >= 0) return 'lateral esquerda';
-  if (t.indexOf('lateral direita') >= 0) return 'lateral direita';
-  if (t.indexOf('tampo') >= 0) return 'tampo';
+  if (t.indexOf('lateral esquerda') >= 0 || /\blateral\s*1\b/.test(t) || t.indexOf('lateral esq') >= 0) return 'lateral esquerda';
+  if (t.indexOf('lateral direita') >= 0 || /\blateral\s*2\b/.test(t) || t.indexOf('lateral dir') >= 0) return 'lateral direita';
+  if (/\blateral\b/.test(t)) return 'lateral direita';
+  if (t.indexOf('frente') >= 0) return 'contra frente';
+  if (t.indexOf('tras') >= 0 || t.indexOf('trás') >= 0 || t.indexOf('fundo parede') >= 0) return 'contra fundo';
+  if (t.indexOf('tampo') >= 0 || t.indexOf('tampa') >= 0) return 'tampo';
   if (t.indexOf('travessa') >= 0) return 'travessa';
   if (t.indexOf('prateleira') >= 0) return 'prateleira';
-  if (t.indexOf('divisoria') >= 0 || t.indexOf('divisória') >= 0) return 'divisoria';
-  if (t.indexOf('base') >= 0 || t.indexOf('piso') >= 0) return 'base';
+  if (t.indexOf('divisoria') >= 0 || t.indexOf('divisoria') >= 0) return 'divisoria';
+  if (t.indexOf('fundo') >= 0 || t.indexOf('base') >= 0 || t.indexOf('piso') >= 0) return 'base';
   if (t.indexOf('tira') >= 0) return 'tira';
   return 'base';
 }
@@ -2352,6 +2532,74 @@ function cutCollectOpeningOperations(includeHoles) {
   if (!includeHoles) return [];
   var app = window.trailerApp;
   if (!app) return [];
+  // Projeto geometry.parts (caixa etc.): nunca misturar furos de fábrica do trailer
+  try {
+    var proj = app.services && app.services.project && app.services.project.getProject && app.services.project.getProject();
+    if (proj && proj.geometry && (proj.geometry.format === 'parts' || (Array.isArray(proj.geometry.parts) && proj.geometry.parts.length))) {
+      var bodyP = app.models && app.models.body;
+      var onlyUser = [];
+      if (bodyP && bodyP._userCuts && typeof bodyP._userCuts.forEach === 'function') {
+        var uk = 0;
+        bodyP._userCuts.forEach(function(v) {
+          if (!v || !v.opening) return;
+          // will re-use push below via limited path — collect later
+        });
+      }
+      // Só aberturas do usuário na cena (meshes kind janela/porta adicionados)
+      var body = bodyP;
+      if (!body || typeof body.isWallOpeningKind !== 'function') return [];
+      var ops = [];
+      var seen = {};
+      function pushHoleParts(raw, idxHint) {
+        if (!raw) return;
+        var wall = raw.wall || '';
+        var wMm = 0;
+        var hMm = Math.max(0, Math.round(((raw.y1 || 0) - (raw.y0 || 0)) * 1000));
+        if (raw.z0 != null && raw.z1 != null) wMm = Math.max(0, Math.round((raw.z1 - raw.z0) * 1000));
+        else if (raw.x0 != null && raw.x1 != null) wMm = Math.max(0, Math.round((raw.x1 - raw.x0) * 1000));
+        if (wMm <= 0 || hMm <= 0) return;
+        var holeType = raw.type || (hMm >= 1200 ? 'porta' : 'janela');
+        var span0 = Math.round(((raw.z0 != null ? raw.z0 : raw.x0) || 0) * 1000);
+        var y0 = Math.round((raw.y0 || 0) * 1000);
+        var key = [holeType, wall, wMm, hMm, span0, y0].join('|');
+        if (seen[key]) return;
+        seen[key] = 1;
+        ops.push({
+          id: 'F' + idxHint, type: holeType, wall: wall,
+          largura_mm: wMm, altura_mm: hMm, y0_mm: y0,
+          y1_mm: Math.round((raw.y1 || 0) * 1000),
+          span0_mm: span0,
+          span1_mm: Math.round(((raw.z1 != null ? raw.z1 : raw.x1) || 0) * 1000),
+          nome: raw.nome || raw.label || (holeType === 'porta' ? 'Porta' : 'Janela'),
+          observacao: raw.observacao || 'Abertura do projeto',
+        });
+      }
+      var editable = Array.isArray(app.editableMeshes) ? app.editableMeshes : [];
+      editable.forEach(function(mesh, idx) {
+        if (!mesh || !mesh.userData) return;
+        var kind = mesh.userData.kind || mesh.userData.funcKind || '';
+        if (kind === 'project-part') return;
+        var isOpening = body.isWallOpeningKind(kind) || kind === 'janela' || String(kind).indexOf('janela-') === 0 || kind === 'porta';
+        if (!isOpening) return;
+        var wall = body.nearestWall ? body.nearestWall(mesh) : null;
+        if (!wall) return;
+        var op = body.openingFromMesh ? (body.openingFromMesh(mesh, wall) || {}) : {};
+        op.wall = wall;
+        op.type = kind === 'porta' ? 'porta' : 'janela';
+        op.nome = (mesh.userData && mesh.userData.name) || kind;
+        pushHoleParts(op, idx);
+      });
+      if (body._userCuts && typeof body._userCuts.forEach === 'function') {
+        var k = 0;
+        body._userCuts.forEach(function(v) {
+          if (!v || !v.opening) return;
+          var o = Object.assign({}, v.opening, { wall: v.wall, nome: 'Abertura usuario ' + (++k) });
+          pushHoleParts(o, 'u' + k);
+        });
+      }
+      return ops;
+    }
+  } catch (e) {}
   var body = app.models && app.models.body;
   if (!body || typeof body.isWallOpeningKind !== 'function' || typeof body.openingFromMesh !== 'function' || typeof body.nearestWall !== 'function') return [];
   var ops = [];
@@ -2453,7 +2701,7 @@ function cutHolesSummaryText(holes) {
 
 function cutEstimateMaterialSummary() {
   var exportService = window.trailerApp ? window.trailerApp.services.export : null;
-  var rawPieces = exportService ? exportService.CUT_PIECES : [];
+  var rawPieces = cutResolveSourcePieces().pieces;
   var ui = cutGetUiMaterialConfig();
   var totals = {};
   var parts = 0;
@@ -2618,6 +2866,68 @@ function cutBuildMaterialPanel() {
   cutRefreshMaterialSummary();
 }
 
+var _cutProgressTimer = null;
+var _cutProgressValue = 0;
+
+function cutShowProgress(label, pct) {
+  var ov = document.getElementById('cut-progress-overlay');
+  var modal = document.getElementById('cut-export-modal');
+  if (modal && modal.style.display === 'none') modal.style.display = 'flex';
+  if (ov) ov.classList.add('open');
+  cutSetProgress(pct != null ? pct : _cutProgressValue, label);
+}
+
+function cutHideProgress() {
+  if (_cutProgressTimer) {
+    clearInterval(_cutProgressTimer);
+    _cutProgressTimer = null;
+  }
+  _cutPuzzleAnimToken++;
+  var ov = document.getElementById('cut-progress-overlay');
+  if (ov) ov.classList.remove('open');
+  _cutProgressValue = 0;
+  cutClearPuzzleStage();
+}
+
+function cutSetProgress(pct, label) {
+  pct = Math.max(0, Math.min(100, Math.round(pct)));
+  _cutProgressValue = pct;
+  var pctEl = document.getElementById('cut-progress-pct');
+  var barEl = document.getElementById('cut-progress-bar');
+  var labEl = document.getElementById('cut-progress-label');
+  var sandTop = document.getElementById('cut-hg-sand-top');
+  var sandBot = document.getElementById('cut-hg-sand-bot');
+  var stream = document.getElementById('cut-hg-stream');
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (barEl) barEl.style.width = pct + '%';
+  if (labEl && label) labEl.textContent = label;
+  // areia: topo esvazia, base enche conforme %
+  var remain = (100 - pct) / 100;
+  var filled = pct / 100;
+  if (sandTop) sandTop.setAttribute('transform', 'scale(1,' + remain.toFixed(3) + ')');
+  if (sandBot) {
+    sandBot.style.transform = 'scale(1,' + filled.toFixed(3) + ')';
+    sandBot.setAttribute('transform', 'scale(1,' + filled.toFixed(3) + ')');
+  }
+  if (stream) stream.style.opacity = (pct > 0 && pct < 100) ? '1' : '0';
+}
+
+function cutRunProgress(from, to, label, ms) {
+  return new Promise(function(resolve) {
+    cutShowProgress(label, from);
+    var start = performance.now();
+    var dur = ms || 600;
+    function tick(now) {
+      var t = Math.min(1, (now - start) / dur);
+      var ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      cutSetProgress(from + (to - from) * ease, label);
+      if (t < 1) requestAnimationFrame(tick);
+      else resolve();
+    }
+    requestAnimationFrame(tick);
+  });
+}
+
 function cutSetInfoMessage(msg, isError) {
   var info = document.getElementById('cut-info');
   if (!info) return;
@@ -2670,6 +2980,7 @@ function cutPrepareItemsForGPU(pieces, options) {
   pieces.forEach(function(p) {
     var c0 = mm(p.comp);
     var l0 = mm(p.larg);
+    var e0 = mm(p.esp != null ? p.esp : 0.015);
     var base = { comp: c0, larg: l0, rot: false };
     var chunks = splitToSheet(base.comp, base.larg);
     var qty = Math.max(1, parseInt(p.qtd, 10) || 1);
@@ -2679,6 +2990,7 @@ function cutPrepareItemsForGPU(pieces, options) {
         list.push({
           comp: chunks[i].comp,
           larg: chunks[i].larg,
+          esp: e0 || 15,
           name: p.nome,
           group: p.grupo,
           note: p.obs || '',
@@ -2698,35 +3010,68 @@ function cutPackSheets(items, options) {
   var sheetComp = opt.sheetCompMm || CUT_SHEET_COMP_MM;
   var sheetLarg = opt.sheetLargMm || CUT_SHEET_LARG_MM;
   var kerf = opt.kerfMm || 3;
+  var allowRotate = opt.allowRotate !== false;
   var sheetsOut = [];
 
-  function newSheet() { return { placements: [], freeRects: [{ x: 0, y: 0, w: sheetComp, h: sheetLarg }] }; }
+  var remaining = items.slice().map(function(it, i) {
+    var cp = Object.assign({}, it);
+    cp.__i = i;
+    cp.__area = (Number(it.comp) || 0) * (Number(it.larg) || 0);
+    return cp;
+  });
 
-  function enumerateCandidates(sheet, item) {
-    var out = [];
-    var variants = [
-      { w: item.comp, h: item.larg, rotated: false }
-    ];
-    sheet.freeRects.forEach(function(fr, frIdx) {
-      variants.forEach(function(v) {
+  function newSheet() {
+    return { placements: [], freeRects: [{ x: 0, y: 0, w: sheetComp, h: sheetLarg }] };
+  }
+
+  function scoreFit(fr, w, h) {
+    var leftW = fr.w - w;
+    var leftH = fr.h - h;
+    var shortSide = Math.min(leftW, leftH);
+    var longSide = Math.max(leftW, leftH);
+    var waste = (fr.w * fr.h) - (w * h);
+    // BSSF: menor sobra no lado curto; desempate waste e long side
+    return shortSide * 1e9 + longSide * 1e6 + waste;
+  }
+
+  function variantsFor(item) {
+    var vs = [{ w: item.comp, h: item.larg, rotated: false }];
+    if (allowRotate && item.comp !== item.larg) {
+      vs.push({ w: item.larg, h: item.comp, rotated: true });
+    }
+    return vs;
+  }
+
+  function findBestPlacement(sheet, item) {
+    var best = null;
+    variantsFor(item).forEach(function(v) {
+      sheet.freeRects.forEach(function(fr, frIdx) {
         if (v.w <= fr.w && v.h <= fr.h) {
-          var waste = (fr.w * fr.h) - (v.w * v.h);
-          var shortSide = Math.min(fr.w - v.w, fr.h - v.h);
-          var longSide = Math.max(fr.w - v.w, fr.h - v.h);
-          out.push({
-            sheet: sheet,
-            freeRectIndex: frIdx,
-            x: fr.x,
-            y: fr.y,
-            w: v.w,
-            h: v.h,
-            rotated: v.rotated,
-            score: waste * 1000 + shortSide * 10 + longSide,
-          });
+          var sc = scoreFit(fr, v.w, v.h);
+          var cand = {
+            sheet: sheet, item: item, freeRectIndex: frIdx,
+            x: fr.x, y: fr.y, w: v.w, h: v.h, rotated: v.rotated, score: sc
+          };
+          if (!best || sc < best.score) best = cand;
         }
       });
     });
-    return out;
+    return best;
+  }
+
+  // Melhor par (chapa existente, peça restante)
+  function findBestAmongAll() {
+    var best = null;
+    sheetsOut.forEach(function(s) {
+      remaining.forEach(function(it) {
+        var c = findBestPlacement(s, it);
+        if (!c) return;
+        // desempate: prefere peça maior (preenche melhor)
+        c.tie = -it.__area;
+        if (!best || c.score < best.score || (c.score === best.score && c.tie < best.tie)) best = c;
+      });
+    });
+    return best;
   }
 
   function intersects(a, b) {
@@ -2756,13 +3101,14 @@ function cutPackSheets(items, options) {
     var rightW = (fr.x + fr.w) - rightX;
     if (rightW > 0 && midH > 0) pieces.push({ x: rightX, y: midTop, w: rightW, h: midH });
 
-    return pieces.filter(function(r) { return r.w > 0 && r.h > 0; });
+    return pieces.filter(function(r) { return r.w >= 1 && r.h >= 1; });
   }
 
   function pruneFreeRects(rects) {
     var out = [];
     for (var i = 0; i < rects.length; i++) {
       var a = rects[i];
+      if (a.w < 1 || a.h < 1) continue;
       var contained = false;
       for (var j = 0; j < rects.length; j++) {
         if (i === j) continue;
@@ -2777,34 +3123,67 @@ function cutPackSheets(items, options) {
     return out;
   }
 
-  function place(c, item) {
-    c.sheet.placements.push({ item: item, x: c.x, y: c.y, comp: c.w, larg: c.h, rotated: c.rotated });
+  function place(c) {
+    c.sheet.placements.push({
+      item: c.item, x: c.x, y: c.y, comp: c.w, larg: c.h, rotated: c.rotated
+    });
     var used = { x: c.x, y: c.y, w: c.w, h: c.h };
     var nextFree = [];
     c.sheet.freeRects.forEach(function(fr) {
       splitRectByUsed(fr, used).forEach(function(p) { nextFree.push(p); });
     });
     c.sheet.freeRects = pruneFreeRects(nextFree);
+    remaining = remaining.filter(function(it) { return it.__i !== c.item.__i; });
   }
 
-  items.forEach(function(item) {
-    var best = null;
-    sheetsOut.forEach(function(s) {
-      enumerateCandidates(s, item).forEach(function(c) {
-        if (!best || c.score < best.score) best = c;
-      });
-    });
-    if (!best) {
-      var ns = newSheet();
-      sheetsOut.push(ns);
-      enumerateCandidates(ns, item).forEach(function(c) {
-        if (!best || c.score < best.score) best = c;
-      });
+  // Seed: maior peça em chapa nova
+  remaining.sort(function(a, b) {
+    if (b.__area !== a.__area) return b.__area - a.__area;
+    return Math.max(b.comp, b.larg) - Math.max(a.comp, a.larg);
+  });
+
+  while (remaining.length) {
+    var best = findBestAmongAll();
+    if (best) {
+      place(best);
+      continue;
     }
-    if (best) place(best, item);
+    // Nenhuma peça cabe nas chapas abertas → nova chapa com a maior restante
+    remaining.sort(function(a, b) {
+      if (b.__area !== a.__area) return b.__area - a.__area;
+      return Math.max(b.comp, b.larg) - Math.max(a.comp, a.larg);
+    });
+    var ns = newSheet();
+    sheetsOut.push(ns);
+    var first = findBestPlacement(ns, remaining[0]);
+    if (!first) {
+      // peça maior que a chapa — força placement cortado já deveria ter sido split antes
+      console.warn('[cutPack] peça não cabe na chapa:', remaining[0].name, remaining[0].comp, remaining[0].larg);
+      remaining.shift();
+      continue;
+    }
+    place(first);
+  }
+
+  sheetsOut.forEach(function(s) {
+    var used = 0;
+    s.placements.forEach(function(pl) { used += pl.comp * pl.larg; });
+    s.usedArea = used;
+    s.sheetArea = sheetComp * sheetLarg;
+    s.efficiency = s.sheetArea > 0 ? (used / s.sheetArea) : 0;
   });
 
   return sheetsOut;
+}
+
+
+function cutOptimizeOrderLocal(items) {
+  // Maior área primeiro + lado maior — bom packing sem GPU
+  return items.slice().sort(function(a, b) {
+    var aa = a.comp * a.larg, bb = b.comp * b.larg;
+    if (bb !== aa) return bb - aa;
+    return Math.max(b.comp, b.larg) - Math.max(a.comp, a.larg);
+  });
 }
 
 async function cutOptimizeOrderGPU0(items, label) {
@@ -2838,29 +3217,19 @@ async function cutOptimizeOrderGPU0(items, label) {
 
   var resp;
   try {
-    resp = await fetch(CUT_GPU0_URL + '/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
+    var hit = await cutFetchHomelabGenerate(payload);
+    resp = hit.resp;
+    cutSetInfoMessage('Otimização via ' + hit.endpoint.label + '.', false);
   } catch (e) {
-    var msgNet = 'Falha ao conectar na GPU0 (' + CUT_GPU0_URL + '). Exportacao cancelada.';
-    cutSetInfoMessage(msgNet, true);
-    throw new Error(msgNet);
-  }
-
-  if (!resp.ok) {
-    var msgHttp = 'Falha na GPU0: HTTP ' + resp.status + '. Exportacao cancelada.';
-    cutSetInfoMessage(msgHttp, true);
-    throw new Error(msgHttp);
+    cutSetInfoMessage('GPUs homelab indisponíveis — otimização local.', false);
+    return cutOptimizeOrderLocal(items);
   }
 
   var data = await resp.json();
   var parsed = cutExtractJsonObject(data && data.response);
   if (!parsed || !Array.isArray(parsed.ordered_ids)) {
-    var msgFmt = 'Falha na resposta do modelo da GPU0. Exportacao cancelada.';
-    cutSetInfoMessage(msgFmt, true);
-    throw new Error(msgFmt);
+    cutSetInfoMessage('Resposta GPU0 inválida — usando otimização local.', false);
+    return cutOptimizeOrderLocal(items);
   }
 
   var indexed = items.map(function(it, i) {
@@ -2933,27 +3302,28 @@ async function cutChooseMaterialsGPU0(items, label) {
   };
   var resp;
   try {
-    resp = await fetch(CUT_GPU0_URL + '/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
+    var hit = await cutFetchHomelabGenerate(payload);
+    resp = hit.resp;
+    cutSetInfoMessage('Materiais via ' + hit.endpoint.label + '.', false);
   } catch (e) {
-    var msgNet = 'Falha ao escolher materiais na GPU0. Exportacao cancelada.';
-    cutSetInfoMessage(msgNet, true);
-    throw new Error(msgNet);
-  }
-  if (!resp.ok) {
-    var msgHttp = 'Falha na escolha de materiais: HTTP ' + resp.status + '. Exportacao cancelada.';
-    cutSetInfoMessage(msgHttp, true);
-    throw new Error(msgHttp);
+    cutSetInfoMessage('GPUs homelab indisponíveis — materiais econômico.', false);
+    return items.map(function(it) {
+      var cp = Object.assign({}, it);
+      cp.function = cutInferFunctionLabel(it.name, it.group, it.note);
+      cp.material = it.material || ui.globalMaterial || CUT_MATERIAL_DEFAULT;
+      return cp;
+    });
   }
   var data = await resp.json();
   var parsed = cutExtractJsonObject(data && data.response);
   if (!parsed || !parsed.materials || typeof parsed.materials !== 'object') {
-    var msgFmt = 'Resposta inválida da IA para materiais. Exportacao cancelada.';
-    cutSetInfoMessage(msgFmt, true);
-    throw new Error(msgFmt);
+    cutSetInfoMessage('Materiais IA inválidos — usando econômico.', false);
+    return items.map(function(it) {
+      var cp = Object.assign({}, it);
+      cp.function = cutInferFunctionLabel(it.name, it.group, it.note);
+      cp.material = ui.globalMaterial || CUT_MATERIAL_DEFAULT;
+      return cp;
+    });
   }
   return items.map(function(it, i) {
     var cp = Object.assign({}, it);
@@ -2964,10 +3334,193 @@ async function cutChooseMaterialsGPU0(items, label) {
   });
 }
 
+
+var CUT_PUZZLE_PALETTE = ['#7ec8e3','#f2c14e','#8fbc8f','#e8a87c','#c38d9e','#a8d5ba','#f6bd60','#84a9c0','#d4a5a5','#9cadce'];
+var _cutPuzzleAnimToken = 0;
+
+function cutClearPuzzleStage() {
+  var stage = document.getElementById('cut-puzzle-stage');
+  if (stage) stage.innerHTML = '';
+}
+
+function cutPuzzleEsc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/** Desenha chapas; visibleCount = quantas peças já "caíram" (ordem global de placements). */
+function cutDrawPuzzleAssembly(sheetsPacked, visibleCount, opts) {
+  var stage = document.getElementById('cut-puzzle-stage');
+  if (!stage) return;
+  opts = opts || {};
+  var sheetComp = opts.sheetCompMm || CUT_SHEET_COMP_MM;
+  var sheetLarg = opts.sheetLargMm || CUT_SHEET_LARG_MM;
+  var scale = opts.scale || Math.min(1, 420 / sheetComp, 120 / sheetLarg);
+  var sw = Math.max(80, Math.round(sheetComp * scale));
+  var sh = Math.max(40, Math.round(sheetLarg * scale));
+
+  var html = '';
+  var globalIdx = 0;
+  (sheetsPacked || []).forEach(function(sheet, si) {
+    var eff = sheet.efficiency != null ? Math.round(sheet.efficiency * 100) : 0;
+    html += '<div class="cps-sheet-label">Chapa ' + (si + 1) + ' · ' + sheetComp + '×' + sheetLarg + ' mm';
+    if (eff) html += ' · ' + eff + '%';
+    html += '</div>';
+    html += '<svg width="' + sw + '" height="' + sh + '" viewBox="0 0 ' + sheetComp + ' ' + sheetLarg + '" xmlns="http://www.w3.org/2000/svg">';
+    html += '<rect x="0" y="0" width="' + sheetComp + '" height="' + sheetLarg + '" fill="#fafafa" stroke="#5e5c64" stroke-width="4"/>';
+    (sheet.placements || []).forEach(function(pl, pi) {
+      var shown = globalIdx < visibleCount;
+      var isNew = globalIdx === visibleCount - 1;
+      globalIdx++;
+      var fill = CUT_PUZZLE_PALETTE[pi % CUT_PUZZLE_PALETTE.length];
+      var x = pl.x || 0, y = pl.y || 0, w = pl.comp || 0, h = pl.larg || 0;
+      var cls = 'cut-puzzle-piece' + (shown ? (isNew ? '' : '') : ' ghost');
+      var style = shown && isNew ? '' : (shown ? 'opacity:1;animation:none' : '');
+      html += '<g class="' + cls + '"' + (style ? ' style="' + style + '"' : '') + '>';
+      if (shown) {
+        html += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="' + fill + '" stroke="#2e3436" stroke-width="3" rx="4"/>';
+        var label = cutPuzzleEsc((pl.item && (pl.item.name || pl.item.nome)) || ('P' + pi));
+        if (pl.rotated) label += ' ⟳';
+        var fs = Math.max(28, Math.min(56, Math.min(w, h) * 0.18));
+        if (w > 80 && h > 50) {
+          html += '<text class="cut-puzzle-piece-label" x="' + (x + 8) + '" y="' + (y + fs) + '" font-size="' + fs + '">' + label + '</text>';
+          html += '<text class="cut-puzzle-piece-label" x="' + (x + 8) + '" y="' + (y + fs * 2) + '" font-size="' + (fs * 0.75) + '" fill="#4a5366">' + Math.round(w) + '×' + Math.round(h) + '</text>';
+        }
+      } else {
+        html += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="none" stroke="#9a9996" stroke-width="2" class="ghost"/>';
+      }
+      html += '</g>';
+    });
+    html += '</svg>';
+  });
+  if (!(sheetsPacked || []).length) {
+    html = '<div style="padding:24px;text-align:center;color:#77767b;font-size:12px">Aguardando peças…</div>';
+  }
+  stage.innerHTML = html;
+  // scroll to last sheet
+  stage.scrollTop = stage.scrollHeight;
+}
+
+function cutFlattenPlacements(sheetsPacked) {
+  var list = [];
+  (sheetsPacked || []).forEach(function(s, si) {
+    (s.placements || []).forEach(function(pl) {
+      list.push({ sheetIndex: si, pl: pl });
+    });
+  });
+  return list;
+}
+
+/** Anima montagem real do packing; atualiza % 55→92. */
+function cutAnimatePuzzleAssembly(preparedItems, options) {
+  var token = ++_cutPuzzleAnimToken;
+  options = options || {};
+  var sheetComp = options.sheetCompMm || CUT_SHEET_COMP_MM;
+  var sheetLarg = options.sheetLargMm || CUT_SHEET_LARG_MM;
+  var kerf = options.kerfMm || 3;
+
+  cutSetProgress(52, 'Calculando encaixe nas chapas…');
+  var packed = cutPackSheets(preparedItems || [], {
+    sheetCompMm: sheetComp, sheetLargMm: sheetLarg, kerfMm: kerf
+  });
+  var flat = cutFlattenPlacements(packed);
+  var total = flat.length;
+  if (!total) {
+    cutSetProgress(93, 'Sem peças');
+    return Promise.resolve(packed);
+  }
+
+  // preview ghost de tudo
+  cutDrawPuzzleAssembly(packed, 0, { sheetCompMm: sheetComp, sheetLargMm: sheetLarg });
+
+  return new Promise(function(resolve) {
+    var i = 0;
+    function step() {
+      if (token !== _cutPuzzleAnimToken) return resolve(packed);
+      i++;
+      cutDrawPuzzleAssembly(packed, i, { sheetCompMm: sheetComp, sheetLargMm: sheetLarg });
+      var pct = 55 + (i / total) * 37;
+      var name = flat[i - 1] && flat[i - 1].pl && flat[i - 1].pl.item
+        ? (flat[i - 1].pl.item.name || flat[i - 1].pl.item.nome || 'peça')
+        : 'peça';
+      var si = flat[i - 1] ? (flat[i - 1].sheetIndex + 1) : 1;
+      cutSetProgress(pct, 'Encaixando "' + name + '" · chapa ' + si + ' · ' + i + '/' + total);
+      if (i >= total) {
+        cutSetProgress(93, 'Plano montado · ' + packed.length + ' chapa(s)');
+        setTimeout(function() { resolve(packed); }, 280);
+        return;
+      }
+      setTimeout(step, Math.max(40, Math.min(160, 900 / total)));
+    }
+    // zero pieces → resolve already handled; otherwise start
+    if (total <= 0) {
+      cutSetProgress(93, 'Sem peças para montar');
+      resolve(packed);
+      return;
+    }
+    setTimeout(step, 60);
+  });
+}
+
+
 async function cutGetGpuPreparedPieces(pieces, label, options) {
+  cutClearPuzzleStage();
+  var ui = cutGetUiMaterialConfig();
+  // GPU só se estratégia = "ai". Caso contrário 100% local (não trava em 503/timeout).
+  var useGpu = ui && ui.mode === 'ai';
+
+  await cutRunProgress(2, 18, 'Preparando peças do projeto…', 250);
   var prepared = cutPrepareItemsForGPU(pieces, options || {});
-  var ordered = await cutOptimizeOrderGPU0(prepared, label);
-  return await cutChooseMaterialsGPU0(ordered, label + '-materials');
+
+  await cutRunProgress(18, 40, useGpu ? 'Otimizando ordem (GPU)…' : 'Otimizando ordem (local)…', 200);
+  var ordered;
+  if (useGpu) {
+    try {
+      ordered = await cutOptimizeOrderGPU0(prepared, label);
+    } catch (e) {
+      console.warn('[export] GPU order fallback local', e);
+      ordered = cutOptimizeOrderLocal(prepared);
+      cutSetInfoMessage('Ordem: fallback local (GPU falhou).', false);
+    }
+  } else {
+    ordered = cutOptimizeOrderLocal(prepared);
+  }
+
+  await cutRunProgress(40, 55, useGpu ? 'Aplicando materiais (GPU)…' : 'Aplicando materiais…', 200);
+  var withMat;
+  if (useGpu) {
+    try {
+      withMat = await cutChooseMaterialsGPU0(ordered, label + '-materials');
+    } catch (e) {
+      console.warn('[export] GPU materials fallback local', e);
+      withMat = await cutChooseMaterialsGPU0(
+        // force economic path by temp clone of items through local mapping
+        ordered.map(function(it) {
+          var cp = Object.assign({}, it);
+          cp.function = cutInferFunctionLabel(it.name, it.group, it.note);
+          cp.material = it.material || CUT_MATERIAL_DEFAULT;
+          return cp;
+        }),
+        label + '-materials-local'
+      );
+      // If still ai mode, map economic manually:
+      withMat = ordered.map(function(it) {
+        var cp = Object.assign({}, it);
+        cp.function = cutInferFunctionLabel(it.name, it.group, it.note);
+        cp.material = it.material || (ui && ui.globalMaterial) || CUT_MATERIAL_DEFAULT;
+        return cp;
+      });
+      cutSetInfoMessage('Materiais: fallback local (GPU falhou).', false);
+    }
+  } else {
+    // economic / manual — cutChooseMaterialsGPU0 already handles without network
+    withMat = await cutChooseMaterialsGPU0(ordered, label + '-materials');
+  }
+
+  // Animação do puzzle (rápida; packing local)
+  await cutAnimatePuzzleAssembly(withMat, options || {});
+  await cutRunProgress(93, 99, 'Gerando arquivo…', 150);
+  return withMat;
 }
 
 function cutValidatePreparedPiecesFit(items, sheetCompMm, sheetLargMm, contextLabel) {
@@ -2990,7 +3543,7 @@ function cutPreparedPiecesToRows(items) {
       quantidade: 1,
       comp_mm: p.comp,
       larg_mm: p.larg,
-      esp_mm: 5,
+      esp_mm: p.esp || 15,
       material: p.material || CUT_MATERIAL_DEFAULT,
       funcao_peca: p.function || p.group,
       grupo_origem: p.group || '',
@@ -3159,7 +3712,7 @@ async function cutDownloadJSON() {
 
 // Copiar para clipboard
 function cutCopyList() {
-  cutCSV(false).then(function(csv) {
+  return cutCSV(false).then(function(csv) {
     return navigator.clipboard.writeText(csv).then(function() {
     var btn = document.getElementById('cut-copy');
     var orig = btn.textContent;
@@ -3204,7 +3757,20 @@ function cutPrint() {
 
   function puzzlePreviewHtml(sheetsPacked) {
     var scale = 0.16;
-    var palette = ['#d7e9ff', '#dff7df', '#fff2cc', '#fce1e4', '#e7e2ff', '#dff5f3'];
+    var palette = ['#d7e9ff', '#dff7df', '#fff2cc', '#fce1e4', '#e7e2ff', '#dff5f3', '#ffe3ec', '#e3e8ff', '#d7fff0', '#fff0d7'];
+    var colorByKey = {};
+    var nextColor = 0;
+    function pieceName(pl) {
+      return (pl.item && (pl.item.name || pl.item.nome)) || 'Peça';
+    }
+    function colorFor(pl) {
+      var key = pieceName(pl) + '_' + (pl.item.group || '') + '_' + pl.comp + 'x' + pl.larg;
+      if (!(key in colorByKey)) {
+        colorByKey[key] = palette[nextColor % palette.length];
+        nextColor++;
+      }
+      return colorByKey[key];
+    }
     var out = '<div class="cut-puzzle-grid">';
     if (!sheetsPacked.length) {
       out += '<div class="cut-puzzle-card"><div class="cut-puzzle-head">Nenhuma chapa gerada para este grupo.</div></div>';
@@ -3212,17 +3778,18 @@ function cutPrint() {
     sheetsPacked.forEach(function(sheet, si) {
       var sw = Math.round(SHEET_COMP_MM * scale);
       var sh = Math.round(SHEET_LARG_MM * scale);
+      var legendRows = {};
       out += '<div class="cut-puzzle-card">';
       out += '<div class="cut-puzzle-head">Chapa ' + (si + 1) + ' · util 2170x1070 mm (nominal 2200x1100) · serra ' + KERF_MM + ' mm</div>';
       out += '<svg class="cut-puzzle-svg" viewBox="0 0 ' + (sw + 2) + ' ' + (sh + 2) + '" xmlns="http://www.w3.org/2000/svg">';
       out += '<rect x="1" y="1" width="' + sw + '" height="' + sh + '" fill="#ffffff" stroke="#3a4252" stroke-width="1.2"/>';
-      sheet.placements.forEach(function(pl, pi) {
+      sheet.placements.forEach(function(pl) {
         var x = 1 + Math.round(pl.x * scale);
         var y = 1 + Math.round(pl.y * scale);
         var wRect = Math.max(1, Math.round(pl.comp * scale));
         var hRect = Math.max(1, Math.round(pl.larg * scale));
         var rRect = Math.max(0, Math.round((pl.item.roundMm || 0) * scale));
-        var fill = palette[pi % palette.length];
+        var fill = colorFor(pl);
         out += '<rect x="' + x + '" y="' + y + '" width="' + wRect + '" height="' + hRect + '" fill="' + fill + '" stroke="#4f5d75" stroke-width="0.8"/>';
         if (rRect > 0 && wRect > 10 && hRect > 10) {
           var rr = Math.min(rRect, Math.floor(wRect / 3), Math.floor(hRect / 3));
@@ -3237,9 +3804,21 @@ function cutPrint() {
           if (pl.item.roundMm > 0) txt += ' R' + pl.item.roundMm;
           out += '<text x="' + (x + 3) + '" y="' + (y + 12) + '" font-size="9" fill="#203040">' + txt + '</text>';
         }
+        var key = pieceName(pl);
+        if (!legendRows[key]) legendRows[key] = { count: 0, color: fill, comp: pl.comp, larg: pl.larg };
+        legendRows[key].count++;
       });
       out += '</svg>';
-      out += '<div class="cut-puzzle-legend">Preview heurístico: arco em 1 canto indica peça com raio (não significa 4 cantos arredondados).</div>';
+      var legendKeys = Object.keys(legendRows);
+      if (legendKeys.length) {
+        out += '<div class="cut-puzzle-legend"><b>Legenda desta chapa:</b>';
+        legendKeys.forEach(function(k) {
+          var r = legendRows[k];
+          out += '<span class="cut-legend-item"><span class="cut-legend-swatch" style="background:' + r.color + '"></span>' + cutEscHtml(k) + ' · ' + r.comp + 'x' + r.larg + 'mm · ' + r.count + 'x</span>';
+        });
+        out += '</div>';
+      }
+      out += '<div class="cut-puzzle-hint">Preview heurístico: arco em 1 canto indica peça com raio (não significa 4 cantos arredondados).</div>';
       out += '</div>';
     });
     out += '</div>';
@@ -3265,7 +3844,10 @@ function cutPrint() {
   html += '.cut-puzzle-card{background:#fff;border:1px solid #d9dee8;border-radius:8px;padding:8px}';
   html += '.cut-puzzle-head{font-size:10px;color:#4a5366;margin-bottom:6px}';
   html += '.cut-puzzle-svg{width:100%;height:auto;display:block;background:#fcfdff}';
-  html += '.cut-puzzle-legend{font-size:9px;color:#8b93a7;margin-top:4px}';
+  html += '.cut-puzzle-legend{font-size:9px;color:#4a5366;margin-top:6px;line-height:1.7}';
+  html += '.cut-legend-item{display:inline-flex;align-items:center;gap:4px;margin-right:10px;background:#f5f7fb;border:1px solid #e3e8f2;border-radius:4px;padding:1px 6px}';
+  html += '.cut-legend-swatch{display:inline-block;width:10px;height:10px;border:1px solid #4f5d75;border-radius:2px;flex:0 0 auto}';
+  html += '.cut-puzzle-hint{font-size:9px;color:#8b93a7;margin-top:4px}';
   html += '@media print{body{background:#fff;padding:10mm}h3{page-break-after:avoid}table{page-break-inside:avoid}.cut-puzzle-card{page-break-inside:avoid}}';
   html += '</style></head><body>';
   html += '<h1>Plano de Corte — Trailer Nelcyr-Nardelli RL</h1>';
@@ -3311,13 +3893,13 @@ function cutPrint() {
     return { t: parseInt(t, 10), block: block };
   });
 
-  Promise.all(jobs).then(function(done) {
+  return Promise.all(jobs).then(function(done) {
     done.sort(function(a, b) { return a.t - b.t; });
     done.forEach(function(entry) { html += entry.block; });
 
     html += '<div class="stats">';
     html += '<div class="stat"><div class="v">' + totalP + '</div><div class="l">Total de peças</div></div>';
-    html += '<div class="stat"><div class="v">' + (totalA * 1e6).toFixed(0) + ' cm²</div><div class="l">Área total madeira</div></div>';
+    html += '<div class="stat"><div class="v">' + totalA.toFixed(3) + ' m²</div><div class="l">Área total (' + (totalA * 1e4).toFixed(0) + ' cm²)</div></div>';
     html += '</div>';
     if (exportData.includeHoles && exportData.holes.length) {
       html += '<h3>Furos (janelas, portas e outros)</h3>';
@@ -3335,9 +3917,10 @@ function cutPrint() {
       setTimeout(function() { w.print(); }, 200);
     };
   }).catch(function(err) {
-    var msg = (err && err.message) ? err.message : 'Falha ao gerar preview de impressão pela GPU0.';
+    var msg = (err && err.message) ? err.message : 'Falha ao gerar preview de impressão.';
     cutSetInfoMessage(msg, true);
     if (w && !w.closed) w.close();
+    throw err;
   });
 }
 
@@ -3348,38 +3931,73 @@ document.getElementById('cut-close').addEventListener('click', cutCloseModal);
 document.getElementById('cut-export-modal').addEventListener('click', function(e) {
   if (e.target === this) cutCloseModal();
 });
+function cutWithProgress(label, fn) {
+  cutShowProgress(label || 'Iniciando…', 1);
+  var safety = setTimeout(function() {
+    cutSetInfoMessage('Exportação demorou demais — cancelando espera de GPU/rede.', true);
+    cutHideProgress();
+  }, 45000);
+  return Promise.resolve()
+    .then(function() { return fn(); })
+    .then(function(r) {
+      clearTimeout(safety);
+      cutSetProgress(100, 'Concluído');
+      setTimeout(cutHideProgress, 250);
+      return r;
+    })
+    .catch(function(err) {
+      clearTimeout(safety);
+      cutHideProgress();
+      throw err;
+    });
+}
+
 document.getElementById('cut-csv').addEventListener('click', function() {
-  cutSetInfoMessage('Executando otimização IA na GPU0...', false);
-  cutDownloadCSV(false).catch(function(err) {
-    var msg = (err && err.message) ? err.message : 'Falha ao exportar CSV pela GPU0.';
-    cutSetInfoMessage(msg, true);
-  });
+  cutWithProgress('Exportando CSV…', function() { return cutDownloadCSV(false); })
+    .then(function() { cutSetInfoMessage('CSV exportado.', false); })
+    .catch(function(err) {
+      cutSetInfoMessage((err && err.message) ? err.message : 'Falha ao exportar CSV.', true);
+    });
 });
 document.getElementById('cut-csv-leroy').addEventListener('click', function() {
-  cutSetInfoMessage('Executando otimização IA na GPU0...', false);
-  cutDownloadCSV(true).catch(function(err) {
-    var msg = (err && err.message) ? err.message : 'Falha ao exportar CSV Leroy pela GPU0.';
-    cutSetInfoMessage(msg, true);
-  });
+  cutWithProgress('Exportando CSV Leroy…', function() { return cutDownloadCSV(true); })
+    .then(function() { cutSetInfoMessage('CSV Leroy exportado.', false); })
+    .catch(function(err) {
+      cutSetInfoMessage((err && err.message) ? err.message : 'Falha ao exportar CSV Leroy.', true);
+    });
 });
 document.getElementById('cut-excel').addEventListener('click', function() {
-  cutSetInfoMessage('Executando otimização IA na GPU0...', false);
-  cutDownloadExcel().catch(function(err) {
-    var msg = (err && err.message) ? err.message : 'Falha ao exportar Excel pela GPU0.';
-    cutSetInfoMessage(msg, true);
-  });
+  cutWithProgress('Exportando Excel…', function() { return cutDownloadExcel(); })
+    .then(function() { cutSetInfoMessage('Excel exportado.', false); })
+    .catch(function(err) {
+      cutSetInfoMessage((err && err.message) ? err.message : 'Falha ao exportar Excel.', true);
+    });
 });
-document.getElementById('cut-copy').addEventListener('click', cutCopyList);
+document.getElementById('cut-copy').addEventListener('click', function() {
+  cutWithProgress('Copiando lista…', function() { return cutCopyList(); })
+    .catch(function(err) {
+      cutSetInfoMessage((err && err.message) ? err.message : 'Falha ao copiar.', true);
+    });
+});
 document.getElementById('cut-print').addEventListener('click', function() {
-  cutSetInfoMessage('Executando otimização IA na GPU0...', false);
-  cutPrint();
+  cutWithProgress('Gerando PDF…', function() {
+    return new Promise(function(resolve, reject) {
+      try {
+        var p = cutPrint();
+        if (p && typeof p.then === 'function') p.then(resolve).catch(reject);
+        else resolve();
+      } catch (e) { reject(e); }
+    });
+  }).catch(function(err) {
+    cutSetInfoMessage((err && err.message) ? err.message : 'Falha ao imprimir.', true);
+  });
 });
 document.getElementById('cut-json').addEventListener('click', function() {
-  cutSetInfoMessage('Executando otimização IA na GPU0...', false);
-  cutDownloadJSON().catch(function(err) {
-    var msg = (err && err.message) ? err.message : 'Falha ao exportar JSON pela GPU0.';
-    cutSetInfoMessage(msg, true);
-  });
+  cutWithProgress('Exportando JSON…', function() { return cutDownloadJSON(); })
+    .then(function() { cutSetInfoMessage('JSON exportado.', false); })
+    .catch(function(err) {
+      cutSetInfoMessage((err && err.message) ? err.message : 'Falha ao exportar JSON.', true);
+    });
 });
 document.querySelectorAll('.cut-tab').forEach(function(tab) {
   tab.addEventListener('click', function() { cutShowSheet(parseInt(tab.dataset.sheet)); });

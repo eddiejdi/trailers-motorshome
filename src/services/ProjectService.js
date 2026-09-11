@@ -55,6 +55,32 @@ export default class ProjectService {
   constructor() {
     this.project = JSON.parse(JSON.stringify(DEFAULT_PROJECT));
     this._listeners = { change: [] };
+    /** @type {FileSystemFileHandle|null} */
+    this._fileHandle = null;
+    this._openFileName = null;
+    /** Layout serializado de projetos antigos (envelope trailer3d-project) — não persiste no JSON. */
+    this._legacyLayout = null;
+  }
+
+  /**
+   * Normaliza formatos antigos de projeto para o formato plano atual.
+   * Envelope antigo (v2): { v, type:'trailer3d-project', meta, project:{...}, layout:{...} }
+   * Retorna o conteúdo flat + _legacyLayout quando o layout antigo existir.
+   */
+  static normalize(data) {
+    if (!data || typeof data !== 'object') return data;
+    if (data.type === 'trailer3d-project' && data.project && typeof data.project === 'object') {
+      const inner = JSON.parse(JSON.stringify(data.project));
+      if (!inner.meta && data.meta) inner.meta = JSON.parse(JSON.stringify(data.meta));
+      if (data.layout && typeof data.layout === 'object') inner._legacyLayout = data.layout;
+      return inner;
+    }
+    if (data.project && typeof data.project === 'object' && !data.dimensions && !data.geometry) {
+      const inner = JSON.parse(JSON.stringify(data.project));
+      if (data.layout && typeof data.layout === 'object') inner._legacyLayout = data.layout;
+      return inner;
+    }
+    return data;
   }
 
   on(event, cb) {
@@ -76,32 +102,215 @@ export default class ProjectService {
 
   loadProject(data) {
     if (!data || typeof data !== 'object') throw new Error('Projeto inválido');
+    data = ProjectService.normalize(data);
     if (!data.dimensions && !data.geometry) throw new Error('Projeto faltando dimensions ou geometry');
+    this._legacyLayout = data._legacyLayout || null;
+    delete data._legacyLayout;
     this.project = data;
     this._emit('change', this.project);
     return this.project;
   }
 
+  getLegacyLayout() {
+    return this._legacyLayout || null;
+  }
+
   resetToDefault() {
     this.project = JSON.parse(JSON.stringify(DEFAULT_PROJECT));
+    this._fileHandle = null;
+    this._openFileName = null;
+    this._legacyLayout = null;
     this._emit('change', this.project);
     return this.project;
   }
 
+  /**
+   * Gera geometry.parts de caixa aberta (fundo base full + 4 paredes).
+   * L/P/H/t em milímetros (externo).
+   */
+  static buildOpenBoxParts(Lmm, Pmm, Hmm, tmm = 15) {
+    const L = Lmm / 1000, P = Pmm / 1000, H = Hmm / 1000, t = tmm / 1000;
+    const wallH = Math.max(t, H - t);
+    const innerL = Math.max(t, L - 2 * t);
+    const wallHmm = Math.round(wallH * 1000);
+    const innerLmm = Math.round(innerL * 1000);
+    return [
+      {
+        name: 'Fundo', role: 'base',
+        box_mm: [Lmm, tmm, Pmm], box: [L, t, P],
+        position: [0, t / 2, 0], rotation: [0, 0, 0],
+        cut_mm: { comp: Math.max(Lmm, Pmm), larg: Math.min(Lmm, Pmm), esp: tmm },
+      },
+      {
+        name: 'Lateral 1', role: 'lateral_esquerda',
+        box_mm: [tmm, wallHmm, Pmm], box: [t, wallH, P],
+        position: [-(L / 2 - t / 2), t + wallH / 2, 0], rotation: [0, 0, 0],
+        cut_mm: { comp: wallHmm, larg: Pmm, esp: tmm },
+      },
+      {
+        name: 'Lateral 2', role: 'lateral_direita',
+        box_mm: [tmm, wallHmm, Pmm], box: [t, wallH, P],
+        position: [+(L / 2 - t / 2), t + wallH / 2, 0], rotation: [0, 0, 0],
+        cut_mm: { comp: wallHmm, larg: Pmm, esp: tmm },
+      },
+      {
+        name: 'Frente', role: 'frente',
+        box_mm: [innerLmm, wallHmm, tmm], box: [innerL, wallH, t],
+        position: [0, t + wallH / 2, -(P / 2 - t / 2)], rotation: [0, 0, 0],
+        cut_mm: { comp: Math.max(innerLmm, wallHmm), larg: Math.min(innerLmm, wallHmm), esp: tmm },
+      },
+      {
+        name: 'Trás', role: 'fundo_parede',
+        box_mm: [innerLmm, wallHmm, tmm], box: [innerL, wallH, t],
+        position: [0, t + wallH / 2, +(P / 2 - t / 2)], rotation: [0, 0, 0],
+        cut_mm: { comp: Math.max(innerLmm, wallHmm), larg: Math.min(innerLmm, wallHmm), esp: tmm },
+      },
+    ];
+  }
+
+  /**
+   * Atualiza this.project a partir do grupo 3D project-box (escala → mm reais).
+   * Garante que download/save gravem as medidas atuais, não o JSON antigo.
+   */
+  syncFromBoxGroup(boxGroup) {
+    if (!boxGroup || !boxGroup.userData || boxGroup.userData.kind !== 'project-box') return null;
+    const base = boxGroup.userData.baseSizeMm || { L: 1200, P: 500, H: 950 };
+    const L = Math.max(50, Math.round(base.L * (boxGroup.scale.x || 1)));
+    const P = Math.max(50, Math.round(base.P * (boxGroup.scale.z || 1)));
+    const H = Math.max(50, Math.round(base.H * (boxGroup.scale.y || 1)));
+    const t = Math.max(3, Math.round(boxGroup.userData.thicknessMm || 15));
+
+    if (!this.project.geometry) this.project.geometry = { format: 'parts', parts: [] };
+    this.project.geometry.format = 'parts';
+    this.project.geometry.unit = 'm';
+    this.project.geometry.parts = ProjectService.buildOpenBoxParts(L, P, H, t);
+    if (!this.project.geometry.material) {
+      this.project.geometry.material = {
+        type: 'standard', color: '#c9a86c', roughness: 0.85,
+        thickness_mm: t, label: 'COMPENSADO CRU NU ' + t + ' mm MULTIMARCAS BR',
+      };
+    } else {
+      this.project.geometry.material.thickness_mm = t;
+      this.project.geometry.material.label = 'COMPENSADO CRU NU ' + t + ' mm MULTIMARCAS BR';
+    }
+    if (!this.project.dimensions_mm) this.project.dimensions_mm = {};
+    this.project.dimensions_mm.externo = { largura_X: L, profundidade_Z: P, altura_Y: H };
+    this.project.dimensions_mm.espessura = t;
+    this.project.dimensions_mm.interno = {
+      largura_X: Math.max(0, L - 2 * t),
+      profundidade_Z: Math.max(0, P - 2 * t),
+      altura_Y: Math.max(0, H - t),
+    };
+    if (!this.project.meta) this.project.meta = { name: 'Caixa', version: '1.0.0', rev: 1 };
+    this.project.meta.rev = (Number(this.project.meta.rev) || 0) + 1;
+    // Reset scale conceptual: próximo load reconstrói em 1:1
+    boxGroup.userData.baseSizeMm = { L, P, H };
+    boxGroup.userData.thicknessMm = t;
+    this._emit('change', this.project);
+    return { L, P, H, t, rev: this.project.meta.rev };
+  }
+
+
+  getOpenFileName() {
+    return this._openFileName || (this.project.meta && this.project.meta.name) || null;
+  }
+
+  getFileHandle() {
+    return this._fileHandle;
+  }
+
+  clearFileHandle() {
+    this._fileHandle = null;
+    this._openFileName = null;
+  }
+
   downloadProject() {
+    if (!this.project.meta) this.project.meta = {};
+    this.project.meta.exportedAt = new Date().toISOString();
     const blob = new Blob([JSON.stringify(this.project, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     const safeName = (this.project.meta?.name || 'projeto').replace(/[^a-z0-9-_]+/gi, '-');
-    a.download = safeName + '.json';
+    const rev = this.project.meta?.rev != null ? '_rev' + this.project.meta.rev : '';
+    a.download = safeName + rev + '.json';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
 
+  /**
+   * Grava this.project no arquivo que foi aberto (sobrescreve).
+   * Requer File System Access API + handle com permissão de escrita.
+   * @returns {Promise<{ok:boolean, mode:'overwrite'|'download'|'none', name?:string, error?:string}>}
+   */
+  async saveToOpenFile() {
+    if (!this.project.meta) this.project.meta = {};
+    this.project.meta.exportedAt = new Date().toISOString();
+    const text = JSON.stringify(this.project, null, 2);
+    const handle = this._fileHandle;
+
+    if (handle && typeof handle.createWritable === 'function') {
+      try {
+        // Garante permissão de escrita
+        if (handle.queryPermission) {
+          let perm = await handle.queryPermission({ mode: 'readwrite' });
+          if (perm !== 'granted' && handle.requestPermission) {
+            perm = await handle.requestPermission({ mode: 'readwrite' });
+          }
+          if (perm !== 'granted') {
+            return { ok: false, mode: 'none', error: 'Sem permissão para gravar o arquivo' };
+          }
+        }
+        const w = await handle.createWritable();
+        await w.write(text);
+        await w.close();
+        const name = handle.name || this._openFileName || 'projeto.json';
+        this._openFileName = name;
+        return { ok: true, mode: 'overwrite', name };
+      } catch (err) {
+        return { ok: false, mode: 'none', error: err && err.message ? err.message : String(err) };
+      }
+    }
+
+    // Sem handle: fallback download (não sobrescreve disco)
+    this.downloadProject();
+    return {
+      ok: true,
+      mode: 'download',
+      name: (this.project.meta?.name || 'projeto') + '.json',
+    };
+  }
+
   openProjectFile() {
+    const self = this;
+    // Chromium: showOpenFilePicker mantém handle para sobrescrever no Salvar
+    if (typeof window !== 'undefined' && typeof window.showOpenFilePicker === 'function') {
+      return (async () => {
+        try {
+          const [handle] = await window.showOpenFilePicker({
+            multiple: false,
+            types: [{
+              description: 'Projeto JSON',
+              accept: { 'application/json': ['.json'] },
+            }],
+          });
+          const file = await handle.getFile();
+          const text = await file.text();
+          const data = JSON.parse(text);
+          self._fileHandle = handle;
+          self._openFileName = handle.name || file.name;
+          return self.loadProject(data);
+        } catch (err) {
+          // Usuário cancelou
+          if (err && (err.name === 'AbortError' || err.name === 'NotAllowedError')) return null;
+          throw err;
+        }
+      })();
+    }
+
+    // Fallback: <input type=file> (não permite sobrescrever o mesmo path)
     return new Promise((resolve, reject) => {
       const input = document.createElement('input');
       input.type = 'file';
@@ -112,7 +321,9 @@ export default class ProjectService {
         try {
           const text = await file.text();
           const data = JSON.parse(text);
-          const proj = this.loadProject(data);
+          self._fileHandle = null; // input file não dá handle de escrita
+          self._openFileName = file.name;
+          const proj = self.loadProject(data);
           resolve(proj);
         } catch (err) { reject(err); }
       };

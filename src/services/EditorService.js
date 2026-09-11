@@ -112,8 +112,13 @@ export default class EditorService {
     const seen = new Set();
     const roots = [];
     hits.forEach((h) => {
-      const r = this.editableRoot(h.object);
-      if (!r || seen.has(r)) return;
+      let r = this.editableRoot(h.object);
+      if (!r) return;
+      // Peças de projeto geometry.parts → preferir o grupo da caixa inteira
+      if (r.userData && r.userData.kind === 'project-part' && r.parent && r.parent.userData && r.parent.userData.kind === 'project-box') {
+        r = r.parent;
+      }
+      if (seen.has(r)) return;
       seen.add(r);
       roots.push(r);
     });

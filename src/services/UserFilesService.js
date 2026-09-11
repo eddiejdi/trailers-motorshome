@@ -78,7 +78,20 @@ export default class UserFilesService {
   saveCurrent(name) {
     if (!this.auth.isAuthenticated()) throw new Error('Faça login para salvar projetos');
 
-    const project = this.projectService.getProject();
+    // Sincroniza geometry.parts a partir da caixa 3D (escala → mm) antes de gravar
+    try {
+      const meshes = this.saveService.editableMeshes || [];
+      const box = meshes.find((m) => m && m.userData && m.userData.kind === 'project-box');
+      if (box && typeof this.projectService.syncFromBoxGroup === 'function') {
+        this.projectService.syncFromBoxGroup(box);
+        // Após sync, a geometria está em 1:1 — zera escala visual no layout salvo
+        box.scale.set(1, 1, 1);
+      }
+    } catch (e) {
+      console.warn('[UserFilesService] syncFromBoxGroup', e);
+    }
+
+    const project = JSON.parse(JSON.stringify(this.projectService.getProject()));
     const layout = this.saveService.serializeLayout();
     const files = this._readAll();
     const now = new Date().toISOString();
@@ -182,10 +195,15 @@ export default class UserFilesService {
    * Abre um projeto a partir de um arquivo .json importado.
    */
   importProject(data) {
-    if (!data || (!data.dimensions && !data.geometry)) throw new Error('Projeto inválido');
+    if (!data || typeof data !== 'object') throw new Error('Projeto inválido');
     this.projectService.loadProject(data);
+    // Projeto antigo: restaura layout da cena se houver
+    const legacy = this.projectService.getLegacyLayout ? this.projectService.getLegacyLayout() : null;
+    if (legacy && Array.isArray(legacy.objects) && legacy.objects.length && this.saveService) {
+      this.saveService.applyCapturedFromLayout(legacy, this.loadDeps || {});
+    }
     this._currentFileId = null;
-    this._currentProjectName = data.meta?.name || 'Importado';
+    this._currentProjectName = data.meta?.name || data.project?.meta?.name || 'Importado';
     this._emit('change', { file: null, action: 'import' });
     return data;
   }
