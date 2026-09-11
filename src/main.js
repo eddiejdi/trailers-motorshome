@@ -1154,7 +1154,7 @@ this.initUI();
  *  Meshes estruturais fora do factoryLayout são marcados layoutProtected para nunca serem removidos pelo SaveService. */
     const materializeFactory = () => {
       if (this.trailer && bootTrailerChildren && bootTrailerChildren.length) {
-        const allowed = new Set((save.factoryLayout || []).map((st) => st && st.mesh).filter(Boolean));
+        const allowed = new Set((this.services.save.factoryLayout || []).map((st) => st && st.mesh).filter(Boolean));
         bootTrailerChildren.forEach((obj) => {
           if (obj && !obj.parent) this.trailer.add(obj);
         });
