@@ -2,9 +2,9 @@
   "meta": {
     "name": "Trailer Nelcyr-Nardelli",
     "version": "1.0.0",
-    "rev": 24,
+    "rev": 25,
     "description": "Família: 1 casal + 1 filha. Layout aberto (sem paredes divisórias), banheiro em cubo, mezanino da cama de casal sobre a lança.",
-    "exportedAt": "2026-09-11T23:33:41.035Z"
+    "exportedAt": "2026-09-12T00:56:22.526Z"
   },
   "dimensions": {
     "chassis": {
@@ -142,5 +142,8500 @@
       "open": "out",
       "hinge": "right"
     }
+  },
+  "scene_layout": {
+    "v": 3,
+    "savedAt": "2026-09-12T00:56:22.522Z",
+    "objects": [
+      {
+        "name": "Parede banheiro fundo",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.4999999999999999,
+          0.925,
+          -0.6249999999999999
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Parede banheiro frente",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.4999999999999999,
+          0.925,
+          -1.375
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Parede banheiro lateral",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.8749999999999999,
+          0.925,
+          -0.9999999999999999
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.12499999999999986,
+          0.925,
+          -1.3375
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.12499999999999986,
+          0.925,
+          -0.6624999999999999
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.12499999999999986,
+          1.7850000000000001,
+          -0.9999999999999999
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          1.7175,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.41568627450980394,
+            0.4392156862745098,
+            0.4627450980392157
+          ],
+          "roughness": 0.35,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.29250000000000004,
+          0.85,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.41568627450980394,
+            0.4392156862745098,
+            0.4627450980392157
+          ],
+          "roughness": 0.35,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.29250000000000004,
+          0.85,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.41568627450980394,
+            0.4392156862745098,
+            0.4627450980392157
+          ],
+          "roughness": 0.35,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.275,
+          0.85,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8117647058823529,
+            0.8274509803921568,
+            0.8392156862745098
+          ],
+          "roughness": 0.4,
+          "metalness": 0.55,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.275,
+          1.224,
+          0.014000000000000002
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7215686274509804,
+            0.8313725490196079,
+            0.9098039215686274
+          ],
+          "roughness": 0.04,
+          "metalness": 0.15,
+          "opacity": 0.18,
+          "transparent": true
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.47000000000000003,
+          0.816,
+          0.0175
+        ],
+        "r": [
+          0,
+          0,
+          1.5707963267948966
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7843137254901961,
+            0.7843137254901961,
+            0.7843137254901961
+          ],
+          "roughness": 0.4,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.01,
+          0.18,
+          0.021
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.41568627450980394,
+            0.4392156862745098,
+            0.4627450980392157
+          ],
+          "roughness": 0.35,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.01,
+          0.85,
+          0.021
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.41568627450980394,
+            0.4392156862745098,
+            0.4627450980392157
+          ],
+          "roughness": 0.35,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.01,
+          1.52,
+          0.021
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.41568627450980394,
+            0.4392156862745098,
+            0.4627450980392157
+          ],
+          "roughness": 0.35,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.4999999999999999,
+          1.86,
+          -0.9999999999999999
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.6199999999999999,
+          0.21,
+          -1.1199999999999999
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.9725490196078431,
+            0.9725490196078431,
+            0.9725490196078431
+          ],
+          "roughness": 0.4,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.6199999999999999,
+          0.44,
+          -1.2599999999999998
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.9725490196078431,
+            0.9725490196078431,
+            0.9725490196078431
+          ],
+          "roughness": 0.4,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.8399999999999999,
+          1.2,
+          -0.9999999999999999
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7843137254901961,
+            0.7843137254901961,
+            0.7843137254901961
+          ],
+          "roughness": 0.4,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          -0.18,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6588235294117647,
+            0.8470588235294118,
+            0.9411764705882353
+          ],
+          "roughness": 1,
+          "metalness": 0,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.8399999999999999,
+          1.05,
+          -0.9999999999999999
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.8399999999999999,
+          1.15,
+          -0.7799999999999999
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7215686274509804,
+            0.8313725490196079,
+            0.9098039215686274
+          ],
+          "roughness": 0.04,
+          "metalness": 0.15,
+          "opacity": 0.18,
+          "transparent": true
+        }
+      },
+      {
+        "name": "Balcão cozinha",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.22,
+          0.42,
+          1.29
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Tampo balcão",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.22,
+          0.86,
+          1.29
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.9725490196078431,
+            0.9725490196078431,
+            0.9725490196078431
+          ],
+          "roughness": 0.4,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Geladeira 37L",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.07999999999999999,
+          0.295,
+          1.29
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6901960784313725,
+            0.6901960784313725,
+            0.6901960784313725
+          ],
+          "roughness": 0.4,
+          "metalness": 0.5,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Alça geladeira",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.18,
+          0.3,
+          1.15
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Galão água 20L",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.5,
+          0.85,
+          -1.49
+        ],
+        "r": [
+          1.5707963267948966,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.16470588235294117,
+            0.1803921568627451,
+            0.21176470588235294
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Fogareiro 1",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.2,
+          0.85,
+          -1.49
+        ],
+        "r": [
+          1.5707963267948966,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.16470588235294117,
+            0.1803921568627451,
+            0.21176470588235294
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Armário-degrau 1",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.13125,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Armário-degrau 2",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.066,
+          0.13125,
+          0.171
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7686274509803922,
+            0.6274509803921569,
+            0.3764705882352941
+          ],
+          "roughness": 0.55,
+          "metalness": 0,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Armário-degrau 3",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.030719999999999997,
+          0.13125,
+          0.19
+        ],
+        "r": [
+          1.5707963267948966,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Armário-degrau 4",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.066,
+          0.13125,
+          0.171
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7686274509803922,
+            0.6274509803921569,
+            0.3764705882352941
+          ],
+          "roughness": 0.55,
+          "metalness": 0,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.10128000000000001,
+          0.13125,
+          0.19
+        ],
+        "r": [
+          1.5707963267948966,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.2745,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.2625,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.066,
+          0.2625,
+          0.171
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7686274509803922,
+            0.6274509803921569,
+            0.3764705882352941
+          ],
+          "roughness": 0.55,
+          "metalness": 0,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.030719999999999997,
+          0.2625,
+          0.19
+        ],
+        "r": [
+          1.5707963267948966,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.066,
+          0.2625,
+          0.171
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7686274509803922,
+            0.6274509803921569,
+            0.3764705882352941
+          ],
+          "roughness": 0.55,
+          "metalness": 0,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.10128000000000001,
+          0.2625,
+          0.19
+        ],
+        "r": [
+          1.5707963267948966,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.537,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.39375000000000004,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.066,
+          0.39375000000000004,
+          0.171
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7686274509803922,
+            0.6274509803921569,
+            0.3764705882352941
+          ],
+          "roughness": 0.55,
+          "metalness": 0,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.030719999999999997,
+          0.39375000000000004,
+          0.19
+        ],
+        "r": [
+          1.5707963267948966,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.066,
+          0.39375000000000004,
+          0.171
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7686274509803922,
+            0.6274509803921569,
+            0.3764705882352941
+          ],
+          "roughness": 0.55,
+          "metalness": 0,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.10128000000000001,
+          0.39375000000000004,
+          0.19
+        ],
+        "r": [
+          1.5707963267948966,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.7995000000000001,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.525,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.066,
+          0.525,
+          0.171
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7686274509803922,
+            0.6274509803921569,
+            0.3764705882352941
+          ],
+          "roughness": 0.55,
+          "metalness": 0,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.030719999999999997,
+          0.525,
+          0.19
+        ],
+        "r": [
+          1.5707963267948966,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.066,
+          0.525,
+          0.171
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7686274509803922,
+            0.6274509803921569,
+            0.3764705882352941
+          ],
+          "roughness": 0.55,
+          "metalness": 0,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.10128000000000001,
+          0.525,
+          0.19
+        ],
+        "r": [
+          1.5707963267948966,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          1.062,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Coluna mez. esq. frente",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.8999999999999999,
+          0.76,
+          -1.5
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7843137254901961,
+            0.7843137254901961,
+            0.7843137254901961
+          ],
+          "roughness": 0.4,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Coluna mez. dir. frente",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.8999999999999999,
+          0.76,
+          -1.5
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7843137254901961,
+            0.7843137254901961,
+            0.7843137254901961
+          ],
+          "roughness": 0.4,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Coluna mez. esq. trás",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.8999999999999999,
+          0.76,
+          -3.2800000000000002
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7843137254901961,
+            0.7843137254901961,
+            0.7843137254901961
+          ],
+          "roughness": 0.4,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Coluna mez. dir. trás",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.8999999999999999,
+          0.76,
+          -3.2800000000000002
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7843137254901961,
+            0.7843137254901961,
+            0.7843137254901961
+          ],
+          "roughness": 0.4,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Viga mez. frente",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          1.52,
+          -1.5
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7843137254901961,
+            0.7843137254901961,
+            0.7843137254901961
+          ],
+          "roughness": 0.4,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Viga mez. trás",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          1.52,
+          -3.2800000000000002
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7843137254901961,
+            0.7843137254901961,
+            0.7843137254901961
+          ],
+          "roughness": 0.4,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Piso mezanino",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          1.54,
+          -2.3899999999999997
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Cama casal",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8156862745098039,
+            0.5019607843137255,
+            0.5019607843137255
+          ],
+          "roughness": 0.95,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Travesseiro esq.",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.44999999999999996,
+          0.1,
+          0.74
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.9411764705882353,
+            0.9411764705882353,
+            0.8784313725490196
+          ],
+          "roughness": 0.95,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Travesseiro dir.",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.44999999999999996,
+          0.1,
+          0.74
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.9411764705882353,
+            0.9411764705882353,
+            0.8784313725490196
+          ],
+          "roughness": 0.95,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Guarda-corpo",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          1.82,
+          -3.23
+        ],
+        "r": [
+          0,
+          0,
+          1.5707963267948966
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6666666666666666,
+            0,
+            0
+          ],
+          "roughness": 1,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.21400000000000002,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          -0.21400000000000002,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.264,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.264,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.25,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7215686274509804,
+            0.8313725490196079,
+            0.9098039215686274
+          ],
+          "roughness": 0.04,
+          "metalness": 0.15,
+          "opacity": 0.18,
+          "transparent": true
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.21400000000000002,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          -0.21400000000000002,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.264,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.264,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.25,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7215686274509804,
+            0.8313725490196079,
+            0.9098039215686274
+          ],
+          "roughness": 0.04,
+          "metalness": 0.15,
+          "opacity": 0.18,
+          "transparent": true
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.23900000000000002,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          -0.23900000000000002,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.41400000000000003,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.41400000000000003,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.4,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7215686274509804,
+            0.8313725490196079,
+            0.9098039215686274
+          ],
+          "roughness": 0.04,
+          "metalness": 0.15,
+          "opacity": 0.18,
+          "transparent": true
+        }
+      },
+      {
+        "name": "Parede banheiro fundo",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.4999999999999999,
+          0.925,
+          -0.6249999999999999
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Parede banheiro frente",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.4999999999999999,
+          0.925,
+          -1.375
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Parede banheiro lateral",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.8749999999999999,
+          0.925,
+          -0.9999999999999999
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.12499999999999986,
+          0.925,
+          -1.3375
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.12499999999999986,
+          0.925,
+          -0.6624999999999999
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.12499999999999986,
+          1.7850000000000001,
+          -0.9999999999999999
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          1.7175,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.41568627450980394,
+            0.4392156862745098,
+            0.4627450980392157
+          ],
+          "roughness": 0.35,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.29250000000000004,
+          0.85,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.41568627450980394,
+            0.4392156862745098,
+            0.4627450980392157
+          ],
+          "roughness": 0.35,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.29250000000000004,
+          0.85,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.41568627450980394,
+            0.4392156862745098,
+            0.4627450980392157
+          ],
+          "roughness": 0.35,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.275,
+          0.85,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8117647058823529,
+            0.8274509803921568,
+            0.8392156862745098
+          ],
+          "roughness": 0.4,
+          "metalness": 0.55,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.275,
+          1.224,
+          0.014000000000000002
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7215686274509804,
+            0.8313725490196079,
+            0.9098039215686274
+          ],
+          "roughness": 0.04,
+          "metalness": 0.15,
+          "opacity": 0.18,
+          "transparent": true
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.47000000000000003,
+          0.816,
+          0.0175
+        ],
+        "r": [
+          0,
+          0,
+          1.5707963267948966
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7843137254901961,
+            0.7843137254901961,
+            0.7843137254901961
+          ],
+          "roughness": 0.4,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.01,
+          0.18,
+          0.021
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.41568627450980394,
+            0.4392156862745098,
+            0.4627450980392157
+          ],
+          "roughness": 0.35,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.01,
+          0.85,
+          0.021
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.41568627450980394,
+            0.4392156862745098,
+            0.4627450980392157
+          ],
+          "roughness": 0.35,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.01,
+          1.52,
+          0.021
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.41568627450980394,
+            0.4392156862745098,
+            0.4627450980392157
+          ],
+          "roughness": 0.35,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.4999999999999999,
+          1.86,
+          -0.9999999999999999
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.6199999999999999,
+          0.21,
+          -1.1199999999999999
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.9725490196078431,
+            0.9725490196078431,
+            0.9725490196078431
+          ],
+          "roughness": 0.4,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.6199999999999999,
+          0.44,
+          -1.2599999999999998
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.9725490196078431,
+            0.9725490196078431,
+            0.9725490196078431
+          ],
+          "roughness": 0.4,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.8399999999999999,
+          1.2,
+          -0.9999999999999999
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7843137254901961,
+            0.7843137254901961,
+            0.7843137254901961
+          ],
+          "roughness": 0.4,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          -0.18,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6588235294117647,
+            0.8470588235294118,
+            0.9411764705882353
+          ],
+          "roughness": 1,
+          "metalness": 0,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.8399999999999999,
+          1.05,
+          -0.9999999999999999
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto Interior",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.8399999999999999,
+          1.15,
+          -0.7799999999999999
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7215686274509804,
+            0.8313725490196079,
+            0.9098039215686274
+          ],
+          "roughness": 0.04,
+          "metalness": 0.15,
+          "opacity": 0.18,
+          "transparent": true
+        }
+      },
+      {
+        "name": "Dinete",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.21,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Dinete",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.02,
+          0.45999999999999996,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5019607843137255,
+            0.7529411764705882,
+            0.6274509803921569
+          ],
+          "roughness": 0.95,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Dinete",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.185,
+          0.58,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5019607843137255,
+            0.7529411764705882,
+            0.6274509803921569
+          ],
+          "roughness": 0.95,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Dinete",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.245,
+          0.7,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Dinete",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.245,
+          0.33499999999999996,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7843137254901961,
+            0.7843137254901961,
+            0.7843137254901961
+          ],
+          "roughness": 0.4,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Dinete",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.245,
+          0.45999999999999996,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5019607843137255,
+            0.7529411764705882,
+            0.6274509803921569
+          ],
+          "roughness": 0.95,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Janela esquerda 1",
+        "kind": "janela",
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.9249999999999999,
+          1.2,
+          0.2
+        ],
+        "r": [
+          0,
+          -1.5707963267948966,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null
+      },
+      {
+        "name": "Janela esquerda 2",
+        "kind": "janela",
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.9249999999999999,
+          1.2,
+          0.95
+        ],
+        "r": [
+          0,
+          -1.5707963267948966,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null
+      },
+      {
+        "name": "Janela direita 1",
+        "kind": "janela",
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.9249999999999999,
+          1.2,
+          -0.35
+        ],
+        "r": [
+          0,
+          1.5707963267948966,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null
+      },
+      {
+        "name": "Janela direita 2",
+        "kind": "janela",
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.9249999999999999,
+          1.2,
+          0.4
+        ],
+        "r": [
+          0,
+          1.5707963267948966,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null
+      },
+      {
+        "name": "Janela frontal",
+        "kind": "janela",
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.32,
+          -1.425
+        ],
+        "r": [
+          0,
+          3.141592653589793,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null
+      },
+      {
+        "name": "Janela mez. esquerda",
+        "kind": "janela",
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.938,
+          2.12,
+          -2.3899999999999997
+        ],
+        "r": [
+          0,
+          1.5707963267948966,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null
+      },
+      {
+        "name": "Janela mez. direita",
+        "kind": "janela",
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.938,
+          2.12,
+          -2.3899999999999997
+        ],
+        "r": [
+          0,
+          -1.5707963267948966,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null
+      },
+      {
+        "name": "Janela mez. frontal",
+        "kind": "janela",
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          2.2199999999999998,
+          -3.305
+        ],
+        "r": [
+          0,
+          3.141592653589793,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null
+      },
+      {
+        "name": "Porta de entrada",
+        "kind": "porta",
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.08,
+          1.425
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.49,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.16470588235294117,
+            0.1803921568627451,
+            0.21176470588235294
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.72,
+          0.395,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.16470588235294117,
+            0.1803921568627451,
+            0.21176470588235294
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.72,
+          0.395,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.16470588235294117,
+            0.1803921568627451,
+            0.21176470588235294
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.44999999999999996,
+          -1.3
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.16470588235294117,
+            0.1803921568627451,
+            0.21176470588235294
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.44999999999999996,
+          -0.5
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.16470588235294117,
+            0.1803921568627451,
+            0.21176470588235294
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.44999999999999996,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.16470588235294117,
+            0.1803921568627451,
+            0.21176470588235294
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.44999999999999996,
+          0.5
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.16470588235294117,
+            0.1803921568627451,
+            0.21176470588235294
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.44999999999999996,
+          1.3
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.16470588235294117,
+            0.1803921568627451,
+            0.21176470588235294
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.3725,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.16470588235294117,
+            0.1803921568627451,
+            0.21176470588235294
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.75,
+          0.28,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          1.5707963267948966
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.10196078431372549,
+            0.10196078431372549,
+            0.10196078431372549
+          ],
+          "roughness": 0.9,
+          "metalness": 0,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.75,
+          0.28,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          1.5707963267948966
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.75,
+          0.3,
+          0
+        ],
+        "r": [
+          0,
+          1.5707963267948966,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.16470588235294117,
+            0.1803921568627451,
+            0.21176470588235294
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.75,
+          0.28,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          1.5707963267948966
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.10196078431372549,
+            0.10196078431372549,
+            0.10196078431372549
+          ],
+          "roughness": 0.9,
+          "metalness": 0,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.75,
+          0.28,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          1.5707963267948966
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.75,
+          0.3,
+          0
+        ],
+        "r": [
+          0,
+          1.5707963267948966,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.16470588235294117,
+            0.1803921568627451,
+            0.21176470588235294
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.325,
+          0.395,
+          -1.95
+        ],
+        "r": [
+          0,
+          2.516107613350564,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1.1101801655587258
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.16470588235294117,
+            0.1803921568627451,
+            0.21176470588235294
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.325,
+          0.395,
+          -1.95
+        ],
+        "r": [
+          0,
+          -2.516107613350564,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1.1101801655587258
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.16470588235294117,
+            0.1803921568627451,
+            0.21176470588235294
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.375,
+          -2.36
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.16470588235294117,
+            0.1803921568627451,
+            0.21176470588235294
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.395,
+          -2.4
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.16470588235294117,
+            0.1803921568627451,
+            0.21176470588235294
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          -0.12,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.16470588235294117,
+            0.1803921568627451,
+            0.21176470588235294
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          -0.34,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.16470588235294117,
+            0.1803921568627451,
+            0.21176470588235294
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.1,
+          0.05,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          1.5707963267948966
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7843137254901961,
+            0.7843137254901961,
+            0.7843137254901961
+          ],
+          "roughness": 0.4,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.7,
+          0.13000000000000003,
+          -1.0499999999999998
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.22745098039215686,
+            0.22745098039215686,
+            0.22745098039215686
+          ],
+          "roughness": 1,
+          "metalness": 0,
+          "opacity": 0.6,
+          "transparent": true
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.04,
+          1.425
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.8313725490196079,
+            0.8156862745098039
+          ],
+          "roughness": 0.32,
+          "metalness": 0.82,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.8313725490196079,
+            0.8156862745098039
+          ],
+          "roughness": 0.32,
+          "metalness": 0.82,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          1.6175000000000002,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.41568627450980394,
+            0.4392156862745098,
+            0.4627450980392157
+          ],
+          "roughness": 0.35,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.3275,
+          0.8,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.41568627450980394,
+            0.4392156862745098,
+            0.4627450980392157
+          ],
+          "roughness": 0.35,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.3275,
+          0.8,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.41568627450980394,
+            0.4392156862745098,
+            0.4627450980392157
+          ],
+          "roughness": 0.35,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.31,
+          0.8,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8117647058823529,
+            0.8274509803921568,
+            0.8392156862745098
+          ],
+          "roughness": 0.4,
+          "metalness": 0.55,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.54,
+          0.768,
+          0.0175
+        ],
+        "r": [
+          0,
+          0,
+          1.5707963267948966
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7843137254901961,
+            0.7843137254901961,
+            0.7843137254901961
+          ],
+          "roughness": 0.4,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.01,
+          0.18,
+          0.021
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.41568627450980394,
+            0.4392156862745098,
+            0.4627450980392157
+          ],
+          "roughness": 0.35,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.01,
+          0.8,
+          0.021
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.41568627450980394,
+            0.4392156862745098,
+            0.4627450980392157
+          ],
+          "roughness": 0.35,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.01,
+          1.4200000000000002,
+          0.021
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.41568627450980394,
+            0.4392156862745098,
+            0.4627450980392157
+          ],
+          "roughness": 0.35,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.099,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          -0.099,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.324,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.324,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7215686274509804,
+            0.8313725490196079,
+            0.9098039215686274
+          ],
+          "roughness": 0.04,
+          "metalness": 0.15,
+          "opacity": 0.18,
+          "transparent": true
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.264,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          -0.264,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.264,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.264,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.25,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7215686274509804,
+            0.8313725490196079,
+            0.9098039215686274
+          ],
+          "roughness": 0.04,
+          "metalness": 0.15,
+          "opacity": 0.18,
+          "transparent": true
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.264,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          -0.264,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.264,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.264,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.25,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7215686274509804,
+            0.8313725490196079,
+            0.9098039215686274
+          ],
+          "roughness": 0.04,
+          "metalness": 0.15,
+          "opacity": 0.18,
+          "transparent": true
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.264,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          -0.264,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.264,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.264,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.25,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7215686274509804,
+            0.8313725490196079,
+            0.9098039215686274
+          ],
+          "roughness": 0.04,
+          "metalness": 0.15,
+          "opacity": 0.18,
+          "transparent": true
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.264,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          -0.264,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.264,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.264,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.25,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7215686274509804,
+            0.8313725490196079,
+            0.9098039215686274
+          ],
+          "roughness": 0.04,
+          "metalness": 0.15,
+          "opacity": 0.18,
+          "transparent": true
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.17400000000000002,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          -0.17400000000000002,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.364,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.364,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.35,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7215686274509804,
+            0.8313725490196079,
+            0.9098039215686274
+          ],
+          "roughness": 0.04,
+          "metalness": 0.15,
+          "opacity": 0.18,
+          "transparent": true
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.9249999999999999,
+          0.02,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.9249999999999999,
+          1.83,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.9249999999999999,
+          0.925,
+          -1.415
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.9249999999999999,
+          0.925,
+          -0.915
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.9249999999999999,
+          0.925,
+          -0.41500000000000004
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.9249999999999999,
+          0.925,
+          0.585
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.9249999999999999,
+          1.2,
+          -0.06499999999999999
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.9249999999999999,
+          1.2,
+          0.465
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.9249999999999999,
+          1.65,
+          0.2
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.9249999999999999,
+          1.2,
+          0.6849999999999999
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.9249999999999999,
+          1.2,
+          1.2149999999999999
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.9249999999999999,
+          1.65,
+          0.95
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.72,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.9249999999999999,
+          0.02,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.9249999999999999,
+          1.83,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.9249999999999999,
+          0.925,
+          -1.415
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.9249999999999999,
+          0.925,
+          -0.915
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.9249999999999999,
+          0.925,
+          0.08499999999999996
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.9249999999999999,
+          0.925,
+          1.085
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.9249999999999999,
+          1.2,
+          -0.615
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.9249999999999999,
+          1.2,
+          -0.08499999999999998
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.9249999999999999,
+          1.65,
+          -0.35
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.9249999999999999,
+          1.2,
+          0.135
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.9249999999999999,
+          1.2,
+          0.665
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.9249999999999999,
+          1.65,
+          0.4
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.6274509803921569,
+            0.5019607843137255,
+            0.3137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          2.27,
+          0.4
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7215686274509804,
+            0.8313725490196079,
+            0.9098039215686274
+          ],
+          "roughness": 0.04,
+          "metalness": 0.15,
+          "opacity": 0.18,
+          "transparent": true
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          2.28,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.7215686274509804,
+            0.8313725490196079,
+            0.9098039215686274
+          ],
+          "roughness": 0.04,
+          "metalness": 0.15,
+          "opacity": 0.18,
+          "transparent": true
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5568627450980392,
+            0.5803921568627451,
+            0.6039215686274509
+          ],
+          "roughness": 0.42,
+          "metalness": 0.5,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          -0.019999989463287873,
+          -3.33
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Objeto",
+        "kind": null,
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          -0.02,
+          1.45
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.5,
+          "metalness": 0.6,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Fundo",
+        "kind": "project-part",
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.0075,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": [
+          1200,
+          15,
+          950
+        ],
+        "mat": {
+          "color": [
+            0.788235294117647,
+            0.6588235294117647,
+            0.4235294117647059
+          ],
+          "roughness": 0.85,
+          "metalness": 0,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Lateral 1",
+        "kind": "project-part",
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          -0.5925,
+          0.2575,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": [
+          15,
+          485,
+          950
+        ],
+        "mat": {
+          "color": [
+            0.788235294117647,
+            0.6588235294117647,
+            0.4235294117647059
+          ],
+          "roughness": 0.85,
+          "metalness": 0,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Lateral 2",
+        "kind": "project-part",
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0.5925,
+          0.2575,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": [
+          15,
+          485,
+          950
+        ],
+        "mat": {
+          "color": [
+            0.788235294117647,
+            0.6588235294117647,
+            0.4235294117647059
+          ],
+          "roughness": 0.85,
+          "metalness": 0,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Frente",
+        "kind": "project-part",
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.2575,
+          -0.46749999999999997
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": [
+          1170,
+          485,
+          15
+        ],
+        "mat": {
+          "color": [
+            0.788235294117647,
+            0.6588235294117647,
+            0.4235294117647059
+          ],
+          "roughness": 0.85,
+          "metalness": 0,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Trás",
+        "kind": "project-part",
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": null,
+        "p": [
+          0,
+          0.2575,
+          0.46749999999999997
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": [
+          1170,
+          485,
+          15
+        ],
+        "mat": {
+          "color": [
+            0.788235294117647,
+            0.6588235294117647,
+            0.4235294117647059
+          ],
+          "roughness": 0.85,
+          "metalness": 0,
+          "opacity": 1,
+          "transparent": false
+        }
+      }
+    ]
   }
 }

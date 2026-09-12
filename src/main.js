@@ -1132,6 +1132,7 @@ this.initUI();
           queueMicrotask(() => {
             const built = typeof this.rebuildProjectGeometry === 'function' && this.rebuildProjectGeometry(savedProj);
             if (!built) {
+              clearProjectBoxFromScene();
               materializeFactory();
               restoreSceneFromEmpty();
               this.ensureEnvelopeVisibility(true, true);
@@ -1237,6 +1238,21 @@ this.initUI();
 
     /** Re-materializa o trailer de fábrica inteiro (árvore, não só folhas) quando a cena foi esvaziada no boot.
  *  Meshes estruturais fora do factoryLayout são marcados layoutProtected para nunca serem removidos pelo SaveService. */
+    /** Remove qualquer project-box/partes que tenham sobrado na cena de outro projeto.
+     *  O JSON manda: projeto sem parts não deixa box de projeto na cena. */
+    const clearProjectBoxFromScene = () => {
+      if (this.trailer) {
+        const strays = [];
+        this.trailer.traverse((c) => {
+          if (c && c.userData && c.userData.kind === 'project-box') strays.push(c);
+        });
+        strays.forEach((g) => { if (g.parent) g.parent.remove(g); });
+        const axes = this.trailer.getObjectByName('project-axes');
+        if (axes) this.trailer.remove(axes);
+      }
+      this._projectBoxGroup = null;
+    };
+
     const materializeFactory = () => {
       if (this.trailer && bootTrailerChildren && bootTrailerChildren.length) {
         const allowed = new Set((this.services.save.factoryLayout || []).map((st) => st && st.mesh).filter(Boolean));
@@ -1461,6 +1477,7 @@ this.initUI();
         }
         const built = buildGeometryFromProject(proj);
         if (!built) {
+          clearProjectBoxFromScene();
           materializeFactory();
           restoreSceneFromEmpty();
           this.ensureEnvelopeVisibility(true, true);

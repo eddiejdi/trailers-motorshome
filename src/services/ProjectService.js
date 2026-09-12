@@ -161,6 +161,10 @@ export default class ProjectService {
    */
   syncFromBoxGroup(boxGroup) {
     if (!boxGroup || !boxGroup.userData || boxGroup.userData.kind !== 'project-box') return null;
+    // O JSON decide seu próprio formato: só é projeto de parts se ele DECLARA
+    // geometry.parts. Um box solto na cena (sobra de outro projeto) NUNCA pode
+    // converter um projeto sem parts em projeto de parts.
+    if (!this.project.geometry || !Array.isArray(this.project.geometry.parts)) return null;
     const base = boxGroup.userData.baseSizeMm || { L: 1200, P: 500, H: 950 };
     const L = Math.max(50, Math.round(base.L * (boxGroup.scale.x || 1)));
     const P = Math.max(50, Math.round(base.P * (boxGroup.scale.z || 1)));
