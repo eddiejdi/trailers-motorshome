@@ -115,6 +115,7 @@ export default class Interior {
     const top = new THREE.Mesh(new THREE.BoxGeometry(tableD, 0.03, tableL), wood);
     top.position.set(tableX, tableH, 0);
     top.castShadow = true;
+    if (top.material) { top.material = top.material.clone(); top.material.transparent = false; top.material.opacity = 1; }
     top.userData.role = 'table';
     top.userData.restY = tableH;
     top.userData.bedY = seatH + 0.015;
@@ -185,22 +186,28 @@ export default class Interior {
 
     const cubBack = this.wall(bw, bh, wth, M.madeiraD);
     cubBack.position.set(bathX0 + bw / 2, bh / 2, bathZ1 - wth / 2);
+    if (cubBack.material) { cubBack.material = cubBack.material.clone(); cubBack.material.transparent = false; cubBack.material.opacity = 1; }
     bath.add(cubBack);
     const cubFront = this.wall(bw, bh, wth, M.madeiraD);
     cubFront.position.set(bathX0 + bw / 2, bh / 2, bathZ0 + wth / 2);
+    if (cubFront.material) { cubFront.material = cubFront.material.clone(); cubFront.material.transparent = false; cubFront.material.opacity = 1; }
     bath.add(cubFront);
     const cubLeft = this.wall(wth, bh, bw, M.madeiraD);
     cubLeft.position.set(bathX0 + wth / 2, bh / 2, bathZ0 + bw / 2);
+    if (cubLeft.material) { cubLeft.material = cubLeft.material.clone(); cubLeft.material.transparent = false; cubLeft.material.opacity = 1; }
     bath.add(cubLeft);
     const jambL = (bw - INT_DOOR_W) / 2;
     const cubJambL = this.wall(wth, bh, jambL, M.madeiraD);
     cubJambL.position.set(bathX1 - wth / 2, bh / 2, bathZ0 + jambL / 2);
+    if (cubJambL.material) { cubJambL.material = cubJambL.material.clone(); cubJambL.material.transparent = false; cubJambL.material.opacity = 1; }
     bath.add(cubJambL);
     const cubJambR = this.wall(wth, bh, jambL, M.madeiraD);
     cubJambR.position.set(bathX1 - wth / 2, bh / 2, bathZ1 - jambL / 2);
+    if (cubJambR.material) { cubJambR.material = cubJambR.material.clone(); cubJambR.material.transparent = false; cubJambR.material.opacity = 1; }
     bath.add(cubJambR);
     const cubLintel = this.wall(wth, Math.max(0.08, bh - INT_SILL - INT_DOOR_H), INT_DOOR_W, M.madeiraD);
     cubLintel.position.set(bathX1 - wth / 2, INT_SILL + INT_DOOR_H + (bh - INT_SILL - INT_DOOR_H) / 2, intDoorZ);
+    if (cubLintel.material) { cubLintel.material = cubLintel.material.clone(); cubLintel.material.transparent = false; cubLintel.material.opacity = 1; }
     bath.add(cubLintel);
     const cubDoor = this.makeHingedDoor({ w: INT_DOOR_W, h: INT_DOOR_H, open: 0, hingeRight: true });
     cubDoor.position.set(bathX1 - wth / 2, INT_SILL, intDoorZ);
@@ -264,21 +271,6 @@ export default class Interior {
     const gelHandle = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.18, 0.02), M.aluminioD);
     gelHandle.position.set(kX - 0.04, 0.30, kZ - 0.14);
     kitchen.add(gelHandle);
-    const piaBowl = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.10, 16), new THREE.MeshStandardMaterial({ color: 0xa0a0a0, metalness: 0.6, roughness: 0.4 }));
-    piaBowl.position.set(kX + 0.18, 0.86, kZ);
-    kitchen.add(piaBowl);
-    const tap = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.18, 8), M.aluminio);
-    tap.position.set(kX + 0.18, 0.95, kZ + 0.06);
-    kitchen.add(tap);
-    const tapHead = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.02, 0.08), M.aluminio);
-    tapHead.position.set(kX + 0.18, 1.04, kZ);
-    kitchen.add(tapHead);
-    const upCab = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.38, 0.22), M.madeiraD);
-    upCab.position.set(kX, 1.52, kZ + 0.02);
-    kitchen.add(upCab);
-    const freshWater = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.32, 12), new THREE.MeshStandardMaterial({ color: 0x4a8ab0, roughness: 0.6, transparent: true, opacity: 0.7 }));
-    freshWater.position.set(kX + 0.28, 0.16, kZ);
-    kitchen.add(freshWater);
     const fogIcon = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.04, 16), M.chassis);
     fogIcon.rotation.x = Math.PI / 2;
     fogIcon.position.set(0.50, 0.85, -Lt / 2 - 0.04);
@@ -379,7 +371,7 @@ export default class Interior {
       group: trailer, interior, wallsInt, bath, kitchen, stairCabs, mezz,
       kidBed, casalBed, mzFloor, guard, colTopY,
       kX, kZ, bedX, bedZ, stairX, HATCH_Z,
-      gel, gelHandle, piaBowl, tap, tapHead, upCab, freshWater,
+      gel, gelHandle,
       fogIcon, fogIcon2, potti, pottiLid, ducha, mirror,
       counter, counterTop, cubDoor
     };

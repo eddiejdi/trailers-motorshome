@@ -133,7 +133,7 @@ export default class UserFilesService {
   }
 
   /**
-   * Abre um projeto pelo ID: carrega project + layout.
+   * Abre um projeto pelo ID: carrega o projeto atual.
    */
   load(id) {
     const file = this.get(id);
@@ -143,9 +143,6 @@ export default class UserFilesService {
     if (file.project) {
       this.projectService.loadProject(file.project);
     }
-
-    // Aplica o layout na cena 3D
-    this.saveService.applyCapturedFromLayout(file.layout, this.loadDeps);
 
     this._currentFileId = id;
     this._currentProjectName = file.name;
@@ -197,11 +194,6 @@ export default class UserFilesService {
   importProject(data) {
     if (!data || typeof data !== 'object') throw new Error('Projeto inválido');
     this.projectService.loadProject(data);
-    // Projeto antigo: restaura layout da cena se houver
-    const legacy = this.projectService.getLegacyLayout ? this.projectService.getLegacyLayout() : null;
-    if (legacy && Array.isArray(legacy.objects) && legacy.objects.length && this.saveService) {
-      this.saveService.applyCapturedFromLayout(legacy, this.loadDeps || {});
-    }
     this._currentFileId = null;
     this._currentProjectName = data.meta?.name || data.project?.meta?.name || 'Importado';
     this._emit('change', { file: null, action: 'import' });

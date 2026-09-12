@@ -7,7 +7,6 @@
 
 const PALETTE_WEIGHTS = {
   // Móveis & Eletro
-  'pia':             2.5,
   'comoda':          8.0,
   'armario':        10.0,
   'banco':           6.0,

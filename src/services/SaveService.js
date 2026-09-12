@@ -33,12 +33,13 @@ export default class SaveService {
         const mat = m.material;
         if (mat && mat.isMeshStandardMaterial) {
           const c = mat.color;
+          const opaque = !(mat.transparent && (mat.opacity == null || mat.opacity <= 0.01));
           obj.mat = {
             color: [c.r, c.g, c.b],
             roughness: mat.roughness,
             metalness: mat.metalness,
-            opacity: mat.opacity,
-            transparent: mat.transparent,
+            opacity: opaque ? mat.opacity : 1,
+            transparent: opaque ? mat.transparent : false,
           };
         }
         const parts = [];
@@ -78,11 +79,27 @@ export default class SaveService {
       if (st.r) m.rotation.set(st.r[0], st.r[1], st.r[2]);
       if (st.s) m.scale.set(st.s[0], st.s[1], st.s[2]);
       if (st.mat && m.material && m.material.isMeshStandardMaterial) {
-        m.material.color.setRGB(st.mat.color[0], st.mat.color[1], st.mat.color[2]);
+        m.material = m.material.clone();
+        const label = `${st.kind || ''} ${st.name || ''}`.toLowerCase();
+        const looksGlass = /vidro|janela|glass|spray/.test(label);
+        const looksWood = /parede banheiro|dinete|mesa/.test(label);
+        const greenLegacy = Array.isArray(st.mat.color)
+          && Math.abs(st.mat.color[0] - 0.5019607843137255) < 1e-6
+          && Math.abs(st.mat.color[1] - 0.7529411764705882) < 1e-6
+          && Math.abs(st.mat.color[2] - 0.6274509803921569) < 1e-6;
+        if (looksWood && greenLegacy) {
+          m.material.color.setHex(0xa08050);
+        } else {
+          m.material.color.setRGB(st.mat.color[0], st.mat.color[1], st.mat.color[2]);
+        }
         if (st.mat.roughness != null) m.material.roughness = st.mat.roughness;
         if (st.mat.metalness != null) m.material.metalness = st.mat.metalness;
-        if (st.mat.opacity != null) m.material.opacity = st.mat.opacity;
         if (st.mat.transparent != null) m.material.transparent = st.mat.transparent;
+        if (st.mat.opacity != null) m.material.opacity = st.mat.opacity;
+        if (!looksGlass && st.mat.opacity != null && st.mat.opacity <= 0.01) {
+          m.material.transparent = false;
+          m.material.opacity = 1;
+        }
         m.material.needsUpdate = true;
       }
       if (st.carpentry && Array.isArray(st.carpentry) && typeof attachCarpentryPart === 'function') {

@@ -191,7 +191,7 @@ const ANIMS = {
     obj.rotation.z = obj.userData._rz0 + 0.07 * Math.sin(T * 5) * e;
   },
 
-  // Banho/pia: água sai (spray aparece) ou pulsa vagarosamente
+  // Banho/água: spray aparece ou pulsa vagarosamente
   water(obj, e, p, dt, T) {
     let sprayed = false;
     obj.traverse((c) => {
@@ -297,7 +297,7 @@ export default class ObjectAnimator {
     if (kind === 'mesa-dob') return ANIMS.fold;
     if (kind === 'escada-ret') return ANIMS.deploy;
     if (kind === 'ac-portatil' || kind === 'ac-teto' || kind === 'grade-vent') return ANIMS.air;
-    if (kind === 'ducha' || kind === 'ducha-ext' || kind === 'pia') return ANIMS.water;
+    if (kind === 'ducha' || kind === 'ducha-ext') return ANIMS.water;
     return ANIMS.pulse;
   }
 }

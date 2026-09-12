@@ -1,7 +1,6 @@
 const THREE = window.THREE;
 
 const PALETTE_CATALOG = {
-  pia: { q: 'pia inox Ø280 trailer motorhome', buy: 'https://www.google.com/search?tbm=shop&q=pia+inox+28cm+trailer' },
   comoda: { q: 'cômoda 3 gavetas compacta 50x40', buy: 'https://www.google.com/search?tbm=shop&q=c%C3%B4moda+3+gavetas+50cm' },
   armario: { q: 'armário suspenso 40x60 trailer', buy: 'https://www.google.com/search?tbm=shop&q=arm%C3%A1rio+40x60+trailer' },
   banco: { q: 'banco baú trailer motorhome', buy: 'https://www.google.com/search?tbm=shop&q=banco+ba%C3%BA+trailer' },
@@ -65,10 +64,7 @@ export default class PaletteService {
     let mesh, name, cat = 'acessorios';
     const roofTop = this.roofTop;
 
-    if (kind === 'pia') {
-      mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.12, 0.12, 16), new THREE.MeshStandardMaterial({ color: 0xa8a8a8, metalness: 0.7 }));
-      mesh.position.set(0.2, 0.90, 0); name = 'Pia'; cat = 'encanamento';
-    } else if (kind === 'porta') {
+    if (kind === 'porta') {
       mesh = this.makeHingedDoor({ w: 0.62, h: 1.60, open: -0.9 });
       mesh.position.set(0.3, 0.08, 0.4); name = 'Porta entrada'; cat = 'paredes';
     } else if (kind === 'porta-int') {

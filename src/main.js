@@ -673,6 +673,12 @@ this.initUI();
       let synced = null;
       try { synced = this.syncProjectFromScene && this.syncProjectFromScene(); } catch (e) { console.warn(e); }
       try { save.saveLayout(); } catch (e) { console.warn(e); }
+      try {
+        const proj = this.services.project && this.services.project.getProject ? this.services.project.getProject() : null;
+        if (proj && typeof proj === 'object') {
+          proj.scene_layout = save.serializeLayout();
+        }
+      } catch (e) { console.warn('scene_layout serialize', e); }
 
       // 1) Sobrescreve o .json que foi aberto (File System Access API)
       let fileWrite = null;
@@ -1108,23 +1114,38 @@ this.initUI();
     };
         save.captureFactoryLayout(() => editor.captureLayout());
     save.loadLayout(saveDeps);
-    // Restaura geometry.parts salvo (sem login) e reconstrói cena
+    // Renderiza o que o JSON descreve — SEM conhecer "trailer" nem "caixa":
+    //   geometry.parts presente → interpretador genérico de parts.
+    //   geometry.parts ausente  → base/fábrica padrão (projeto não-parts).
+    const hasProjectParts = (proj) => !!(
+      proj && proj.geometry && Array.isArray(proj.geometry.parts) && proj.geometry.parts.length
+    );
+
+    // Restaura estado salvo (sem login)
     try {
       const rawProj = localStorage.getItem('trailer3d-project-json-v1');
       if (rawProj) {
         const savedProj = JSON.parse(rawProj);
-        if (savedProj && savedProj.geometry && Array.isArray(savedProj.geometry.parts) && savedProj.geometry.parts.length) {
+        if (hasProjectParts(savedProj)) {
           this.services.project.loadProject(savedProj);
           // rebuild/setup happens when initUI continues — queue microtask after the scene helpers exist
           queueMicrotask(() => {
-            if (savedProj.geometry.kind === 'open-box' || savedProj.geometry.projectType === 'box') {
-              if (typeof this.rebuildProjectGeometry === 'function') {
-                this.rebuildProjectGeometry(savedProj);
-                if (this.services.export) {
-                  const parts = this.services.export.extractPartsFromProject(savedProj);
-                  this.services.export.setScenePieces(parts.length ? parts : null);
+            const built = typeof this.rebuildProjectGeometry === 'function' && this.rebuildProjectGeometry(savedProj);
+            if (!built) {
+              materializeFactory();
+              restoreSceneFromEmpty();
+              this.ensureEnvelopeVisibility(true, true);
+              if (savedProj.scene_layout && Array.isArray(savedProj.scene_layout.objects)) {
+                try {
+                  save.resetLayout((text, cls) => ai && ai.aiLog(text, cls), { forceFactory: true });
+                  save.applyCapturedFromLayout(savedProj.scene_layout, saveDeps);
+                } catch (e) {
+                  console.warn('apply scene_layout from local restore', e);
                 }
               }
+            } else if (this.services.export) {
+              const parts = this.services.export.extractPartsFromProject(savedProj);
+              this.services.export.setScenePieces(parts.length ? parts : null);
             }
             ai && ai.aiLog('Projeto restaurado do salvamento local (rev' + (savedProj.meta?.rev||'?') + ').', 'sys');
           });
@@ -1288,8 +1309,6 @@ this.initUI();
       const THREE = window.THREE;
       const geo = proj.geometry;
       if (!geo || !Array.isArray(geo.parts) || geo.parts.length === 0) return false;
-      const isOpenBox = geo.kind === 'open-box' || geo.projectType === 'box';
-      if (!isOpenBox) return false;
 
       editor.deselectObject();
       if (this.trailer) {
@@ -1441,10 +1460,18 @@ this.initUI();
           app.services.export.setScenePieces(fromFile.length ? fromFile : null);
         }
         const built = buildGeometryFromProject(proj);
-        if (!built && (proj.dimensions || proj.weights_kg || proj.specs)) {
+        if (!built) {
           materializeFactory();
           restoreSceneFromEmpty();
           this.ensureEnvelopeVisibility(true, true);
+          if (proj.scene_layout && Array.isArray(proj.scene_layout.objects)) {
+            try {
+              save.resetLayout((text, cls) => ai && ai.aiLog(text, cls), { forceFactory: true });
+              save.applyCapturedFromLayout(proj.scene_layout, saveDeps);
+            } catch (e) {
+              console.warn('apply scene_layout from project json', e);
+            }
+          }
         }
 
         // ── HOOK: aberturas 100% derivadas do JSON do projeto ──

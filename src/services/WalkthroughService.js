@@ -41,6 +41,8 @@ export default class WalkthroughService {
     this.lastWalkTick = 0;
     this.DOOR_CLOSED = 0;
     this.DOOR_OPEN = -1.95;
+    this.doorWall = null;
+    this.doorPos = null;
     this.EYE = 1.50;
     this.MZ_EYE = 0.38;
     this.WALK_R = 0.11;
@@ -54,6 +56,19 @@ export default class WalkthroughService {
 
   setMZFloorY(val) { this.MZ_FLOOR_Y = val; }
   setEntryDoor(door) { this.entryDoor = door; }
+
+  /** Define por onde a porta de entrada está (parede + posição) a partir do projeto (JSON). */
+  setDoorGeo(wall, pos) {
+    const position = pos && pos.clone ? pos.clone() : null;
+    this.doorWall = wall ? String(wall) : null;
+    this.doorPos = position;
+  }
+
+  /** Direção de abertura da porta (JSON structure.door.open): 'out' abre para fora, 'in' para dentro. */
+  setDoorOpen(direction) {
+    this.DOOR_OPEN = direction === 'out' ? 1.95 : -1.95;
+    if (this.entryDoor) this.entryDoor.userData.hingeTarget = this.DOOR_OPEN;
+  }
   addWalkSolid(obj, level) {
     if (!obj) return;
     obj.userData.walkLevel = level || 'cabin';
@@ -126,14 +141,22 @@ export default class WalkthroughService {
   }
 
   clampWalk(x, z, level) {
-    const xmin = -this.Li / 2 + this.WALK_R;
+    let xmin = -this.Li / 2 + this.WALK_R;
     let xmax = this.Li / 2 - this.WALK_R;
-    const zmax = this.Lt / 2 - this.WALK_R;
+    let zmax = this.Lt / 2 - this.WALK_R;
     let zmin;
     if (level === 'mezz') zmin = -this.Lt / 2 - 1.88 + this.WALK_R;
     else if (this.stairStandWorld(x, z) > this.FLOOR_Y + 0.4) zmin = -this.Lt / 2 - 0.55;
     else zmin = -this.Lt / 2 + 0.04;
-    if (level === 'cabin' && z > this.doorZ0 + 0.04 && z < this.doorZ1 - 0.04) {
+    // Saída pela porta: a parede/posição vêm do projeto (JSON), não de default hardcoded
+    const d = this.doorPos;
+    const dw = this.doorWall;
+    if (level === 'cabin' && dw && d) {
+      if (dw === 'rear' && x > d.x - 0.35 && x < d.x + 0.35) zmax = this.Lt / 2 + 1.1;
+      else if (dw === 'front' && x > d.x - 0.35 && x < d.x + 0.35) zmin = -this.Lt / 2 - 1.1;
+      else if (dw === 'right' && z > d.z - 0.35 && z < d.z + 0.35) xmax = this.BODY_W / 2 + 1.1;
+      else if (dw === 'left' && z > d.z - 0.35 && z < d.z + 0.35) xmin = -this.BODY_W / 2 - 1.1;
+    } else if (level === 'cabin' && z > this.doorZ0 + 0.04 && z < this.doorZ1 - 0.04) {
       xmax = this.BODY_W / 2 + 1.1;
     }
     return {

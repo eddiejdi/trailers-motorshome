@@ -160,8 +160,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.wfile.write(body)
 
     def end_headers(self):
-        if self.path.endswith('.js'):
-            self.send_header('Cache-Control', 'no-store, must-revalidate')
+        self.send_header('Cache-Control', 'no-store, must-revalidate')
         super().end_headers()
     def guess_type(self, path):
         ext = os.path.splitext(path)[1].lower()

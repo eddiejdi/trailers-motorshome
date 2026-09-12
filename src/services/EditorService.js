@@ -28,6 +28,7 @@ export default class EditorService {
     this.redoStack = [];
     this.UNDO_MAX = 60;
     this.onSelectionChange = null;
+    this.onUndoChange = null;
 
     this._initTransformControls();
     this._initMagnetListeners();
@@ -59,8 +60,11 @@ export default class EditorService {
     this.transformCtrl.addEventListener('dragging-changed', (e) => {
       this.orbitControls.enabled = !e.value;
       if (!e.value && this.selected) {
-        if (this.magnetCtrlDown) this.magnetSnap(this.selected);
-        else this.resolvePlacement(this.selected);
+        const isTranslate = this.transformCtrl.mode === 'translate';
+        if (isTranslate) {
+          if (this.magnetCtrlDown) this.magnetSnap(this.selected);
+          else this.resolvePlacement(this.selected);
+        }
         const kind = this.selected.userData && this.selected.userData.kind;
         if (this.body && this.body.isWallOpeningKind && this.body.isWallOpeningKind(kind)) {
           this.body.applyOpening(this.selected);
@@ -173,18 +177,37 @@ export default class EditorService {
     this.undoStack.push(this.captureLayout());
     if (this.undoStack.length > this.UNDO_MAX) this.undoStack.shift();
     this.redoStack.length = 0;
+    this.updateUndoState();
   }
 
   undoEdit() {
     if (!this.undoStack.length) return;
     this.redoStack.push(this.captureLayout());
     this.applyCaptured(this.undoStack.pop());
+    this.updateUndoState();
   }
 
   redoEdit() {
     if (!this.redoStack.length) return;
     this.undoStack.push(this.captureLayout());
     this.applyCaptured(this.redoStack.pop());
+    this.updateUndoState();
+  }
+
+  updateUndoState() {
+    if (typeof this.onUndoChange === 'function') {
+      this.onUndoChange(this.undoStack.length > 0, this.redoStack.length > 0);
+    }
+  }
+
+  pickAtPx(clientX, clientY) {
+    const dom = this.renderer.domElement;
+    const rect = dom.getBoundingClientRect();
+    const x = ((clientX - rect.left) / rect.width) * 2 - 1;
+    const y = -((clientY - rect.top) / rect.height) * 2 + 1;
+    this.raycaster.setFromCamera(new THREE.Vector2(x, y), this.camera);
+    const hits = this.raycaster.intersectObjects(this.editableMeshes, true);
+    return this.pickFromHits(hits);
   }
 
   captureLayout() {
@@ -295,17 +318,22 @@ export default class EditorService {
       return;
     }
     const floorY = this.FLOOR_Y;
-    let box = new THREE.Box3().setFromObject(obj);
-    if (box.min.y < floorY - 0.002) obj.position.y += floorY - box.min.y;
     const wx0 = -this.Li / 2 + this.wth, wx1 = this.Li / 2 - this.wth;
     const wz0 = -this.Lt / 2 + this.wth, wz1 = this.Lt / 2 - this.wth;
-    box = new THREE.Box3().setFromObject(obj);
-    if (box.max.z > wz0 && box.min.z < wz1 && box.min.y < this.WALL_H + floorY) {
-      if (box.min.x < wx0) obj.position.x += wx0 - box.min.x;
-      if (box.max.x > wx1) obj.position.x += wx1 - box.max.x;
-      if (box.min.z < wz0) obj.position.z += wz0 - box.min.z;
-      if (box.max.z > wz1) obj.position.z += wz1 - box.max.z;
-    }
+    const clampToInterior = () => {
+      let b = new THREE.Box3().setFromObject(obj);
+      if (b.min.y < floorY - 0.002) obj.position.y += floorY - b.min.y;
+      if (b.max.z > wz0 && b.min.z < wz1 && b.min.y < this.WALL_H + floorY) {
+        b = new THREE.Box3().setFromObject(obj);
+        if (b.min.x < wx0) obj.position.x += wx0 - b.min.x;
+        if (b.max.x > wx1) obj.position.x += wx1 - b.max.x;
+        if (b.min.z < wz0) obj.position.z += wz0 - b.min.z;
+        if (b.max.z > wz1) obj.position.z += wz1 - b.max.z;
+      }
+    };
+    clampToInterior();
+    const sx = obj.position.x, sz = obj.position.z;
+    const MAX_DEPEN = 1.0;
     for (let n = 0; n < 10; n++) {
       const a = new THREE.Box3().setFromObject(obj);
       let moved = false;
@@ -313,15 +341,24 @@ export default class EditorService {
         if (other === obj || !other.parent || other.visible === false) return;
         const b = new THREE.Box3().setFromObject(other);
         if (!a.intersectsBox(b)) return;
+        if (a.max.y <= b.min.y || a.min.y >= b.max.y) return;
         const dxL = b.max.x - a.min.x, dxR = a.max.x - b.min.x;
         const dzL = b.max.z - a.min.z, dzR = a.max.z - b.min.z;
         const px = Math.min(dxL, dxR), pz = Math.min(dzL, dzR);
         if (px < 0.001 && pz < 0.001) return;
-        if (px <= pz) obj.position.x += (dxL < dxR ? px + 0.004 : -(px + 0.004));
-        else obj.position.z += (dzL < dzR ? pz + 0.004 : -(pz + 0.004));
+        if (px <= pz) {
+          const d = (dxL < dxR ? px + 0.004 : -(px + 0.004));
+          if (Math.abs(obj.position.x + d - sx) <= MAX_DEPEN) obj.position.x += d;
+          else return;
+        } else {
+          const d = (dzL < dzR ? pz + 0.004 : -(pz + 0.004));
+          if (Math.abs(obj.position.z + d - sz) <= MAX_DEPEN) obj.position.z += d;
+          else return;
+        }
         moved = true;
       });
       if (!moved) break;
     }
+    clampToInterior();
   }
 }

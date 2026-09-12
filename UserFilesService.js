@@ -120,7 +120,7 @@ export default class UserFilesService {
   }
 
   /**
-   * Abre um projeto pelo ID: carrega project + layout.
+   * Abre um projeto pelo ID: carrega o projeto atual.
    */
   load(id) {
     const file = this.get(id);
@@ -130,9 +130,6 @@ export default class UserFilesService {
     if (file.project) {
       this.projectService.loadProject(file.project);
     }
-
-    // Aplica o layout na cena 3D
-    this.saveService.applyCapturedFromLayout(file.layout, this.loadDeps);
 
     this._currentFileId = id;
     this._currentProjectName = file.name;

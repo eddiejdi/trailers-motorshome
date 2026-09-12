@@ -21,7 +21,6 @@ export function linkNeedsOf(obj) {
   const name = String(u.name || '').toLowerCase();
   if (kind === 'boiler' || name.indexOf('boiler') >= 0) return { water: true, elec: true };
   if (kind === 'clima-evap' || name.indexOf('climatiz') >= 0 || name.indexOf('evap') >= 0) return { water: true, elec: true };
-  if (kind === 'pia' || name.indexOf('pia') >= 0 || name.indexOf('torneira') >= 0) return { water: true, drain: true };
   if (kind === 'ducha' || kind === 'ducha-ext' || name.indexOf('ducha') >= 0 || name.indexOf('chuveiro') >= 0) return { water: true, drain: true };
   if (kind === 'potti' || name.indexOf('potti') >= 0 || name.indexOf('vaso') >= 0 || name.indexOf('sanit') >= 0) return { sewage: true };
   if (kind === 'plafon' || kind === 'led-strip' || kind === 'spot-led' ||

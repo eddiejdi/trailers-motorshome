@@ -17,6 +17,7 @@ export default class Windows {
     this.colTopY = colTopY;
     this.mzW = mzW;
     this.windowMeshes = [];
+    this.windowGroups = [];
     this.sky = null;
     this.mzSky = null;
   }
@@ -50,8 +51,13 @@ export default class Windows {
     g.position.set(x, y, z);
     g.rotation.y = ry || 0;
     wallsExt.add(g);
-    g.userData.winName = nome || 'Janela';
+    g.userData.name = nome || 'Janela';
+    g.userData.winName = g.userData.name;
+    g.userData.editable = true;
+    g.userData.layoutProtected = true;
+    g.userData.kind = 'janela';
     this.windowMeshes.push(g);
+    this.windowGroups.push(g);
     return g;
   }
 
@@ -60,30 +66,33 @@ export default class Windows {
     g.position.set(x, y, z);
     g.rotation.y = ry || 0;
     mezz.add(g);
-    g.userData.winName = nome || 'Janela mezanino';
+    g.userData.name = nome || 'Janela mezanino';
+    g.userData.winName = g.userData.name;
+    g.userData.editable = true;
+    g.userData.layoutProtected = true;
+    g.userData.kind = 'janela';
     this.windowMeshes.push(g);
+    this.windowGroups.push(g);
     return g;
   }
 
   build(wallsExt, wallG, mezz) {
     const { THREE, M, BODY_W, wth, Lt, roofTop, mzInnerZ, mzInnerW, colTopY, mzW, zRoofFront, WALL_H } = this;
 
-    const DOOR_W = 0.62, DOOR_H = 1.60, DOOR_SILL = 0.08;
-    const DOOR_Z = Lt / 2 - 0.52;
-    const doorZ0 = DOOR_Z - DOOR_W / 2, doorZ1 = DOOR_Z + DOOR_W / 2;
     const winCut = (z, y, w, h) => ({ z0: z - w / 2, z1: z + w / 2, y0: y - h / 2, y1: y + h / 2 });
     const winLCuts = [winCut(0.20, 1.20, 0.50, 0.50), winCut(0.95, 1.20, 0.50, 0.50)];
+    // Porta saiu da lateral direita para a traseira; a antiga janela traseira (0.80×0.50)
+    // agora é a janela lateral direita traseira, na posição onde ficava a porta.
     const winRCuts = [
-      { z0: doorZ0, z1: doorZ1, y0: DOOR_SILL, y1: DOOR_SILL + DOOR_H },
       winCut(-0.35, 1.20, 0.50, 0.50),
-      winCut(0.85, 1.20, 0.50, 0.50),
+      winCut(0.40, 1.20, 0.50, 0.50),
+      winCut(1.15, 1.20, 0.80, 0.50),
     ];
 
     this.janela(wallsExt, 0.50, 0.50, -BODY_W / 2 + wth / 2, 1.20, 0.20, -Math.PI / 2, 'Janela esquerda 1');
     this.janela(wallsExt, 0.50, 0.50, -BODY_W / 2 + wth / 2, 1.20, 0.95, -Math.PI / 2, 'Janela esquerda 2');
     this.janela(wallsExt, 0.50, 0.50, BODY_W / 2 - wth / 2, 1.20, -0.35, Math.PI / 2, 'Janela direita 1');
-    this.janela(wallsExt, 0.50, 0.50, BODY_W / 2 - wth / 2, 1.20, 0.85, Math.PI / 2, 'Janela direita 2');
-    this.janela(wallsExt, 0.80, 0.50, 0, 1.20, Lt / 2 - wth / 2, 0, 'Janela traseira');
+    this.janela(wallsExt, 0.50, 0.50, BODY_W / 2 - wth / 2, 1.20, 0.40, Math.PI / 2, 'Janela direita 2');
     this.janela(wallsExt, 0.70, 0.32, 0, 0.32, -Lt / 2 + wth / 2, Math.PI, 'Janela frontal');
 
     const sky = new THREE.Mesh(new THREE.BoxGeometry(0.40, 0.04, 0.40), M.vidro);

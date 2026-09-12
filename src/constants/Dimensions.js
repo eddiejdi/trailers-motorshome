@@ -29,6 +29,15 @@ export const Hint = 1.80;
 // Wall thickness
 export const wth = 0.05;
 
+// Tipo de parede:
+//   'simples' — chapa única de compensado (tipo atual, mantido no catálogo)
+//   'dupla'   — duas folhas de maderite com caibros entre elas (light wood frame / casa americana)
+export const WALL_TYPE = 'dupla';
+export const WALL_SHEET_T = 0.010;       // espessura de cada folha de maderite (m)
+export const WALL_STUD_W = 0.040;        // largura do caibro ao longo da parede (m)
+export const WALL_STUD_D = wth - 2 * WALL_SHEET_T; // profundidade do caibro (entre as folhas) = 0.030 m
+export const WALL_STUD_SPACING = 0.50;   // espaçamento entre montantes (pesquisa: 30–60 cm)
+
 // Internal width (BODY_W minus two walls)
 export const Li = BODY_W - 2 * wth; // 1.80 m
 
@@ -83,6 +92,7 @@ export const LOFT_HATCH_H = 0.70;
 
 // Skirt (body panel below the floor)
 export const SKIRT_T = 0.03;
+export const SKIRT_ENABLED = false;
 
 // Wheel arch clearance
 export const WHEEL_ARCH = 0.42;

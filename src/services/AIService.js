@@ -283,7 +283,6 @@ export default class AIService {
       'cama casal': ['cama do casal', 'cama mezanino', 'cama de casal', 'cama grande'],
       'geladeira 12v': ['geladeira', 'freezer', 'geladeira 37l'],
       'porta potti 365': ['potti', 'vaso', 'sanitario', 'banheiro vaso'],
-      'pia': ['cuba', 'pia inox'],
       'bateria': ['baterias', 'battery', 'acumulador', 'banco de bateria', 'bateria 12v', 'bateria12v'],
     };
     const exact = this.editableMeshes.find((m) => this.foldName(m.userData.name) === n);
@@ -350,8 +349,6 @@ export default class AIService {
         names.push('Cama casal');
       } else if (/geladeira/.test(t)) {
         names.push('Geladeira 12V');
-      } else if (/\bpia\b/.test(t)) {
-        names.push('Pia');
       } else if (/potti|vaso|sanitario/.test(t)) {
         names.push('Porta Potti 365');
       } else {

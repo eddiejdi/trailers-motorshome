@@ -1,3 +1,12 @@
+
+function escHtml(v) {
+  return String(v ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 /**
  * ProjectService — carrega e gerencia o arquivo de projeto.
  *
@@ -131,7 +140,7 @@ export default class ProjectService {
   renderSpecPanel(rootEl) {
     if (!rootEl) return;
     const rows = this.project.specs.map((s) => {
-      return '<div class="s"><span>' + s.label + '</span><strong>' + this.formatSpec(s) + '</strong></div>';
+      return '<div class="s"><span>' + escHtml(s.label) + '</span><strong>' + escHtml(this.formatSpec(s)) + '</strong></div>';
     }).join('');
     rootEl.innerHTML = rows;
   }

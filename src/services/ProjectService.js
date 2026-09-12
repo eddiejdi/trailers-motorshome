@@ -169,8 +169,6 @@ export default class ProjectService {
 
     if (!this.project.geometry) this.project.geometry = { format: 'parts', parts: [] };
     this.project.geometry.format = 'parts';
-    this.project.geometry.kind = 'open-box';
-    this.project.geometry.projectType = 'box';
     this.project.geometry.unit = 'm';
     this.project.geometry.parts = ProjectService.buildOpenBoxParts(L, P, H, t);
     if (!this.project.geometry.material) {

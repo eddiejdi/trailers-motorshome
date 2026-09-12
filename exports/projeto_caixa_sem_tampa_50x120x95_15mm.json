@@ -1,0 +1,238 @@
+{
+  "meta": {
+    "name": "Caixa sem tampa 50x120x95",
+    "version": "1.0.0",
+    "rev": 11,
+    "description": "Caixa SEM TAMPA. Externo: largura 1200 × profundidade 500 × altura 950 mm · t=15 mm. FUNDO = base full (1200×500); paredes assentam sobre o fundo.",
+    "exportedAt": "2026-09-11T00:48:40.984Z"
+  },
+  "dimensions_mm": {
+    "externo": {
+      "largura_X": 1200,
+      "profundidade_Z": 950,
+      "altura_Y": 500
+    },
+    "interno": {
+      "largura_X": 1170,
+      "profundidade_Z": 920,
+      "altura_Y": 485
+    },
+    "espessura": 15,
+    "mapa_pedido": {
+      "50": "profundidade 500 mm (Z)",
+      "95": "altura 950 mm (Y)",
+      "120": "largura 1200 mm (X)"
+    },
+    "juntas": "FUNDO base full 1200×500; laterais e frente/trás assentam sobre o fundo (altura parede = 950−15 = 935)"
+  },
+  "geometry": {
+    "format": "parts",
+    "unit": "m",
+    "material": {
+      "type": "standard",
+      "color": "#c9a86c",
+      "roughness": 0.85,
+      "label": "COMPENSADO CRU NU 15 mm MULTIMARCAS BR",
+      "thickness_mm": 15
+    },
+    "parts": [
+      {
+        "name": "Fundo",
+        "role": "base",
+        "box_mm": [
+          1200,
+          15,
+          950
+        ],
+        "box": [
+          1.2,
+          0.015,
+          0.95
+        ],
+        "position": [
+          0,
+          0.0075,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "cut_mm": {
+          "comp": 1200,
+          "larg": 950,
+          "esp": 15
+        }
+      },
+      {
+        "name": "Lateral 1",
+        "role": "lateral_esquerda",
+        "box_mm": [
+          15,
+          485,
+          950
+        ],
+        "box": [
+          0.015,
+          0.485,
+          0.95
+        ],
+        "position": [
+          -0.5925,
+          0.2575,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "cut_mm": {
+          "comp": 485,
+          "larg": 950,
+          "esp": 15
+        }
+      },
+      {
+        "name": "Lateral 2",
+        "role": "lateral_direita",
+        "box_mm": [
+          15,
+          485,
+          950
+        ],
+        "box": [
+          0.015,
+          0.485,
+          0.95
+        ],
+        "position": [
+          0.5925,
+          0.2575,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "cut_mm": {
+          "comp": 485,
+          "larg": 950,
+          "esp": 15
+        }
+      },
+      {
+        "name": "Frente",
+        "role": "frente",
+        "box_mm": [
+          1170,
+          485,
+          15
+        ],
+        "box": [
+          1.17,
+          0.485,
+          0.015
+        ],
+        "position": [
+          0,
+          0.2575,
+          -0.46749999999999997
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "cut_mm": {
+          "comp": 1170,
+          "larg": 485,
+          "esp": 15
+        }
+      },
+      {
+        "name": "Trás",
+        "role": "fundo_parede",
+        "box_mm": [
+          1170,
+          485,
+          15
+        ],
+        "box": [
+          1.17,
+          0.485,
+          0.015
+        ],
+        "position": [
+          0,
+          0.2575,
+          0.46749999999999997
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "cut_mm": {
+          "comp": 1170,
+          "larg": 485,
+          "esp": 15
+        }
+      }
+    ]
+  },
+  "specs": [
+    {
+      "key": "caixa",
+      "label": "Externo Larg×Prof×Alt",
+      "format": "1200 × 500 × 950 mm"
+    },
+    {
+      "key": "interno",
+      "label": "Interno útil",
+      "format": "1170 × 470 × 920 mm"
+    },
+    {
+      "key": "espessura",
+      "label": "Espessura",
+      "format": "15 mm"
+    },
+    {
+      "key": "material",
+      "label": "Material",
+      "format": "COMPENSADO CRU NU 15 mm MULTIMARCAS BR"
+    },
+    {
+      "key": "chapa",
+      "label": "Chapa",
+      "format": "Nominal 2200×1100 | Útil 2170×1070 | Serra 3 mm"
+    },
+    {
+      "key": "p1",
+      "label": "Corte",
+      "format": "1× Fundo (base) 1200 × 500 × 15 mm"
+    },
+    {
+      "key": "p2",
+      "label": "Corte",
+      "format": "2× Laterais 935 × 500 × 15 mm"
+    },
+    {
+      "key": "p3",
+      "label": "Corte",
+      "format": "2× Frente/Trás 1170 × 935 × 15 mm"
+    },
+    {
+      "key": "pedido",
+      "label": "Pedido",
+      "format": "50=prof 500 · 120=larg 1200 · 95=alt 950 (externo)"
+    },
+    {
+      "key": "juntas",
+      "label": "Juntas",
+      "format": "Fundo = base full sob as 4 paredes; paredes H=935 (950−15)"
+    }
+  ]
+}

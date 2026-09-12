@@ -1,3 +1,19 @@
+
+function escHtml(v) {
+  return String(v ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+function safeUrl(u) {
+  try {
+    const x = new URL(String(u || ''), location.origin);
+    return (x.protocol === 'http:' || x.protocol === 'https:') ? x.href : '';
+  } catch { return ''; }
+}
+
 /**
  * main.js — Orquestrador do Trailer 3D Studio
  * Inicializa todos os módulos, computa valores derivados, e conecta a aplicação.
@@ -25,7 +41,6 @@ import WeightService from './services/WeightService.js';
 import ProjectService from './services/ProjectService.js';
 
 const PALLET_DATA = {
-  'pia':            { name:'Pia inox Ø28',            cat:'Móveis & Eletro', w:1.8, mat:'Inox 304',       v:null,    dims:'280×280×150mm', desc:'Pia redonda em aço inoxidável, ideal para cozinhas de trailer.' },
   'comoda':         { name:'Cômoda 3 gav.',           cat:'Móveis & Eletro', w:12,  mat:'Compensado',     v:null,    dims:'600×400×500mm', desc:'Cômoda com 3 gavetas de compensado naval, acabamento em laca.' },
   'armario':        { name:'Armário 40×60',           cat:'Móveis & Eletro', w:14,  mat:'Compensado',     v:null,    dims:'400×600×350mm', desc:'Armário de parede com duas portas, prateleira interna.' },
   'banco':          { name:'Banco-baú',               cat:'Móveis & Eletro', w:8,   mat:'Compensado',     v:null,    dims:'1200×450×450mm', desc:'Banco com tampa articulada, espaço interno para armazenamento.' },
@@ -71,7 +86,7 @@ const PALLET_DATA = {
   'calco-inox':     { name:'Calço Inox KG 50cm',       cat:'Acessórios', w:1.0,  mat:'Aço Inoxidável', v:null,    dims:'500×80×60mm', desc:'Calço inox articulado KG 50cm, trava de segurança.' },
   'pingadeira':     { name:'Kit Pingadeira 1400',      cat:'Acessórios', w:0.6,  mat:'Alumínio',       v:null,    dims:'1400×50×30mm', desc:'Kit pingadeira em alumínio extrudado, perfil em L, 1.4m.' },
   'boiler':         { name:'Boiler 10L 12V/220V',      cat:'Acessórios', w:4.5,  mat:'Inox',           v:'12V/220V', dims:'Ø250×380mm', desc:'Boiler 10L bivolt, aquecimento rápido, isolamento térmico.' },
-  'cozinha-compacta':{ name:'Cozinha compacta 120',    cat:'Acessórios', w:18,   mat:'MDF/Inox',       v:null,    dims:'1200×450×900mm', desc:'Módulo de cozinha compacto 120cm, pia + fogareiro + armário.' },
+  'cozinha-compacta':{ name:'Cozinha compacta 120',    cat:'Acessórios', w:18,   mat:'MDF/Inox',       v:null,    dims:'1200×450×900mm', desc:'Módulo de cozinha compacto 120cm, fogareiro + armário.' },
   'trava-porta':    { name:'Trava Push-Lock',          cat:'Acessórios', w:0.2,  mat:'Nylon/Aço',      v:null,    dims:'80×60×40mm', desc:'Trava Push-Lock para porta de trailer, trava por pressão.' },
   'caixa-gas':      { name:'Caixa de Gás 88×61',      cat:'Acessórios', w:3.0,  mat:'Compensado',     v:null,    dims:'880×610×400mm', desc:'Caixa de armazenamento de gás, ventilação inferior, acesso rápido.' },
   'clima-evap':     { name:'Climatiz. Evap. 12V',     cat:'Climatização', w:5.5,  mat:'Plástico',       v:'12V DC', dims:'500×300×400mm', desc:'Climatizador evaporativo 12V, tanque 6L, 3 velocidades.' },
@@ -388,7 +403,7 @@ class TrailerApp {
 
     const NAMES = {
       bath: ['Vaso sanitário', 'Tampa vaso', 'Ducha higiênica', 'Mangueira ducha', 'Espelho banheiro', 'Cuba banheiro'],
-      kitchen: ['Balcão cozinha', 'Tampo balcão', 'Geladeira 37L', 'Alça geladeira', 'Pia inox', 'Torneira', 'Cabeça torneira', 'Armário superior', 'Galão água 20L', 'Fogareiro 1', 'Fogareiro 2'],
+      kitchen: ['Balcão cozinha', 'Tampo balcão', 'Geladeira 37L', 'Alça geladeira', 'Galão água 20L', 'Fogareiro 1', 'Fogareiro 2'],
       stairCabs: ['Armário-degrau 1', 'Armário-degrau 2', 'Armário-degrau 3', 'Armário-degrau 4'],
       mezz: ['Coluna mez. esq. frente', 'Coluna mez. dir. frente', 'Coluna mez. esq. trás', 'Coluna mez. dir. trás', 'Viga mez. frente', 'Viga mez. trás', 'Piso mezanino', 'Cama casal', 'Travesseiro esq.', 'Travesseiro dir.', 'Guarda-corpo'],
       wallsInt: ['Parede banheiro fundo', 'Parede banheiro frente', 'Parede banheiro lateral'],
@@ -1131,10 +1146,10 @@ class TrailerApp {
       if (user) {
         content.innerHTML = `
           <div class="auth-user">
-            <div class="auth-avatar">${user.avatar ? `<img src="${user.avatar}" alt="">` : (user.name || user.email).slice(0, 1).toUpperCase()}</div>
+            <div class="auth-avatar">${safeUrl(user.avatar) ? `<img src="${escHtml(safeUrl(user.avatar))}" alt="">` : escHtml((user.name || user.email || "?").slice(0, 1).toUpperCase())}</div>
             <div class="auth-info">
-              <div class="auth-name">${user.name || user.email}</div>
-              <div class="auth-email">${user.email}</div>
+              <div class="auth-name">${escHtml(user.name || user.email)}</div>
+              <div class="auth-email">${escHtml(user.email)}</div>
             </div>
             <div class="auth-actions">
               <button id="btn-logout" class="btn-mini">Sair</button>
@@ -1146,15 +1161,15 @@ class TrailerApp {
         if (btnLogout) btnLogout.onclick = () => auth.logout();
 
         const initials = (user.name || user.email || '?').slice(0, 1).toUpperCase();
-        gnomeAccountIcon.innerHTML = user.avatar ? `<img src="${user.avatar}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover">` : initials;
+        gnomeAccountIcon.innerHTML = safeUrl(user.avatar) ? `<img src="${escHtml(safeUrl(user.avatar))}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover">` : escHtml(initials);
         gnomeAccountText.textContent = user.name || user.email;
 
         gnomeAccountDropdown.innerHTML = `
           <div class="gnome-menu-item no-icon" data-action="account-info">
-            <span class="icon" style="font-size:16px">${user.avatar ? `<img src="${user.avatar}" alt="" style="width:20px;height:20px;border-radius:50%;object-fit:cover">` : initials}</span>
+            <span class="icon" style="font-size:16px">${safeUrl(user.avatar) ? `<img src="${escHtml(safeUrl(user.avatar))}" alt="" style="width:20px;height:20px;border-radius:50%;object-fit:cover">` : escHtml(initials)}</span>
             <div style="line-height:1.3">
-              <div style="font-weight:600;font-size:11.5px">${user.name || user.email}</div>
-              <div style="font-size:10px;color:var(--ink-3)">${user.email}</div>
+              <div style="font-weight:600;font-size:11.5px">${escHtml(user.name || user.email)}</div>
+              <div style="font-size:10px;color:var(--ink-3)">${escHtml(user.email)}</div>
             </div>
           </div>
           <div class="gnome-menu-sep"></div>

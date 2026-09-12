@@ -1,3 +1,4 @@
+function escHtml(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 const THREE = window.THREE;
 
 export default class MarcenariaService {
@@ -32,7 +33,7 @@ export default class MarcenariaService {
     if (/escada|stair/.test(t)) return 'stair';
     if (/cama|bed|colch/.test(t)) return 'bed';
     if (/banco|dinette|mesa|poltrona/.test(t)) return 'dinette';
-    if (/cozinha|pia|balc|tampo/.test(t)) return 'kitchen';
+    if (/cozinha|balc|tampo/.test(t)) return 'kitchen';
     if (/arm[aá]rio.*roupa|guarda.roupa|closet|wardrobe/.test(t)) return 'wardrobe';
     if (/arm[aá]rio.*a[eé]reo|locker|overhead/.test(t)) return 'overhead';
     if (/ba[uú]|storage|bench.*storage/.test(t)) return 'bench_storage';
@@ -175,7 +176,7 @@ export default class MarcenariaService {
     list.forEach((s) => {
       const el = document.createElement('div');
       el.className = 'mc-card';
-      el.innerHTML = '<div class="mc-type">' + s.type + '</div><h4>' + s.title + '</h4><p>' + (s.rationale || '') + '</p>';
+      el.innerHTML = '<div class="mc-type">' + escHtml(s.type) + '</div><h4>' + escHtml(s.title) + '</h4><p>' + escHtml(s.rationale || '') + '</p>';
       const apply = document.createElement('button');
       apply.type = 'button';
       apply.className = 'mc-apply';
