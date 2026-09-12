@@ -3,7 +3,7 @@
     "name": "Trailer Nelcyr-Nardelli",
     "version": "1.0.0",
     "rev": 25,
-    "description": "Família: 1 casal + 1 filha. Layout aberto (sem paredes divisórias), banheiro em cubo, mezanino da cama de casal sobre a lança.",
+    "description": "Fam\u00edlia: 1 casal + 1 filha. Layout aberto (sem paredes divis\u00f3rias), banheiro em cubo, mezanino da cama de casal sobre a lan\u00e7a.",
     "exportedAt": "2026-09-12T00:56:22.526Z"
   },
   "dimensions": {
@@ -19,7 +19,7 @@
     "interior": {
       "L": 2.9,
       "W": 1.8,
-      "H": 1.8
+      "H": 2.0
     },
     "wall_thickness": 0.05,
     "mattress_casal": {
@@ -43,8 +43,8 @@
       "rise": 0.34
     },
     "kitchen": {
-      "counter": "0.58×0.85×0.22",
-      "geladeira": "0.32×0.585×0.22"
+      "counter": "0.58\u00d70.85\u00d70.22",
+      "geladeira": "0.32\u00d70.585\u00d70.22"
     },
     "door_external": {
       "W": 0.62,
@@ -77,23 +77,26 @@
     "insulation": 8,
     "fasteners": 5,
     "pbt_limit": 750,
-    "warn_threshold": 600
+    "warn_threshold": 600,
+    "caixa-agua-100": 6.5,
+    "caixa-detrito-100": 6.0,
+    "segundo-piso": 30.0
   },
   "specs": [
     {
       "key": "chassi",
       "label": "Chassi",
-      "format": "{chassis.L} × {chassis.W}"
+      "format": "{chassis.L} \u00d7 {chassis.W}"
     },
     {
       "key": "caixa",
       "label": "Caixa (fora da roda)",
-      "format": "{body.L} × {body.W}"
+      "format": "{body.L} \u00d7 {body.W}"
     },
     {
       "key": "internas",
       "label": "Internas",
-      "format": "{interior.W} × {interior.L}"
+      "format": "{interior.W} \u00d7 {interior.L}"
     },
     {
       "key": "altura-interna",
@@ -103,37 +106,37 @@
     {
       "key": "cama-casal",
       "label": "Cama casal",
-      "format": "{mattress_casal.W} × {mattress_casal.L}"
+      "format": "{mattress_casal.W} \u00d7 {mattress_casal.L}"
     },
     {
       "key": "armarios-degrau",
-      "label": "Armários-degrau",
-      "format": "{stair_cabs.W} · {stair_cabs.count} níveis"
+      "label": "Arm\u00e1rios-degrau",
+      "format": "{stair_cabs.W} \u00b7 {stair_cabs.count} n\u00edveis"
     },
     {
       "key": "banco-mesa",
       "label": "Banco + mesa",
-      "format": "banco 1,60×0,45 · mesa à frente"
+      "format": "banco 1,60\u00d70,45 \u00b7 mesa \u00e0 frente"
     },
     {
       "key": "cubo-banheiro",
       "label": "Cubo banheiro",
-      "format": "{bath_cube.W} × {bath_cube.W}"
+      "format": "{bath_cube.W} \u00d7 {bath_cube.W}"
     },
     {
       "key": "paredes-banheiro",
       "label": "Paredes banheiro",
-      "format": "{bath_walls.count}× ({bath_walls.W}×{bath_walls.H}m) {bath_walls.material} · {weights_kg.bathWalls} kg"
+      "format": "{bath_walls.count}\u00d7 ({bath_walls.W}\u00d7{bath_walls.H}m) {bath_walls.material} \u00b7 {weights_kg.bathWalls} kg"
     },
     {
       "key": "geladeira",
       "label": "Geladeira 12V",
-      "format": "0,585 × 0,44"
+      "format": "0,585 \u00d7 0,44"
     },
     {
       "key": "porta-potti",
       "label": "Porta Potti",
-      "format": "{potti.W} × {potti.W}"
+      "format": "{potti.W} \u00d7 {potti.W}"
     }
   ],
   "structure": {
@@ -940,7 +943,7 @@
         }
       },
       {
-        "name": "Balcão cozinha",
+        "name": "Balc\u00e3o cozinha",
         "kind": null,
         "buyUrl": null,
         "searchUrl": null,
@@ -976,7 +979,7 @@
         }
       },
       {
-        "name": "Tampo balcão",
+        "name": "Tampo balc\u00e3o",
         "kind": null,
         "buyUrl": null,
         "searchUrl": null,
@@ -1048,7 +1051,7 @@
         }
       },
       {
-        "name": "Alça geladeira",
+        "name": "Al\u00e7a geladeira",
         "kind": null,
         "buyUrl": null,
         "searchUrl": null,
@@ -1084,7 +1087,7 @@
         }
       },
       {
-        "name": "Galão água 20L",
+        "name": "Gal\u00e3o \u00e1gua 20L",
         "kind": null,
         "buyUrl": null,
         "searchUrl": null,
@@ -1156,7 +1159,7 @@
         }
       },
       {
-        "name": "Armário-degrau 1",
+        "name": "Arm\u00e1rio-degrau 1",
         "kind": null,
         "buyUrl": null,
         "searchUrl": null,
@@ -1192,7 +1195,7 @@
         }
       },
       {
-        "name": "Armário-degrau 2",
+        "name": "Arm\u00e1rio-degrau 2",
         "kind": null,
         "buyUrl": null,
         "searchUrl": null,
@@ -1228,7 +1231,7 @@
         }
       },
       {
-        "name": "Armário-degrau 3",
+        "name": "Arm\u00e1rio-degrau 3",
         "kind": null,
         "buyUrl": null,
         "searchUrl": null,
@@ -1264,7 +1267,7 @@
         }
       },
       {
-        "name": "Armário-degrau 4",
+        "name": "Arm\u00e1rio-degrau 4",
         "kind": null,
         "buyUrl": null,
         "searchUrl": null,
@@ -2092,7 +2095,7 @@
         }
       },
       {
-        "name": "Coluna mez. esq. trás",
+        "name": "Coluna mez. esq. tr\u00e1s",
         "kind": null,
         "buyUrl": null,
         "searchUrl": null,
@@ -2128,7 +2131,7 @@
         }
       },
       {
-        "name": "Coluna mez. dir. trás",
+        "name": "Coluna mez. dir. tr\u00e1s",
         "kind": null,
         "buyUrl": null,
         "searchUrl": null,
@@ -2200,7 +2203,7 @@
         }
       },
       {
-        "name": "Viga mez. trás",
+        "name": "Viga mez. tr\u00e1s",
         "kind": null,
         "buyUrl": null,
         "searchUrl": null,
@@ -8597,7 +8600,7 @@
         }
       },
       {
-        "name": "Trás",
+        "name": "Tr\u00e1s",
         "kind": "project-part",
         "buyUrl": null,
         "searchUrl": null,
@@ -8632,6 +8635,96 @@
           ],
           "roughness": 0.85,
           "metalness": 0,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Caixa d'\u00e1gua 100L",
+        "kind": "caixa-agua-100",
+        "p": [
+          0.85,
+          -0.105,
+          -0.45
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "mat": {
+          "color": [
+            0.29,
+            0.54,
+            0.63
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 0.72,
+          "transparent": true
+        }
+      },
+      {
+        "name": "Caixa de detrito 100L",
+        "kind": "caixa-detrito-100",
+        "p": [
+          -0.85,
+          -0.105,
+          0.45
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "mat": {
+          "color": [
+            0.54,
+            0.54,
+            0.54
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 0.72,
+          "transparent": true
+        }
+      },
+      {
+        "name": "Segundo piso (mezzanine)",
+        "kind": "segundo-piso",
+        "p": [
+          0,
+          0.915,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "mat": {
+          "color": [
+            0.54,
+            0.68,
+            0.41
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
           "opacity": 1,
           "transparent": false
         }

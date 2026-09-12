@@ -1,0 +1,3885 @@
+{
+  "v": 1,
+
+  "generatedAt": "2026-09-12T16:51:27.129691+00:00",
+
+  "disclaimer": "Fonte Única de Verdade — catálogo de objetos da paleta Trailer 3D Studio.\nNÃO re-hardcode itens nos fontes (.js / .html).\nEdite este JSON e recarregue o app.",
+
+  "materials": {
+    "madeira": {
+      "roughness": 0.7,
+
+      "metalness": 0.1
+    },
+
+    "madeiraD": {
+      "roughness": 0.5,
+
+      "metalness": 0.1,
+
+      "color": "0x8b6b4a"
+    },
+
+    "aluminio": {
+      "roughness": 0.4,
+
+      "metalness": 0.6
+    },
+
+    "geladeira": {
+      "roughness": 0.3,
+
+      "metalness": 0.2,
+
+      "color": "0x3a8a4a"
+    },
+
+    "vaso": {
+      "roughness": 0.5,
+
+      "metalness": 0.1,
+
+      "color": "0xe8e4dc"
+    }
+  },
+
+  "items": [
+    {
+      "kind": "ac-portatil",
+
+      "name": "Ar Cond. Portátil",
+
+      "cat": "Climatização",
+
+      "w": 25.0,
+
+      "mat": "Plástico",
+
+      "v": "220V",
+
+      "dims": "400×350×700mm",
+
+      "desc": "Ar condicionado portátil 7500 BTU, 220V, modo frio/ar.",
+
+      "weightKg": 12.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"8\" y=\"10\" width=\"56\" height=\"30\" rx=\"4\" fill=\"#e0e0e0\" stroke=\"#888\"/><rect x=\"12\" y=\"14\" width=\"48\" height=\"14\" rx=\"2\" fill=\"#c8c8c8\"/><rect x=\"14\" y=\"16\" width=\"44\" height=\"10\" fill=\"#d8d8d8\"/><circle cx=\"24\" cy=\"38\" r=\"3\" fill=\"#4a4\"/><circle cx=\"36\" cy=\"38\" r=\"3\" fill=\"#4a4\"/><circle cx=\"48\" cy=\"38\" r=\"3\" fill=\"#4a4\"/><text x=\"36\" y=\"22\" text-anchor=\"middle\" fill=\"#5a5a5a\" font-size=\"6\" font-weight=\"bold\">7500BTU</text></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          0.4,
+
+          0.7,
+
+          0.35
+        ],
+
+        "color": "0xe0e0e0",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "pos": [
+          0.3,
+
+          0.35,
+
+          -0.4
+        ]
+      },
+
+      "spawnName": "Ar Cond. Portátil"
+    },
+
+    {
+      "kind": "ac-teto",
+
+      "name": "Ar Cond. Teto 12V",
+
+      "cat": "Climatização",
+
+      "w": 8.0,
+
+      "mat": "Plástico/Metal",
+
+      "v": "12V DC",
+
+      "dims": "400×300×150mm",
+
+      "desc": "Ar condicionado de teto 12V, 3000 BTU, baixo consumo.",
+
+      "weightKg": 6.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"12\" y=\"6\" width=\"48\" height=\"12\" rx=\"3\" fill=\"#d0d0d0\" stroke=\"#888\"/><rect x=\"18\" y=\"18\" width=\"36\" height=\"28\" rx=\"2\" fill=\"#e8e8e8\" stroke=\"#aaa\"/><rect x=\"22\" y=\"22\" width=\"28\" height=\"10\" rx=\"1\" fill=\"#c8c8c8\"/><circle cx=\"36\" cy=\"40\" r=\"4\" fill=\"#ddd\" stroke=\"#aaa\"/><text x=\"36\" y=\"44\" text-anchor=\"middle\" fill=\"#888\" font-size=\"5\">12V</text></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          0.4,
+
+          0.15,
+
+          0.3
+        ],
+
+        "color": "0xd0d0d0",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "roof": -0.08
+      },
+
+      "spawnName": "Ar Cond. Teto 12V"
+    },
+
+    {
+      "kind": "armario",
+
+      "name": "Armário 40×60",
+
+      "cat": "Móveis & Eletro",
+
+      "w": 14.0,
+
+      "mat": "Compensado",
+
+      "v": null,
+
+      "dims": "400×600×350mm",
+
+      "desc": "Armário de parede com duas portas, prateleira interna.",
+
+      "weightKg": 10.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"18\" y=\"6\" width=\"36\" height=\"42\" fill=\"#d4b483\" stroke=\"#6a4a20\"/><line x1=\"36\" y1=\"6\" x2=\"36\" y2=\"48\" stroke=\"#8a6a40\"/><rect x=\"21\" y=\"10\" width=\"12\" height=\"8\" fill=\"#c8a870\"/><rect x=\"39\" y=\"10\" width=\"12\" height=\"8\" fill=\"#c8a870\"/><circle cx=\"32\" cy=\"30\" r=\"1.6\" fill=\"#3a2a10\"/><circle cx=\"40\" cy=\"30\" r=\"1.6\" fill=\"#3a2a10\"/></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          0.4,
+
+          0.6,
+
+          0.35
+        ],
+
+        "namedMat": "madeira",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "pos": [
+          0.2,
+
+          0.3,
+
+          0
+        ]
+      },
+
+      "spawnName": "Armário"
+    },
+
+    {
+      "kind": "banco",
+
+      "name": "Banco-baú",
+
+      "cat": "Móveis & Eletro",
+
+      "w": 8.0,
+
+      "mat": "Compensado",
+
+      "v": null,
+
+      "dims": "1200×450×450mm",
+
+      "desc": "Banco com tampa articulada, espaço interno para armazenamento.",
+
+      "weightKg": 6.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"10\" y=\"22\" width=\"52\" height=\"22\" fill=\"#d4b483\" stroke=\"#6a4a20\"/><rect x=\"10\" y=\"16\" width=\"52\" height=\"8\" fill=\"#c8a060\" stroke=\"#6a4a20\"/><rect x=\"14\" y=\"28\" width=\"44\" height=\"12\" fill=\"#e8d4a8\" stroke=\"#8a6a40\"/></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          0.4,
+
+          0.42,
+
+          0.7
+        ],
+
+        "namedMat": "madeira",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "pos": [
+          0,
+
+          0.21,
+
+          0.6
+        ]
+      },
+
+      "spawnName": "Banco-baú"
+    },
+
+    {
+      "kind": "boiler",
+
+      "name": "Boiler 10L 12V/220V",
+
+      "cat": "Acessórios",
+
+      "w": 4.5,
+
+      "mat": "Inox",
+
+      "v": "12V/220V",
+
+      "dims": "Ø250×380mm",
+
+      "desc": "Boiler 10L bivolt, aquecimento rápido, isolamento térmico.",
+
+      "weightKg": 3.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><ellipse cx=\"36\" cy=\"40\" rx=\"12\" ry=\"5\" fill=\"#8a9098\"/><rect x=\"24\" y=\"12\" width=\"24\" height=\"28\" fill=\"#c8c8c8\"/><ellipse cx=\"36\" cy=\"12\" rx=\"12\" ry=\"5\" fill=\"#e0e0e0\"/><rect x=\"34\" y=\"4\" width=\"4\" height=\"8\" fill=\"#888\"/><text x=\"36\" y=\"30\" text-anchor=\"middle\" fill=\"#444\" font-size=\"7\">10L</text></svg>",
+
+      "geometry": {
+        "type": "cylinder",
+
+        "args": [
+          0.14,
+
+          0.14,
+
+          0.4,
+
+          16
+        ],
+
+        "color": "0xc8c8c8",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.5,
+
+        "pos": [
+          0.35,
+
+          0.2,
+
+          -0.55
+        ]
+      },
+
+      "spawnName": "Boiler 10L",
+
+      "spawnCat": "encanamento"
+    },
+
+    {
+      "kind": "box-banheiro",
+
+      "name": "Box Banheiro 108cm",
+
+      "cat": "Banheiro",
+
+      "w": 12.0,
+
+      "mat": "Acrílico/Fibra",
+
+      "v": null,
+
+      "dims": "1080×800×1850mm",
+
+      "desc": "Box de banheiro em acrílico branco, porta basculante, perfil cromado.",
+
+      "weightKg": 4.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"14\" y=\"6\" width=\"44\" height=\"40\" rx=\"2\" fill=\"#e0e8e8\" stroke=\"#7a8a8a\"/><line x1=\"14\" y1=\"6\" x2=\"14\" y2=\"46\" stroke=\"#8af\" stroke-width=\"2.5\" opacity=\"0.5\"/><circle cx=\"36\" cy=\"12\" r=\"3\" fill=\"#a0c0d0\"/></svg>",
+
+      "geometry": {
+        "type": "group",
+
+        "parts": [
+          [
+            {
+              "type": "box",
+
+              "size": [
+                1.08,
+
+                1.85,
+
+                0.02
+              ],
+
+              "color": "0xe0e8e8",
+
+              "opacity": 0.5,
+
+              "transparent": true,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              0,
+
+              0,
+
+              0
+            ]
+          ],
+
+          [
+            {
+              "type": "box",
+
+              "size": [
+                0.02,
+
+                1.85,
+
+                0.8
+              ],
+
+              "color": "0xe0e8e8",
+
+              "opacity": 0.5,
+
+              "transparent": true,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              -0.54,
+
+              0,
+
+              0.4
+            ]
+          ]
+        ],
+
+        "pos": [
+          -0.3,
+
+          0.92,
+
+          -0.6
+        ]
+      },
+
+      "spawnName": "Box Banheiro 108cm",
+
+      "spawnCat": "encanamento"
+    },
+
+    {
+      "kind": "caixa-agua-100",
+
+      "name": "Caixa d'água 100L",
+
+      "cat": "Instalações",
+
+      "w": 6.5,
+
+      "mat": "Polietileno",
+
+      "v": null,
+
+      "dims": "1100×560×210mm",
+
+      "desc": "Caixa d'água 100 litros para trailer/van/motorhome.",
+
+      "weightKg": 6.5,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"10\" y=\"14\" width=\"52\" height=\"24\" rx=\"4\" fill=\"#4a8ab0\" opacity=\"0.85\" stroke=\"#1a3a50\"/><rect x=\"30\" y=\"8\" width=\"12\" height=\"6\" rx=\"2\" fill=\"#2a5a70\"/><circle cx=\"56\" cy=\"20\" r=\"2\" fill=\"#eaf8ff\"/><text x=\"36\" y=\"33\" text-anchor=\"middle\" fill=\"#fff\" font-size=\"9\" font-weight=\"bold\">100L</text></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          1.1,
+
+          0.21,
+
+          0.56
+        ],
+
+        "color": "0x4a8ab0",
+
+        "opacity": 0.72,
+
+        "transparent": true,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "pos": [
+          0.85,
+
+          0,
+
+          -0.45
+        ]
+      },
+
+      "spawnName": "Caixa d'água 100L",
+
+      "spawnCat": "encanamento"
+    },
+
+    {
+      "kind": "caixa-detrito-100",
+
+      "name": "Caixa de detrito 100L",
+
+      "cat": "Instalações",
+
+      "w": 6.0,
+
+      "mat": "Polietileno",
+
+      "v": null,
+
+      "dims": "1100×560×210mm",
+
+      "desc": "Caixa de detrito 100 litros, preta. Posicionada no chassi beam sob o piso (layout depende do chassi beam altura).",
+
+      "weightKg": 6.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"10\" y=\"14\" width=\"52\" height=\"24\" rx=\"4\" fill=\"#8a8a8a\" opacity=\"0.85\" stroke=\"#333\"/><rect x=\"30\" y=\"8\" width=\"12\" height=\"6\" rx=\"2\" fill=\"#555\"/><text x=\"36\" y=\"33\" text-anchor=\"middle\" fill=\"#fff\" font-size=\"9\" font-weight=\"bold\">100L</text></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          1.1,
+
+          0.21,
+
+          0.56
+        ],
+
+        "color": "0x8a8a8a",
+
+        "opacity": 0.72,
+
+        "transparent": true,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "pos": [
+          -0.85,
+
+          0,
+
+          0.45
+        ]
+      },
+
+      "spawnName": "Caixa de detrito 100L",
+
+      "spawnCat": "encanamento"
+    },
+
+    {
+      "kind": "caixa-gas",
+
+      "name": "Caixa de Gás 88×61",
+
+      "cat": "Acessórios",
+
+      "w": 3.0,
+
+      "mat": "Compensado",
+
+      "v": null,
+
+      "dims": "880×610×400mm",
+
+      "desc": "Caixa de armazenamento de gás, ventilação inferior, acesso rápido.",
+
+      "weightKg": 2.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"10\" y=\"10\" width=\"52\" height=\"36\" rx=\"3\" fill=\"#d4b483\" stroke=\"#6a4a20\"/><rect x=\"14\" y=\"14\" width=\"44\" height=\"28\" fill=\"#c8a870\"/><text x=\"36\" y=\"32\" text-anchor=\"middle\" fill=\"#6a4a20\" font-size=\"8\" font-weight=\"bold\">GÁS</text></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          0.88,
+
+          0.4,
+
+          0.61
+        ],
+
+        "namedMat": "madeira",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "pos": [
+          0,
+
+          0.2,
+
+          0.6
+        ]
+      },
+
+      "spawnName": "Caixa de Gás"
+    },
+
+    {
+      "kind": "calco",
+
+      "name": "Calço Roda UK36",
+
+      "cat": "Acessórios",
+
+      "w": 0.8,
+
+      "mat": "Borracha",
+
+      "v": null,
+
+      "dims": "150×100×80mm",
+
+      "desc": "Calço de roda em borracha vulcanizada, tamanho UK36.",
+
+      "weightKg": 1.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"18\" y=\"30\" width=\"36\" height=\"14\" rx=\"2\" fill=\"#e8a020\" stroke=\"#a06800\"/><rect x=\"22\" y=\"34\" width=\"28\" height=\"6\" fill=\"#d09018\"/><text x=\"36\" y=\"40\" text-anchor=\"middle\" fill=\"#fff\" font-size=\"6\" font-weight=\"bold\">UK36</text></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          0.15,
+
+          0.08,
+
+          0.1
+        ],
+
+        "color": "0xe8a020",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "pos": [
+          0,
+
+          0.04,
+
+          0.5
+        ]
+      },
+
+      "spawnName": "Calço Roda UK36"
+    },
+
+    {
+      "kind": "calco-inox",
+
+      "name": "Calço Inox KG 50cm",
+
+      "cat": "Acessórios",
+
+      "w": 1.0,
+
+      "mat": "Aço Inoxidável",
+
+      "v": null,
+
+      "dims": "500×80×60mm",
+
+      "desc": "Calço inox articulado KG 50cm, trava de segurança.",
+
+      "weightKg": 1.2,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"10\" y=\"28\" width=\"52\" height=\"16\" rx=\"2\" fill=\"#c8d0d4\" stroke=\"#889098\"/><rect x=\"14\" y=\"32\" width=\"44\" height=\"8\" fill=\"#e0e8ec\"/><text x=\"36\" y=\"38\" text-anchor=\"middle\" fill=\"#4a555c\" font-size=\"6\" font-weight=\"bold\">INOX</text></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          0.5,
+
+          0.06,
+
+          0.08
+        ],
+
+        "color": "0xc8d0d4",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.7,
+
+        "pos": [
+          0,
+
+          0.03,
+
+          0.5
+        ]
+      },
+
+      "spawnName": "Calço Inox KG 50cm"
+    },
+
+    {
+      "kind": "camper-40",
+
+      "name": "Camper Comfort 40\"",
+
+      "cat": "Móveis & Eletro",
+
+      "w": 25.0,
+
+      "mat": "MDF",
+
+      "v": null,
+
+      "dims": "1016×965×457mm",
+
+      "desc": "Módulo Camper Comfort 40\", gavetas e armário integrado.",
+
+      "weightKg": 9.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"6\" y=\"12\" width=\"22\" height=\"32\" fill=\"#8b6914\" stroke=\"#5a4010\"/><rect x=\"32\" y=\"18\" width=\"28\" height=\"20\" fill=\"#c4a060\"/><text x=\"36\" y=\"50\" text-anchor=\"middle\" fill=\"#666\" font-size=\"5\">Comfort 40\"</text></svg>",
+
+      "geometry": {
+        "type": "group",
+
+        "parts": [
+          [
+            {
+              "type": "box",
+
+              "size": [
+                1.02,
+
+                0.46,
+
+                0.44
+              ],
+
+              "namedMat": "madeira",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              0,
+
+              0,
+
+              0
+            ]
+          ],
+
+          [
+            {
+              "type": "box",
+
+              "size": [
+                1.02,
+
+                0.02,
+
+                0.44
+              ],
+
+              "namedMat": "madeira",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              0,
+
+              0.23,
+
+              0
+            ]
+          ]
+        ],
+
+        "pos": [
+          0,
+
+          0.23,
+
+          0
+        ]
+      },
+
+      "spawnName": "Camper Comfort 40\""
+    },
+
+    {
+      "kind": "claraboia-280",
+
+      "name": "Claraboia 280mm",
+
+      "cat": "Ventilação",
+
+      "w": 1.5,
+
+      "mat": "Plástico",
+
+      "v": null,
+
+      "dims": "280×280×120mm",
+
+      "desc": "Claraboia redonda 280mm, Tampa Anti-UV, vedação EPDM.",
+
+      "weightKg": 1.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"22\" y=\"12\" width=\"28\" height=\"28\" rx=\"2\" fill=\"#d0d8d8\" stroke=\"#6a7a7a\"/><circle cx=\"36\" cy=\"26\" r=\"8\" fill=\"#a0b0b0\"/><path d=\"M36 18 L40 26 L36 34 L32 26Z\" fill=\"#6a8a8a\"/><circle cx=\"36\" cy=\"26\" r=\"2\" fill=\"#4a5a5a\"/></svg>",
+
+      "geometry": {
+        "type": "cylinder",
+
+        "args": [
+          0.14,
+
+          0.14,
+
+          0.12,
+
+          16
+        ],
+
+        "color": "0xd0d8d8",
+
+        "opacity": 0.6,
+
+        "transparent": true,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "roof": 0.06
+      },
+
+      "spawnName": "Claraboia 280mm"
+    },
+
+    {
+      "kind": "claraboia-400",
+
+      "name": "Claraboia 400mm",
+
+      "cat": "Ventilação",
+
+      "w": 2.8,
+
+      "mat": "Plástico",
+
+      "v": null,
+
+      "dims": "400×400×150mm",
+
+      "desc": "Claraboia quadrada 400mm, Tampa dupla, isolamento térmico.",
+
+      "weightKg": 1.5,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"16\" y=\"8\" width=\"40\" height=\"36\" rx=\"3\" fill=\"#c8d0d0\" stroke=\"#5a6a6a\"/><circle cx=\"36\" cy=\"26\" r=\"12\" fill=\"#90a8a8\"/><path d=\"M36 14 L42 26 L36 38 L30 26Z\" fill=\"#5a7a7a\"/><circle cx=\"36\" cy=\"26\" r=\"3\" fill=\"#3a4a4a\"/></svg>",
+
+      "geometry": {
+        "type": "cylinder",
+
+        "args": [
+          0.2,
+
+          0.2,
+
+          0.15,
+
+          16
+        ],
+
+        "color": "0xc8d0d0",
+
+        "opacity": 0.6,
+
+        "transparent": true,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "roof": 0.08
+      },
+
+      "spawnName": "Claraboia 400mm"
+    },
+
+    {
+      "kind": "clima-evap",
+
+      "name": "Climatiz. Evap. 12V",
+
+      "cat": "Climatização",
+
+      "w": 5.5,
+
+      "mat": "Plástico",
+
+      "v": "12V DC",
+
+      "dims": "500×300×400mm",
+
+      "desc": "Climatizador evaporativo 12V, tanque 6L, 3 velocidades.",
+
+      "weightKg": 4.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"10\" y=\"14\" width=\"52\" height=\"24\" rx=\"3\" fill=\"#b0c8d8\" stroke=\"#5a7a8a\"/><rect x=\"14\" y=\"18\" width=\"44\" height=\"16\" fill=\"#c8dce8\"/><path d=\"M20 26 Q26 20 32 26 Q38 32 44 26 Q50 20 56 26\" fill=\"none\" stroke=\"#4a8ab0\" stroke-width=\"2\"/><circle cx=\"20\" cy=\"22\" r=\"2\" fill=\"#4a8ab0\"/><circle cx=\"36\" cy=\"22\" r=\"2\" fill=\"#4a8ab0\"/><circle cx=\"52\" cy=\"22\" r=\"2\" fill=\"#4a8ab0\"/><text x=\"36\" y=\"42\" text-anchor=\"middle\" fill=\"#3a5a6a\" font-size=\"7\" font-weight=\"bold\">12V</text></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          0.5,
+
+          0.4,
+
+          0.3
+        ],
+
+        "color": "0xb0c8d8",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "pos": [
+          0.3,
+
+          0.2,
+
+          -0.4
+        ]
+      },
+
+      "spawnName": "Climatiz. Evap. 12V"
+    },
+
+    {
+      "kind": "comoda",
+
+      "name": "Cômoda 3 gav.",
+
+      "cat": "Móveis & Eletro",
+
+      "w": 12.0,
+
+      "mat": "Compensado",
+
+      "v": null,
+
+      "dims": "600×400×500mm",
+
+      "desc": "Cômoda com 3 gavetas de compensado naval, acabamento em laca.",
+
+      "weightKg": 8.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"14\" y=\"8\" width=\"44\" height=\"38\" fill=\"#c4a060\" stroke=\"#6a4a20\"/><rect x=\"17\" y=\"12\" width=\"38\" height=\"9\" fill=\"#d4b070\" stroke=\"#8a6a30\"/><rect x=\"17\" y=\"23\" width=\"38\" height=\"9\" fill=\"#d4b070\" stroke=\"#8a6a30\"/><rect x=\"17\" y=\"34\" width=\"38\" height=\"9\" fill=\"#d4b070\" stroke=\"#8a6a30\"/><circle cx=\"36\" cy=\"16.5\" r=\"1.4\" fill=\"#3a2a10\"/><circle cx=\"36\" cy=\"27.5\" r=\"1.4\" fill=\"#3a2a10\"/><circle cx=\"36\" cy=\"38.5\" r=\"1.4\" fill=\"#3a2a10\"/></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          0.5,
+
+          0.7,
+
+          0.4
+        ],
+
+        "namedMat": "madeiraD",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "pos": [
+          0,
+
+          0.35,
+
+          0.4
+        ]
+      },
+
+      "spawnName": "Cômoda"
+    },
+
+    {
+      "kind": "cozinha-compacta",
+
+      "name": "Cozinha compacta 120",
+
+      "cat": "Acessórios",
+
+      "w": 18.0,
+
+      "mat": "MDF/Inox",
+
+      "v": null,
+
+      "dims": "1200×450×900mm",
+
+      "desc": "Módulo de cozinha compacto 120cm, fogareiro + armário.",
+
+      "weightKg": 8.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"8\" y=\"18\" width=\"56\" height=\"28\" fill=\"#c4a574\" stroke=\"#6a4a28\"/><rect x=\"12\" y=\"8\" width=\"48\" height=\"12\" fill=\"#a8a8a8\"/><circle cx=\"28\" cy=\"14\" r=\"4\" fill=\"#888\"/><rect x=\"40\" y=\"10\" width=\"14\" height=\"8\" fill=\"#6a6a6a\"/></svg>",
+
+      "geometry": {
+        "type": "group",
+
+        "parts": [
+          [
+            {
+              "type": "box",
+
+              "size": [
+                1.2,
+
+                0.9,
+
+                0.45
+              ],
+
+              "namedMat": "madeira",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              0,
+
+              0,
+
+              0
+            ]
+          ],
+
+          [
+            {
+              "type": "box",
+
+              "size": [
+                1.2,
+
+                0.03,
+
+                0.45
+              ],
+
+              "color": "0xa8a8a8",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.3
+            },
+
+            [
+              0,
+
+              0.45,
+
+              0
+            ]
+          ]
+        ],
+
+        "pos": [
+          0,
+
+          0.45,
+
+          0.4
+        ]
+      },
+
+      "spawnName": "Cozinha compacta 120"
+    },
+
+    {
+      "kind": "dinette",
+
+      "name": "Banco + mesa",
+
+      "cat": "Móveis & Eletro",
+
+      "w": 18.0,
+
+      "mat": "Compensado",
+
+      "v": null,
+
+      "dims": "1200×900×720mm",
+
+      "desc": "Conjunto dinette: banco com encosto + mesa articulada.",
+
+      "weightKg": 12.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"6\" y=\"14\" width=\"22\" height=\"32\" fill=\"#c4a060\" stroke=\"#6a4a20\"/><rect x=\"6\" y=\"10\" width=\"22\" height=\"8\" fill=\"#80c0a0\"/><rect x=\"32\" y=\"18\" width=\"32\" height=\"22\" fill=\"#b89450\" stroke=\"#6a4a20\"/><rect x=\"46\" y=\"40\" width=\"4\" height=\"8\" fill=\"#8a8a8a\"/></svg>",
+
+      "geometry": {
+        "type": "factory",
+
+        "factory": "dinetteGroup",
+
+        "pos": [
+          0,
+
+          0.22,
+
+          0.4
+        ]
+      },
+
+      "spawnName": "Dinette"
+    },
+
+    {
+      "kind": "ducha-ext",
+
+      "name": "Ducha Externa",
+
+      "cat": "Banheiro",
+
+      "w": 1.5,
+
+      "mat": "Inox/Plástico",
+
+      "v": null,
+
+      "dims": "300×200×600mm",
+
+      "desc": "Ducha externa com registro, acabamento cromado, altura ajustável.",
+
+      "weightKg": 1.5,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"33\" y=\"6\" width=\"6\" height=\"18\" rx=\"2\" fill=\"#b0b0b0\"/><rect x=\"28\" y=\"4\" width=\"16\" height=\"6\" rx=\"3\" fill=\"#888\"/><rect x=\"30\" y=\"24\" width=\"12\" height=\"16\" rx=\"2\" fill=\"#c0c0c0\" stroke=\"#888\"/></svg>",
+
+      "geometry": {
+        "type": "group",
+
+        "parts": [
+          [
+            {
+              "type": "cylinder",
+
+              "args": [
+                0.015,
+
+                0.015,
+
+                0.6,
+
+                6
+              ],
+
+              "color": "0xb0b0b0",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.7
+            },
+
+            [
+              0,
+
+              0.3,
+
+              0
+            ]
+          ],
+
+          [
+            {
+              "type": "box",
+
+              "size": [
+                0.12,
+
+                0.04,
+
+                0.06
+              ],
+
+              "color": "0xc0c0c0",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.6
+            },
+
+            [
+              0,
+
+              0.6,
+
+              0
+            ]
+          ]
+        ],
+
+        "pos": [
+          -0.5,
+
+          0.02,
+
+          0
+        ]
+      },
+
+      "spawnName": "Ducha Externa",
+
+      "spawnCat": "encanamento"
+    },
+
+    {
+      "kind": "entrada-cabos",
+
+      "name": "Entrada Cabos Telhado",
+
+      "cat": "Elétrica",
+
+      "w": 0.3,
+
+      "mat": "EPDM/Plástico",
+
+      "v": null,
+
+      "dims": "Ø30×40mm",
+
+      "desc": "Boot de entrada de cabos, vedação IP67, silicone EPDM.",
+
+      "weightKg": 0.5,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"20\" y=\"14\" width=\"32\" height=\"24\" rx=\"3\" fill=\"#e8e0d0\" stroke=\"#8a8070\"/><circle cx=\"30\" cy=\"26\" r=\"4\" fill=\"#d0c8b8\" stroke=\"#8a8070\"/><circle cx=\"42\" cy=\"26\" r=\"4\" fill=\"#d0c8b8\" stroke=\"#8a8070\"/></svg>",
+
+      "geometry": {
+        "type": "cylinder",
+
+        "args": [
+          0.015,
+
+          0.015,
+
+          0.04,
+
+          8
+        ],
+
+        "color": "0x333333",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "roof": 0.02
+      },
+
+      "spawnName": "Entrada Cabos Telhado",
+
+      "spawnCat": "eletrica"
+    },
+
+    {
+      "kind": "escada-ret",
+
+      "name": "Escada Retrátil",
+
+      "cat": "Acessórios",
+
+      "w": 3.2,
+
+      "mat": "Alumínio",
+
+      "v": null,
+
+      "dims": "450×300×700mm",
+
+      "desc": "Escada retrátil 2 degraus, alumínio anodizado, capacidade 150kg.",
+
+      "weightKg": 3.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"24\" y=\"8\" width=\"4\" height=\"38\" rx=\"1\" fill=\"#b0b0b0\"/><rect x=\"44\" y=\"8\" width=\"4\" height=\"38\" rx=\"1\" fill=\"#b0b0b0\"/><rect x=\"24\" y=\"14\" width=\"24\" height=\"3\" rx=\"1\" fill=\"#999\"/><rect x=\"24\" y=\"22\" width=\"24\" height=\"3\" rx=\"1\" fill=\"#999\"/><rect x=\"24\" y=\"30\" width=\"24\" height=\"3\" rx=\"1\" fill=\"#999\"/></svg>",
+
+      "geometry": {
+        "type": "group",
+
+        "parts": [
+          [
+            {
+              "type": "cylinder",
+
+              "args": [
+                0.012,
+
+                0.012,
+
+                0.7,
+
+                6
+              ],
+
+              "color": "0xb0b0b0",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.7
+            },
+
+            [
+              -0.12,
+
+              0.35,
+
+              0
+            ]
+          ],
+
+          [
+            {
+              "type": "cylinder",
+
+              "args": [
+                0.012,
+
+                0.012,
+
+                0.7,
+
+                6
+              ],
+
+              "color": "0xb0b0b0",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.7
+            },
+
+            [
+              0.12,
+
+              0.35,
+
+              0
+            ]
+          ],
+
+          [
+            {
+              "type": "box",
+
+              "size": [
+                0.22,
+
+                0.02,
+
+                0.06
+              ],
+
+              "color": "0x999999",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              0,
+
+              0.15,
+
+              0
+            ]
+          ],
+
+          [
+            {
+              "type": "box",
+
+              "size": [
+                0.22,
+
+                0.02,
+
+                0.06
+              ],
+
+              "color": "0x999999",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              0,
+
+              0.35,
+
+              0
+            ]
+          ],
+
+          [
+            {
+              "type": "box",
+
+              "size": [
+                0.22,
+
+                0.02,
+
+                0.06
+              ],
+
+              "color": "0x999999",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              0,
+
+              0.55,
+
+              0
+            ]
+          ]
+        ],
+
+        "pos": [
+          0,
+
+          0.02,
+
+          0.5
+        ]
+      },
+
+      "spawnName": "Escada Retrátil"
+    },
+
+    {
+      "kind": "exaustor",
+
+      "name": "Exaustor teto",
+
+      "cat": "Portas & Janelas",
+
+      "w": 0.8,
+
+      "mat": "Plástico",
+
+      "v": "12V DC",
+
+      "dims": "Ø280mm",
+
+      "desc": "Exaustor de teto 12V, fluxo 300m³/h, baixo ruído.",
+
+      "weightKg": 1.5,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"36\" cy=\"26\" r=\"18\" fill=\"#c8c8c8\" stroke=\"#6a6a6a\"/><circle cx=\"36\" cy=\"26\" r=\"12\" fill=\"#e8e8e8\"/><path d=\"M36 14 L40 26 L36 38 L32 26 Z\" fill=\"#8a8a8a\"/><path d=\"M18 26 L36 30 L54 26 L36 22 Z\" fill=\"#a0a0a0\"/><circle cx=\"36\" cy=\"26\" r=\"3\" fill=\"#4a4a4a\"/></svg>",
+
+      "geometry": {
+        "type": "cylinder",
+
+        "args": [
+          0.14,
+
+          0.14,
+
+          0.06,
+
+          16
+        ],
+
+        "namedMat": "aluminio",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "roof": 0.04
+      },
+
+      "spawnName": "Exaustor",
+
+      "spawnCat": "eletrica"
+    },
+
+    {
+      "kind": "exaustor-anti",
+
+      "name": "Exaustor Anti-Chuva",
+
+      "cat": "Portas & Janelas",
+
+      "w": 1.2,
+
+      "mat": "Plástico",
+
+      "v": "12V DC",
+
+      "dims": "150×80mm",
+
+      "desc": "Exaustor com proteção anti-chuva, DPI 44, 12V.",
+
+      "weightKg": 2.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"12\" y=\"10\" width=\"48\" height=\"32\" rx=\"3\" fill=\"#d0d0d0\" stroke=\"#888\"/><rect x=\"16\" y=\"14\" width=\"40\" height=\"24\" rx=\"2\" fill=\"#e8e8e8\"/><path d=\"M24 22 Q36 18 48 22\" fill=\"none\" stroke=\"#4a4a4a\" stroke-width=\"2\"/><path d=\"M24 28 Q36 32 48 28\" fill=\"none\" stroke=\"#4a4a4a\" stroke-width=\"2\"/><circle cx=\"36\" cy=\"25\" r=\"4\" fill=\"#888\"/><text x=\"36\" y=\"48\" text-anchor=\"middle\" fill=\"#666\" font-size=\"5\">150×80mm</text></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          0.15,
+
+          0.08,
+
+          0.08
+        ],
+
+        "color": "0xd0d0d0",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "roof": 0.04
+      },
+
+      "spawnName": "Exaustor Anti-Chuva",
+
+      "spawnCat": "eletrica"
+    },
+
+    {
+      "kind": "exaustor-coifa",
+
+      "name": "Exaustor Coifa 12V LED",
+
+      "cat": "Portas & Janelas",
+
+      "w": 1.5,
+
+      "mat": "Plástico/Metal",
+
+      "v": "12V DC",
+
+      "dims": "387×233mm",
+
+      "desc": "Exaustor coifa com LED integrado, 3 velocidades.",
+
+      "weightKg": 2.5,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"8\" y=\"14\" width=\"56\" height=\"24\" rx=\"2\" fill=\"#d8d8d8\" stroke=\"#888\"/><rect x=\"12\" y=\"18\" width=\"48\" height=\"16\" fill=\"#eee\"/><circle cx=\"36\" cy=\"26\" r=\"6\" fill=\"#bbb\"/><rect x=\"14\" y=\"20\" width=\"10\" height=\"2\" fill=\"#ffe066\"/><text x=\"36\" y=\"48\" text-anchor=\"middle\" fill=\"#666\" font-size=\"5\">387×233mm</text></svg>",
+
+      "geometry": {
+        "type": "group",
+
+        "parts": [
+          [
+            {
+              "type": "box",
+
+              "size": [
+                0.39,
+
+                0.06,
+
+                0.23
+              ],
+
+              "color": "0xd8d8d8",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              0,
+
+              0,
+
+              0
+            ]
+          ],
+
+          [
+            {
+              "type": "box",
+
+              "size": [
+                0.08,
+
+                0.02,
+
+                0.04
+              ],
+
+              "color": "0xffe066",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1,
+
+              "emissive": "0xffe066",
+
+              "emissiveIntensity": 0.4
+            },
+
+            [
+              0,
+
+              -0.04,
+
+              0
+            ]
+          ]
+        ],
+
+        "roof": 0.04
+      },
+
+      "spawnName": "Exaustor Coifa 12V LED",
+
+      "spawnCat": "eletrica"
+    },
+
+    {
+      "kind": "geladeira",
+
+      "name": "Geladeira 12V",
+
+      "cat": "Móveis & Eletro",
+
+      "w": 15.0,
+
+      "mat": "Plástico/Aço",
+
+      "v": "12V DC",
+
+      "dims": "480×500×530mm",
+
+      "desc": "Geladeira compressor 12V DC, 40L, portão reversível.",
+
+      "weightKg": 8.5,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"22\" y=\"6\" width=\"28\" height=\"42\" rx=\"2\" fill=\"#3a8a4a\" stroke=\"#1a4a22\"/><rect x=\"25\" y=\"10\" width=\"22\" height=\"14\" fill=\"#2e703c\"/><rect x=\"25\" y=\"26\" width=\"22\" height=\"18\" fill=\"#2e703c\"/><rect x=\"45\" y=\"16\" width=\"3\" height=\"8\" fill=\"#c8c8c8\"/></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          0.35,
+
+          0.58,
+
+          0.44
+        ],
+
+        "namedMat": "geladeira",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "pos": [
+          0.3,
+
+          0.29,
+
+          -0.4
+        ]
+      },
+
+      "spawnName": "Geladeira 12V"
+    },
+
+    {
+      "kind": "grade-vent",
+
+      "name": "Grade Vent 525×280",
+
+      "cat": "Ventilação",
+
+      "w": 0.6,
+
+      "mat": "Alumínio",
+
+      "v": null,
+
+      "dims": "525×280mm",
+
+      "desc": "Grade de ventilação em alumínio, perfil extrudado, pintura eletrostática.",
+
+      "weightKg": 0.8,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"12\" y=\"12\" width=\"48\" height=\"28\" rx=\"2\" fill=\"#c0c0c0\" stroke=\"#888\"/><line x1=\"12\" y1=\"18\" x2=\"60\" y2=\"18\" stroke=\"#999\"/><line x1=\"12\" y1=\"24\" x2=\"60\" y2=\"24\" stroke=\"#999\"/><line x1=\"12\" y1=\"30\" x2=\"60\" y2=\"30\" stroke=\"#999\"/><line x1=\"12\" y1=\"36\" x2=\"60\" y2=\"36\" stroke=\"#999\"/></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          0.525,
+
+          0.28,
+
+          0.02
+        ],
+
+        "color": "0xc0c0c0",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.5,
+
+        "pos": [
+          0,
+
+          1.0,
+
+          0
+        ]
+      },
+
+      "spawnName": "Grade Vent 525×280"
+    },
+
+    {
+      "kind": "janela",
+
+      "name": "Janela 50×50",
+
+      "cat": "Portas & Janelas",
+
+      "w": 3.5,
+
+      "mat": "Alumínio/Vidro",
+
+      "v": null,
+
+      "dims": "500×500mm",
+
+      "desc": "Janela basculante em alumínio com vidro temperado.",
+
+      "weightKg": 3.5,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"14\" y=\"8\" width=\"44\" height=\"36\" fill=\"#7eb8d8\" fill-opacity=\"0.35\" stroke=\"#6a7a88\"/><rect x=\"14\" y=\"8\" width=\"44\" height=\"36\" fill=\"none\" stroke=\"#8a9aa8\" stroke-width=\"3\"/></svg>",
+
+      "geometry": {
+        "type": "factory",
+
+        "factory": "rvWindow",
+
+        "params": [
+          0.5,
+
+          0.5
+        ],
+
+        "pos": [
+          0,
+
+          1.2,
+
+          0
+        ]
+      },
+
+      "spawnName": "Janela 50×50",
+
+      "spawnCat": "paredes"
+    },
+
+    {
+      "kind": "janela-120x50",
+
+      "name": "Janela SANJO 120×50",
+
+      "cat": "Portas & Janelas",
+
+      "w": 5.8,
+
+      "mat": "Alumínio/Vidro",
+
+      "v": null,
+
+      "dims": "1200×500mm",
+
+      "desc": "Janela SANJO panorâmica, perfil duplo, vidro 4mm.",
+
+      "weightKg": 5.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"4\" y=\"14\" width=\"64\" height=\"22\" fill=\"#6aa8c8\" fill-opacity=\"0.3\" stroke=\"#555\"/><text x=\"36\" y=\"48\" text-anchor=\"middle\" fill=\"#666\" font-size=\"5\">1200×500</text></svg>",
+
+      "geometry": {
+        "type": "factory",
+
+        "factory": "rvWindow",
+
+        "params": [
+          1.2,
+
+          0.5
+        ],
+
+        "pos": [
+          0,
+
+          1.2,
+
+          0
+        ]
+      },
+
+      "spawnName": "Janela SANJO 120×50",
+
+      "spawnCat": "paredes"
+    },
+
+    {
+      "kind": "janela-50x35",
+
+      "name": "Janela SANJO 50×35",
+
+      "cat": "Portas & Janelas",
+
+      "w": 2.8,
+
+      "mat": "Alumínio/Vidro",
+
+      "v": null,
+
+      "dims": "500×350mm",
+
+      "desc": "Janela SANJO basculante, perfil de alumínio extrudado.",
+
+      "weightKg": 3.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"12\" y=\"14\" width=\"48\" height=\"24\" fill=\"#6aa8c8\" fill-opacity=\"0.3\" stroke=\"#555\"/><text x=\"36\" y=\"48\" text-anchor=\"middle\" fill=\"#666\" font-size=\"5\">500×350</text></svg>",
+
+      "geometry": {
+        "type": "factory",
+
+        "factory": "rvWindow",
+
+        "params": [
+          0.5,
+
+          0.35
+        ],
+
+        "pos": [
+          0,
+
+          1.2,
+
+          0
+        ]
+      },
+
+      "spawnName": "Janela SANJO 50×35",
+
+      "spawnCat": "paredes"
+    },
+
+    {
+      "kind": "janela-70x40",
+
+      "name": "Janela SANJO 70×40",
+
+      "cat": "Portas & Janelas",
+
+      "w": 3.6,
+
+      "mat": "Alumínio/Vidro",
+
+      "v": null,
+
+      "dims": "700×400mm",
+
+      "desc": "Janela SANJO, vidro duplo, vedação em EPDM.",
+
+      "weightKg": 3.5,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"8\" y=\"12\" width=\"56\" height=\"26\" fill=\"#6aa8c8\" fill-opacity=\"0.3\" stroke=\"#555\"/><text x=\"36\" y=\"48\" text-anchor=\"middle\" fill=\"#666\" font-size=\"5\">700×400</text></svg>",
+
+      "geometry": {
+        "type": "factory",
+
+        "factory": "rvWindow",
+
+        "params": [
+          0.7,
+
+          0.4
+        ],
+
+        "pos": [
+          0,
+
+          1.2,
+
+          0
+        ]
+      },
+
+      "spawnName": "Janela SANJO 70×40",
+
+      "spawnCat": "paredes"
+    },
+
+    {
+      "kind": "janela-90x45",
+
+      "name": "Janela SANJO 90×45",
+
+      "cat": "Portas & Janelas",
+
+      "w": 4.5,
+
+      "mat": "Alumínio/Vidro",
+
+      "v": null,
+
+      "dims": "900×450mm",
+
+      "desc": "Janela SANJO ampla, basculante com travas laterais.",
+
+      "weightKg": 4.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"6\" y=\"12\" width=\"60\" height=\"26\" fill=\"#6aa8c8\" fill-opacity=\"0.3\" stroke=\"#555\"/><text x=\"36\" y=\"48\" text-anchor=\"middle\" fill=\"#666\" font-size=\"5\">900×450</text></svg>",
+
+      "geometry": {
+        "type": "factory",
+
+        "factory": "rvWindow",
+
+        "params": [
+          0.9,
+
+          0.45
+        ],
+
+        "pos": [
+          0,
+
+          1.2,
+
+          0
+        ]
+      },
+
+      "spawnName": "Janela SANJO 90×45",
+
+      "spawnCat": "paredes"
+    },
+
+    {
+      "kind": "janela-fixa-120",
+
+      "name": "Fixa panorâmica 120×50",
+
+      "cat": "Portas & Janelas",
+
+      "w": 4.2,
+
+      "mat": "Alumínio/Vidro",
+
+      "v": null,
+
+      "dims": "1200×500mm",
+
+      "desc": "Janela fixa panorâmica, vidro temperado 5mm.",
+
+      "weightKg": 4.5,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"4\" y=\"16\" width=\"64\" height=\"20\" rx=\"6\" fill=\"#6aa8c8\" fill-opacity=\"0.3\" stroke=\"#555\"/><text x=\"36\" y=\"48\" text-anchor=\"middle\" fill=\"#666\" font-size=\"5\">fixa 1200</text></svg>",
+
+      "geometry": {
+        "type": "factory",
+
+        "factory": "rvWindow",
+
+        "params": [
+          1.2,
+
+          0.5
+        ],
+
+        "pos": [
+          0,
+
+          1.2,
+
+          0
+        ]
+      },
+
+      "spawnName": "Fixa panorâmica 120×50",
+
+      "spawnCat": "paredes"
+    },
+
+    {
+      "kind": "janela-kg-750",
+
+      "name": "Janela KG fumê 75×50",
+
+      "cat": "Portas & Janelas",
+
+      "w": 4.8,
+
+      "mat": "Alumínio/Vidro",
+
+      "v": null,
+
+      "dims": "750×500mm",
+
+      "desc": "Janela KG Acryl fumê, perfil de alumínio, vedação dupla.",
+
+      "weightKg": 4.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"10\" y=\"12\" width=\"52\" height=\"28\" rx=\"4\" fill=\"#4a6070\" fill-opacity=\"0.45\" stroke=\"#333\"/><text x=\"36\" y=\"48\" text-anchor=\"middle\" fill=\"#666\" font-size=\"5\">KG 750×500</text></svg>",
+
+      "geometry": {
+        "type": "factory",
+
+        "factory": "rvWindow",
+
+        "params": [
+          0.75,
+
+          0.5
+        ],
+
+        "pos": [
+          0,
+
+          1.2,
+
+          0
+        ]
+      },
+
+      "spawnName": "Janela KG fumê 75×50",
+
+      "spawnCat": "paredes"
+    },
+
+    {
+      "kind": "janela-kg-leitosa",
+
+      "name": "Janela KG leitosa 60×45",
+
+      "cat": "Portas & Janelas",
+
+      "w": 3.2,
+
+      "mat": "Alumínio/Vidro",
+
+      "v": null,
+
+      "dims": "600×450mm",
+
+      "desc": "Janela KG Acryl leitosa, translúcida, perfil extrudado.",
+
+      "weightKg": 3.5,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"14\" y=\"12\" width=\"44\" height=\"28\" rx=\"4\" fill=\"#e8e4dc\" fill-opacity=\"0.7\" stroke=\"#888\"/><text x=\"36\" y=\"48\" text-anchor=\"middle\" fill=\"#666\" font-size=\"5\">KG 60×45</text></svg>",
+
+      "geometry": {
+        "type": "factory",
+
+        "factory": "rvWindow",
+
+        "params": [
+          0.6,
+
+          0.45
+        ],
+
+        "pos": [
+          0,
+
+          1.2,
+
+          0
+        ]
+      },
+
+      "spawnName": "Janela KG leitosa 60×45",
+
+      "spawnCat": "paredes"
+    },
+
+    {
+      "kind": "janela-pp-350",
+
+      "name": "Polyplastic 35×50",
+
+      "cat": "Portas & Janelas",
+
+      "w": 1.2,
+
+      "mat": "Plástico",
+
+      "v": null,
+
+      "dims": "350×500mm",
+
+      "desc": "Janela Polyplastic flexível, acrílico policarbonato.",
+
+      "weightKg": 2.5,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"22\" y=\"6\" width=\"28\" height=\"38\" fill=\"#6aa8c8\" fill-opacity=\"0.3\" stroke=\"#555\"/><text x=\"36\" y=\"50\" text-anchor=\"middle\" fill=\"#666\" font-size=\"5\">350×500</text></svg>",
+
+      "geometry": {
+        "type": "factory",
+
+        "factory": "rvWindow",
+
+        "params": [
+          0.35,
+
+          0.5
+        ],
+
+        "pos": [
+          0,
+
+          1.2,
+
+          0
+        ]
+      },
+
+      "spawnName": "Polyplastic 35×50",
+
+      "spawnCat": "paredes"
+    },
+
+    {
+      "kind": "led-strip",
+
+      "name": "LED Strip 5m 12V",
+
+      "cat": "Iluminação",
+
+      "w": 0.3,
+
+      "mat": "Silicone/LED",
+
+      "v": "12V DC",
+
+      "dims": "5000×10×2mm",
+
+      "desc": "Fita LED 5m 12V, 60 LEDs/m, branco quente, IP65.",
+
+      "weightKg": 0.5,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"8\" y=\"20\" width=\"56\" height=\"6\" rx=\"3\" fill=\"#333\" stroke=\"#555\"/><circle cx=\"16\" cy=\"23\" r=\"2.5\" fill=\"#ffe066\"/><circle cx=\"26\" cy=\"23\" r=\"2.5\" fill=\"#ffe066\"/><circle cx=\"36\" cy=\"23\" r=\"2.5\" fill=\"#ffe066\"/><circle cx=\"46\" cy=\"23\" r=\"2.5\" fill=\"#ffe066\"/><circle cx=\"56\" cy=\"23\" r=\"2.5\" fill=\"#ffe066\"/></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          1.0,
+
+          0.015,
+
+          0.015
+        ],
+
+        "color": "0x333333",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "roof": 0.01
+      },
+
+      "spawnName": "LED Strip 5m",
+
+      "spawnCat": "eletrica"
+    },
+
+    {
+      "kind": "mesa",
+
+      "name": "Mesa Lagun",
+
+      "cat": "Móveis & Eletro",
+
+      "w": 5.0,
+
+      "mat": "Laminado",
+
+      "v": null,
+
+      "dims": "Ø700×720mm",
+
+      "desc": "Mesa de coluna Lagun, base pivotante, tampa redonda.",
+
+      "weightKg": 4.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><ellipse cx=\"36\" cy=\"22\" rx=\"24\" ry=\"10\" fill=\"#c4a060\" stroke=\"#6a4a20\"/><rect x=\"34\" y=\"22\" width=\"4\" height=\"22\" fill=\"#8a6a40\"/><ellipse cx=\"36\" cy=\"44\" rx=\"8\" ry=\"3\" fill=\"#6a4a20\"/></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          0.55,
+
+          0.04,
+
+          0.45
+        ],
+
+        "namedMat": "madeira",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "role": "table",
+
+        "restY": 0.62,
+
+        "bedY": 0.37,
+
+        "pos": [
+          0,
+
+          0.62,
+
+          0.4
+        ]
+      },
+
+      "spawnName": "Mesa Lagun"
+    },
+
+    {
+      "kind": "mesa-dob",
+
+      "name": "Mesa Dobrável 70×40",
+
+      "cat": "Acessórios",
+
+      "w": 3.5,
+
+      "mat": "Laminado",
+
+      "v": null,
+
+      "dims": "700×400×680mm",
+
+      "desc": "Mesa dobrável de parede, tampa laminada, dobradiça reforçada.",
+
+      "weightKg": 2.5,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"14\" y=\"14\" width=\"44\" height=\"24\" rx=\"2\" fill=\"#c4a060\" stroke=\"#6a4a20\"/><rect x=\"14\" y=\"38\" width=\"4\" height=\"8\" fill=\"#8a6a40\"/><rect x=\"54\" y=\"38\" width=\"4\" height=\"8\" fill=\"#8a6a40\"/></svg>",
+
+      "geometry": {
+        "type": "group",
+
+        "parts": [
+          [
+            {
+              "type": "box",
+
+              "size": [
+                0.7,
+
+                0.03,
+
+                0.4
+              ],
+
+              "namedMat": "madeira",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              0,
+
+              0.68,
+
+              0
+            ]
+          ],
+
+          [
+            {
+              "type": "box",
+
+              "size": [
+                0.03,
+
+                0.65,
+
+                0.03
+              ],
+
+              "namedMat": "madeira",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              -0.3,
+
+              0.32,
+
+              0.18
+            ]
+          ],
+
+          [
+            {
+              "type": "box",
+
+              "size": [
+                0.03,
+
+                0.65,
+
+                0.03
+              ],
+
+              "namedMat": "madeira",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              0.3,
+
+              0.32,
+
+              0.18
+            ]
+          ]
+        ],
+
+        "pos": [
+          0,
+
+          0.02,
+
+          0.4
+        ]
+      },
+
+      "spawnName": "Mesa Dobrável 70×40"
+    },
+
+    {
+      "kind": "painel-dj",
+
+      "name": "Painel Disjuntores",
+
+      "cat": "Elétrica",
+
+      "w": 1.5,
+
+      "mat": "Plástico/Aço",
+
+      "v": "12V DC",
+
+      "dims": "300×250×100mm",
+
+      "desc": "Painel de disjuntores 12V, 6 circuitos, LEDs indicadores.",
+
+      "weightKg": 1.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"16\" y=\"8\" width=\"40\" height=\"36\" rx=\"2\" fill=\"#1a1a1a\" stroke=\"#444\"/><rect x=\"20\" y=\"12\" width=\"12\" height=\"4\" rx=\"1\" fill=\"#4a4\"/><rect x=\"34\" y=\"12\" width=\"18\" height=\"4\" rx=\"1\" fill=\"#4a4\"/><rect x=\"20\" y=\"20\" width=\"12\" height=\"4\" rx=\"1\" fill=\"#c8a020\"/><rect x=\"34\" y=\"20\" width=\"18\" height=\"4\" rx=\"1\" fill=\"#c8a020\"/><rect x=\"20\" y=\"28\" width=\"32\" height=\"6\" rx=\"1\" fill=\"#333\"/><circle cx=\"26\" cy=\"31\" r=\"2\" fill=\"#666\"/><circle cx=\"36\" cy=\"31\" r=\"2\" fill=\"#666\"/></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          0.3,
+
+          0.25,
+
+          0.1
+        ],
+
+        "color": "0x1a1a1a",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "pos": [
+          0.55,
+
+          1.2,
+
+          0
+        ]
+      },
+
+      "spawnName": "Painel Disjuntores",
+
+      "spawnCat": "eletrica"
+    },
+
+    {
+      "kind": "pe-dinete-12v",
+
+      "name": "Pé dinete 12V",
+
+      "cat": "Móveis & Eletro",
+
+      "w": 3.5,
+
+      "mat": "Compósito",
+
+      "v": "12V",
+
+      "dims": "400×400×720mm",
+
+      "desc": "Pé de mesa com motor 12V para elevação automática.",
+
+      "weightKg": 3.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"16\" y=\"10\" width=\"40\" height=\"8\" fill=\"#c4a060\" stroke=\"#6a4a20\"/><rect x=\"34\" y=\"18\" width=\"4\" height=\"26\" fill=\"#a0a8b0\"/><ellipse cx=\"36\" cy=\"46\" rx=\"10\" ry=\"3\" fill=\"#888\"/></svg>",
+
+      "geometry": {
+        "type": "cylinder",
+
+        "args": [
+          0.04,
+
+          0.04,
+
+          0.7,
+
+          8
+        ],
+
+        "color": "0xa0a8b0",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.6,
+
+        "pos": [
+          0,
+
+          0.35,
+
+          0.4
+        ]
+      },
+
+      "spawnName": "Pé dinete 12V"
+    },
+
+    {
+      "kind": "pia",
+
+      "name": "Pia inox Ø28",
+
+      "cat": "Móveis & Eletro",
+
+      "w": 4.0,
+
+      "mat": "Inox",
+
+      "v": null,
+
+      "dims": "600×450×100mm",
+
+      "desc": "Pia de inox com cuba, para bancada de cozinha.",
+
+      "weightKg": 4.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><ellipse cx=\"36\" cy=\"28\" rx=\"22\" ry=\"12\" fill=\"#b8b8b8\" stroke=\"#6a6a6a\"/><ellipse cx=\"36\" cy=\"26\" rx=\"16\" ry=\"8\" fill=\"#8a8a8a\"/><circle cx=\"36\" cy=\"26\" r=\"3\" fill=\"#4a4a4a\"/><rect x=\"33\" y=\"10\" width=\"6\" height=\"10\" rx=\"2\" fill=\"#909090\"/><circle cx=\"36\" cy=\"10\" r=\"3\" fill=\"#c0c0c0\"/></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          0.6,
+
+          0.1,
+
+          0.45
+        ],
+
+        "color": "0xc0c0c0",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.6,
+
+        "pos": [
+          0,
+
+          0.45,
+
+          0.4
+        ]
+      },
+
+      "spawnName": "Pia inox"
+    },
+
+    {
+      "kind": "pingadeira",
+
+      "name": "Kit Pingadeira 1400",
+
+      "cat": "Acessórios",
+
+      "w": 0.6,
+
+      "mat": "Alumínio",
+
+      "v": null,
+
+      "dims": "1400×50×30mm",
+
+      "desc": "Kit pingadeira em alumínio extrudado, perfil em L, 1.4m.",
+
+      "weightKg": 0.6,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"6\" y=\"22\" width=\"60\" height=\"6\" rx=\"1\" fill=\"#b8c0c4\" stroke=\"#889098\"/><path d=\"M10 28 L14 36 L18 28\" fill=\"none\" stroke=\"#6aa8c8\" stroke-width=\"1.5\"/></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          1.4,
+
+          0.05,
+
+          0.03
+        ],
+
+        "color": "0xb8c0c4",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.5,
+
+        "pos": [
+          0,
+
+          1.8,
+
+          0
+        ]
+      },
+
+      "spawnName": "Kit Pingadeira 1400"
+    },
+
+    {
+      "kind": "plafon",
+
+      "name": "Plafon LED Ø140",
+
+      "cat": "Iluminação",
+
+      "w": 0.2,
+
+      "mat": "Plástico/LED",
+
+      "v": "12V DC",
+
+      "dims": "Ø140×35mm",
+
+      "desc": "Plafon LED redondo 12V, 10W, 800lm, branco neutro.",
+
+      "weightKg": 0.4,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"36\" cy=\"26\" r=\"16\" fill=\"#f0f0f0\" stroke=\"#ccc\"/><circle cx=\"36\" cy=\"26\" r=\"10\" fill=\"#fff8e0\"/><circle cx=\"36\" cy=\"26\" r=\"4\" fill=\"#ffe066\" opacity=\"0.6\"/></svg>",
+
+      "geometry": {
+        "type": "cylinder",
+
+        "args": [
+          0.07,
+
+          0.07,
+
+          0.025,
+
+          16
+        ],
+
+        "color": "0xf0f0f0",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "emissive": "0xfff8e0",
+
+        "emissiveIntensity": 0.3,
+
+        "roof": -0.01
+      },
+
+      "spawnName": "Plafon LED Ø140",
+
+      "spawnCat": "eletrica"
+    },
+
+    {
+      "kind": "porta",
+
+      "name": "Porta 62×160",
+
+      "cat": "Portas & Janelas",
+
+      "w": 18.0,
+
+      "mat": "Compensado",
+
+      "v": null,
+
+      "dims": "620×1600×40mm",
+
+      "desc": "Porta externa de entrada, compensado naval, dobradiça inox.",
+
+      "weightKg": 6.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"20\" y=\"6\" width=\"28\" height=\"42\" fill=\"#c4a574\" stroke=\"#6a4a28\"/><rect x=\"24\" y=\"10\" width=\"20\" height=\"16\" fill=\"#d4c4a0\" stroke=\"#8a6a40\"/><circle cx=\"44\" cy=\"30\" r=\"2.2\" fill=\"#3a3a3a\"/></svg>",
+
+      "geometry": {
+        "type": "factory",
+
+        "factory": "hingedDoor",
+
+        "params": {
+          "w": 0.62,
+
+          "h": 1.6,
+
+          "open": -0.9
+        },
+
+        "pos": [
+          0.3,
+
+          0.08,
+
+          0.4
+        ],
+
+        "cat": "paredes"
+      },
+
+      "spawnName": "Porta entrada",
+
+      "spawnCat": "paredes"
+    },
+
+    {
+      "kind": "porta-copo",
+
+      "name": "Porta-copo Dobrável",
+
+      "cat": "Acessórios",
+
+      "w": 0.4,
+
+      "mat": "Plástico/Aço",
+
+      "v": null,
+
+      "dims": "200×150×100mm",
+
+      "desc": "Porta-copo dobrável, suporte para 2 copos, fixação na parede.",
+
+      "weightKg": 0.8,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"18\" y=\"10\" width=\"36\" height=\"32\" rx=\"2\" fill=\"#444\" stroke=\"#666\"/><circle cx=\"30\" cy=\"26\" r=\"6\" fill=\"#555\" stroke=\"#777\"/><circle cx=\"44\" cy=\"26\" r=\"6\" fill=\"#555\" stroke=\"#777\"/></svg>",
+
+      "geometry": {
+        "type": "group",
+
+        "parts": [
+          [
+            {
+              "type": "box",
+
+              "size": [
+                0.2,
+
+                0.15,
+
+                0.1
+              ],
+
+              "color": "0x444444",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              0,
+
+              0,
+
+              0
+            ]
+          ],
+
+          [
+            {
+              "type": "cylinder",
+
+              "args": [
+                0.03,
+
+                0.03,
+
+                0.06,
+
+                8
+              ],
+
+              "color": "0x555555",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              -0.05,
+
+              0,
+
+              0.06
+            ]
+          ],
+
+          [
+            {
+              "type": "cylinder",
+
+              "args": [
+                0.03,
+
+                0.03,
+
+                0.06,
+
+                8
+              ],
+
+              "color": "0x555555",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              0.05,
+
+              0,
+
+              0.06
+            ]
+          ]
+        ],
+
+        "pos": [
+          0,
+
+          0.9,
+
+          0.4
+        ]
+      },
+
+      "spawnName": "Porta-copo Dobrável"
+    },
+
+    {
+      "kind": "porta-int",
+
+      "name": "Porta int. 55×170",
+
+      "cat": "Portas & Janelas",
+
+      "w": 12.0,
+
+      "mat": "Compensado",
+
+      "v": null,
+
+      "dims": "550×1700×35mm",
+
+      "desc": "Porta interna divisória, compensado 15mm, dobradiça escondida.",
+
+      "weightKg": 4.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"22\" y=\"5\" width=\"24\" height=\"44\" fill=\"#d4b483\" stroke=\"#7a5a30\"/><line x1=\"34\" y1=\"5\" x2=\"34\" y2=\"49\" stroke=\"#b89460\"/><circle cx=\"40\" cy=\"28\" r=\"2\" fill=\"#3a3a3a\"/></svg>",
+
+      "geometry": {
+        "type": "factory",
+
+        "factory": "hingedDoor",
+
+        "params": {
+          "w": 0.55,
+
+          "h": 1.7,
+
+          "open": 0.9
+        },
+
+        "pos": [
+          0,
+
+          0.02,
+
+          0.2
+        ],
+
+        "cat": "paredes-int"
+      },
+
+      "spawnName": "Porta interna",
+
+      "spawnCat": "paredes-int"
+    },
+
+    {
+      "kind": "potti",
+
+      "name": "Porta Potti",
+
+      "cat": "Instalações",
+
+      "w": 2.5,
+
+      "mat": "Plástico",
+
+      "v": null,
+
+      "dims": "330×450mm",
+
+      "desc": "Porta porta-papel higiênico Potti, fixação na parede.",
+
+      "weightKg": 3.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"20\" y=\"22\" width=\"32\" height=\"22\" rx=\"3\" fill=\"#e8e4dc\" stroke=\"#8a8680\"/><ellipse cx=\"36\" cy=\"20\" rx=\"14\" ry=\"8\" fill=\"#d8d4cc\" stroke=\"#8a8680\"/><ellipse cx=\"36\" cy=\"20\" rx=\"8\" ry=\"4\" fill=\"#a8c8d8\"/><rect x=\"32\" y=\"8\" width=\"8\" height=\"8\" rx=\"1\" fill=\"#c8c4bc\"/></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          0.38,
+
+          0.42,
+
+          0.38
+        ],
+
+        "namedMat": "vaso",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "pos": [
+          -0.3,
+
+          0.21,
+
+          -0.8
+        ]
+      },
+
+      "spawnName": "Porta Potti",
+
+      "spawnCat": "encanamento"
+    },
+
+    {
+      "kind": "quadro",
+
+      "name": "Quadro 12V",
+
+      "cat": "Instalações",
+
+      "w": 2.0,
+
+      "mat": "Plástico/Aço",
+
+      "v": "12V DC",
+
+      "dims": "300×250×100mm",
+
+      "desc": "Quadro de distribuição 12V, disjuntores termomagnéticos.",
+
+      "weightKg": 1.5,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"16\" y=\"8\" width=\"40\" height=\"36\" rx=\"2\" fill=\"#1a1a1a\" stroke=\"#444\"/><circle cx=\"28\" cy=\"20\" r=\"5\" fill=\"#2a8a3a\"/><circle cx=\"44\" cy=\"20\" r=\"5\" fill=\"#c8a020\"/><rect x=\"22\" y=\"32\" width=\"28\" height=\"6\" fill=\"#333\"/><rect x=\"24\" y=\"34\" width=\"8\" height=\"2\" fill=\"#6a6\"/></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          0.22,
+
+          0.28,
+
+          0.06
+        ],
+
+        "color": "0x1a1a1a",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "pos": [
+          0.55,
+
+          1.2,
+
+          0
+        ]
+      },
+
+      "spawnName": "Quadro 12V",
+
+      "spawnCat": "eletrica"
+    },
+
+    {
+      "kind": "recpro-38",
+
+      "name": "RecPro 38\" booth",
+
+      "cat": "Móveis & Eletro",
+
+      "w": 22.0,
+
+      "mat": "MDF/Compensado",
+
+      "v": null,
+
+      "dims": "965×1016×457mm",
+
+      "desc": "Booth de canto RecPro 38\", com prateleiras e nichos.",
+
+      "weightKg": 8.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"4\" y=\"12\" width=\"20\" height=\"32\" fill=\"#c4a060\" stroke=\"#6a4a20\"/><rect x=\"28\" y=\"18\" width=\"22\" height=\"20\" fill=\"#b89450\"/><rect x=\"38\" y=\"38\" width=\"3\" height=\"8\" fill=\"#888\"/><text x=\"36\" y=\"50\" text-anchor=\"middle\" fill=\"#666\" font-size=\"5\">RecPro 38\"</text></svg>",
+
+      "geometry": {
+        "type": "group",
+
+        "parts": [
+          [
+            {
+              "type": "box",
+
+              "size": [
+                0.96,
+
+                0.46,
+
+                0.44
+              ],
+
+              "namedMat": "madeira",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              0,
+
+              0,
+
+              0
+            ]
+          ],
+
+          [
+            {
+              "type": "box",
+
+              "size": [
+                0.96,
+
+                0.02,
+
+                0.44
+              ],
+
+              "namedMat": "madeira",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              0,
+
+              0.23,
+
+              0
+            ]
+          ]
+        ],
+
+        "pos": [
+          0,
+
+          0.23,
+
+          0
+        ]
+      },
+
+      "spawnName": "RecPro 38\""
+    },
+
+    {
+      "kind": "recpro-44",
+
+      "name": "RecPro 44\" combo",
+
+      "cat": "Móveis & Eletro",
+
+      "w": 28.0,
+
+      "mat": "MDF/Compensado",
+
+      "v": null,
+
+      "dims": "1118×1016×457mm",
+
+      "desc": "Combo RecPro 44\": nichos laterais + painel central.",
+
+      "weightKg": 10.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"2\" y=\"12\" width=\"18\" height=\"32\" fill=\"#c4a060\" stroke=\"#6a4a20\"/><rect x=\"24\" y=\"18\" width=\"24\" height=\"18\" fill=\"#b89450\"/><rect x=\"52\" y=\"12\" width=\"18\" height=\"32\" fill=\"#c4a060\" stroke=\"#6a4a20\"/><text x=\"36\" y=\"50\" text-anchor=\"middle\" fill=\"#666\" font-size=\"5\">RecPro 44\"</text></svg>",
+
+      "geometry": {
+        "type": "group",
+
+        "parts": [
+          [
+            {
+              "type": "box",
+
+              "size": [
+                1.12,
+
+                0.46,
+
+                0.44
+              ],
+
+              "namedMat": "madeira",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              0,
+
+              0,
+
+              0
+            ]
+          ],
+
+          [
+            {
+              "type": "box",
+
+              "size": [
+                1.12,
+
+                0.02,
+
+                0.44
+              ],
+
+              "namedMat": "madeira",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              0,
+
+              0.23,
+
+              0
+            ]
+          ]
+        ],
+
+        "pos": [
+          0,
+
+          0.23,
+
+          0
+        ]
+      },
+
+      "spawnName": "RecPro 44\""
+    },
+
+    {
+      "kind": "segundo-piso",
+
+      "name": "Segundo piso (painel+caibros)",
+
+      "cat": "Estrutural",
+
+      "w": 30.0,
+
+      "mat": "Compensado",
+
+      "v": null,
+
+      "dims": "1200×40×1660mm + 4× caibro 60×150×1660mm",
+
+      "desc": "Módulo de segundo piso suspenso: painel de piso + 4 caibros pinus (2 long., 2 transv.).",
+
+      "weightKg": 30.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"8\" y=\"18\" width=\"56\" height=\"6\" rx=\"1\" fill=\"#8b6b4a\"/><rect x=\"8\" y=\"28\" width=\"56\" height=\"16\" fill=\"#d4b483\" stroke=\"#6a4a20\"/><rect x=\"8\" y=\"26\" width=\"4\" height=\"12\" fill=\"#8b6b4a\"/><rect x=\"60\" y=\"26\" width=\"4\" height=\"12\" fill=\"#8b6b4a\"/><text x=\"36\" y=\"44\" text-anchor=\"middle\" fill=\"#6a4a20\" font-size=\"6\">2º piso</text></svg>",
+
+      "geometry": {
+        "type": "group",
+
+        "parts": [
+          [
+            {
+              "type": "box",
+
+              "size": [
+                1.2,
+
+                0.04,
+
+                1.66
+              ],
+
+              "namedMat": "madeira",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              0,
+
+              0,
+
+              0
+            ]
+          ],
+
+          [
+            {
+              "type": "box",
+
+              "size": [
+                0.06,
+
+                0.15,
+
+                1.66
+              ],
+
+              "namedMat": "madeira",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              -0.63,
+
+              0,
+
+              0
+            ]
+          ],
+
+          [
+            {
+              "type": "box",
+
+              "size": [
+                0.06,
+
+                0.15,
+
+                1.66
+              ],
+
+              "namedMat": "madeira",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              0.63,
+
+              0,
+
+              0
+            ]
+          ],
+
+          [
+            {
+              "type": "box",
+
+              "size": [
+                1.2,
+
+                0.15,
+
+                0.06
+              ],
+
+              "namedMat": "madeira",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              0,
+
+              0,
+
+              -0.83
+            ]
+          ],
+
+          [
+            {
+              "type": "box",
+
+              "size": [
+                1.2,
+
+                0.15,
+
+                0.06
+              ],
+
+              "namedMat": "madeira",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              0,
+
+              0,
+
+              0.83
+            ]
+          ]
+        ],
+
+        "pos": [
+          0,
+
+          1.0,
+
+          0
+        ]
+      },
+
+      "spawnName": "Segundo piso",
+
+      "spawnCat": "estrutural"
+    },
+
+    {
+      "kind": "snap-base",
+
+      "name": "SNAP table base",
+
+      "cat": "Móveis & Eletro",
+
+      "w": 6.0,
+
+      "mat": "Aço/Alumínio",
+
+      "v": null,
+
+      "dims": "600×600×720mm",
+
+      "desc": "Base articulada SNAP para mesa, fixação no piso.",
+
+      "weightKg": 4.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"14\" y=\"12\" width=\"44\" height=\"8\" fill=\"#c4a060\"/><path d=\"M24 20 L20 44 L52 44 L48 20\" fill=\"#2a2a2a\"/></svg>",
+
+      "geometry": {
+        "type": "group",
+
+        "parts": [
+          [
+            {
+              "type": "cylinder",
+
+              "args": [
+                0.3,
+
+                0.3,
+
+                0.03,
+
+                16
+              ],
+
+              "namedMat": "madeira",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              0,
+
+              0.72,
+
+              0
+            ]
+          ],
+
+          [
+            {
+              "type": "cylinder",
+
+              "args": [
+                0.03,
+
+                0.04,
+
+                0.7,
+
+                8
+              ],
+
+              "color": "0x2a2a2a",
+
+              "opacity": 1.0,
+
+              "transparent": false,
+
+              "roughness": 0.7,
+
+              "metalness": 0.1
+            },
+
+            [
+              0,
+
+              0.35,
+
+              0
+            ]
+          ]
+        ],
+
+        "pos": [
+          0,
+
+          0,
+
+          0.4
+        ]
+      },
+
+      "spawnName": "SNAP table base"
+    },
+
+    {
+      "kind": "spot-led",
+
+      "name": "Spot LED 3W",
+
+      "cat": "Iluminação",
+
+      "w": 0.08,
+
+      "mat": "Alumínio/LED",
+
+      "v": "12V DC",
+
+      "dims": "Ø50×40mm",
+
+      "desc": "Spot LED embutido 12V, 3W, 250lm, branco quente.",
+
+      "weightKg": 0.2,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"36\" cy=\"26\" r=\"10\" fill=\"#2a2a2a\" stroke=\"#555\"/><circle cx=\"36\" cy=\"26\" r=\"6\" fill=\"#fff8e0\"/><circle cx=\"36\" cy=\"26\" r=\"3\" fill=\"#ffe066\" opacity=\"0.7\"/></svg>",
+
+      "geometry": {
+        "type": "cylinder",
+
+        "args": [
+          0.025,
+
+          0.025,
+
+          0.03,
+
+          8
+        ],
+
+        "color": "0x2a2a2a",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "emissive": "0xfff8e0",
+
+        "emissiveIntensity": 0.5,
+
+        "roof": -0.01
+      },
+
+      "spawnName": "Spot LED 3W",
+
+      "spawnCat": "eletrica"
+    },
+
+    {
+      "kind": "tanque",
+
+      "name": "Tanque 20L",
+
+      "cat": "Instalações",
+
+      "w": 1.2,
+
+      "mat": "Polietileno",
+
+      "v": null,
+
+      "dims": "300×200×300mm",
+
+      "desc": "Tanque de água limpa 20L, polietileno alimentício, tampa rosqueável.",
+
+      "weightKg": 2.0,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><ellipse cx=\"36\" cy=\"40\" rx=\"16\" ry=\"6\" fill=\"#3a6a88\" stroke=\"#1a3a50\"/><rect x=\"20\" y=\"14\" width=\"32\" height=\"26\" fill=\"#4a8ab0\" opacity=\"0.85\"/><ellipse cx=\"36\" cy=\"14\" rx=\"16\" ry=\"6\" fill=\"#6aa8c8\" stroke=\"#1a3a50\"/><rect x=\"32\" y=\"6\" width=\"8\" height=\"8\" fill=\"#2a5a70\"/></svg>",
+
+      "geometry": {
+        "type": "cylinder",
+
+        "args": [
+          0.15,
+
+          0.15,
+
+          0.4,
+
+          12
+        ],
+
+        "color": "0x4a8ab0",
+
+        "opacity": 0.7,
+
+        "transparent": true,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "pos": [
+          0.2,
+
+          0.2,
+
+          -0.5
+        ]
+      },
+
+      "spawnName": "Tanque 20L",
+
+      "spawnCat": "encanamento"
+    },
+
+    {
+      "kind": "tanque-40",
+
+      "name": "Tanque 40L",
+
+      "cat": "Instalações",
+
+      "w": 2.2,
+
+      "mat": "Polietileno",
+
+      "v": null,
+
+      "dims": "500×300×400mm",
+
+      "desc": "Tanque de água limpa 40L, formato axial, tampa rosqueável.",
+
+      "weightKg": 3.5,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><ellipse cx=\"36\" cy=\"42\" rx=\"18\" ry=\"5\" fill=\"#2a5a70\"/><rect x=\"18\" y=\"10\" width=\"36\" height=\"32\" fill=\"#4a8ab0\" opacity=\"0.8\"/><ellipse cx=\"36\" cy=\"10\" rx=\"18\" ry=\"5\" fill=\"#6aa8c8\"/><rect x=\"32\" y=\"2\" width=\"8\" height=\"8\" fill=\"#2a5a70\"/><text x=\"36\" y=\"30\" text-anchor=\"middle\" fill=\"#fff\" font-size=\"9\" font-weight=\"bold\">40L</text></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          0.5,
+
+          0.4,
+
+          0.3
+        ],
+
+        "color": "0x4a8ab0",
+
+        "opacity": 0.7,
+
+        "transparent": true,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "pos": [
+          0.2,
+
+          0.2,
+
+          -0.5
+        ]
+      },
+
+      "spawnName": "Tanque 40L",
+
+      "spawnCat": "encanamento"
+    },
+
+    {
+      "kind": "trava-porta",
+
+      "name": "Trava Push-Lock",
+
+      "cat": "Acessórios",
+
+      "w": 0.2,
+
+      "mat": "Nylon/Aço",
+
+      "v": null,
+
+      "dims": "80×60×40mm",
+
+      "desc": "Trava Push-Lock para porta de trailer, trava por pressão.",
+
+      "weightKg": 0.3,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"26\" y=\"10\" width=\"20\" height=\"32\" rx=\"3\" fill=\"#f0f0f0\" stroke=\"#888\"/><circle cx=\"36\" cy=\"24\" r=\"5\" fill=\"#ddd\" stroke=\"#aaa\"/></svg>",
+
+      "geometry": {
+        "type": "cylinder",
+
+        "args": [
+          0.03,
+
+          0.03,
+
+          0.06,
+
+          8
+        ],
+
+        "color": "0xf0f0f0",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "pos": [
+          0.32,
+
+          0.9,
+
+          0.42
+        ]
+      },
+
+      "spawnName": "Trava Push-Lock"
+    },
+
+    {
+      "kind": "vent-exaust",
+
+      "name": "Ventilador Exaustão 12V",
+
+      "cat": "Portas & Janelas",
+
+      "w": 1.0,
+
+      "mat": "Plástico",
+
+      "v": "12V DC",
+
+      "dims": "245×245mm",
+
+      "desc": "Ventilador de exaustão 12V, 4 velocidades, grade removível.",
+
+      "weightKg": 1.8,
+
+      "svg": "<svg viewBox=\"0 0 72 52\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"16\" y=\"8\" width=\"40\" height=\"36\" rx=\"3\" fill=\"#e0e0e0\" stroke=\"#888\"/><circle cx=\"36\" cy=\"26\" r=\"14\" fill=\"#f0f0f0\" stroke=\"#aaa\"/><path d=\"M36 12 L40 26 L36 40 L32 26Z\" fill=\"#bbb\"/><path d=\"M22 26 L36 30 L50 26 L36 22Z\" fill=\"#ccc\"/><circle cx=\"36\" cy=\"26\" r=\"3\" fill=\"#888\"/><text x=\"36\" y=\"50\" text-anchor=\"middle\" fill=\"#666\" font-size=\"5\">245×245mm</text></svg>",
+
+      "geometry": {
+        "type": "box",
+
+        "size": [
+          0.245,
+
+          0.245,
+
+          0.08
+        ],
+
+        "color": "0xe0e0e0",
+
+        "opacity": 1.0,
+
+        "transparent": false,
+
+        "roughness": 0.7,
+
+        "metalness": 0.1,
+
+        "roof": 0.04
+      },
+
+      "spawnName": "Ventilador Exaustão",
+
+      "spawnCat": "eletrica"
+    }
+  ]
+}

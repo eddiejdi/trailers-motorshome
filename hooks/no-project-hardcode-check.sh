@@ -10,6 +10,9 @@ TARGETS=(
   "src/model/Interior.js"
   "src/model/Windows.js"
   "src/constants/Dimensions.js"
+  "src/services/PaletteService.js"
+  "src/services/WeightService.js"
+  "index.html"
 )
 
 DIFF="$(git diff --cached --unified=0 -- "${TARGETS[@]}" || true)"
@@ -25,6 +28,12 @@ PATTERNS=(
   "cabinRise"
   "geometry\.kind"
   "geometry\.projectType"
+  # Anti-regressão: paleta é data-driven (data/palette-catalog.json)
+  "PALLET_DATA\s*=\s*\{"
+  "PALETTE_WEIGHTS\s*=\s*\{"
+  "PALLET_DATA\["
+  "PALETTE_WEIGHTS\["
+  "data-item=\"[a-z0-9_-]+\""
 )
 
 for pattern in "${PATTERNS[@]}"; do

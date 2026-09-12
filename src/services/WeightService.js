@@ -5,90 +5,23 @@
  * embute valores; ela lê do projeto carregado.
  */
 
-const PALETTE_WEIGHTS = {
-  // Móveis & Eletro
-  'comoda':          8.0,
-  'armario':        10.0,
-  'banco':           6.0,
-  'mesa':            4.0,
-  'dinette':        12.0,
-  'recpro-38':       8.0,
-  'recpro-44':      10.0,
-  'camper-40':       9.0,
-  'pe-dinete-12v':   3.0,
-  'snap-base':       4.0,
-  'geladeira':       8.5,
 
-  // Portas & Janelas
-  'porta':           6.0,
-  'porta-int':       4.0,
-  'janela':          3.5,
-  'janela-50x35':    3.0,
-  'janela-70x40':    3.5,
-  'janela-90x45':    4.0,
-  'janela-120x50':   5.0,
-  'janela-pp-350':   2.5,
-  'janela-fixa-120': 4.5,
-  'janela-kg-750':   4.0,
-  'janela-kg-leitosa': 3.5,
-  'exaustor':        1.5,
-  'exaustor-anti':   2.0,
-  'vent-exaust':     1.8,
-  'exaustor-coifa':  2.5,
-
-  // Instalações
-  'potti':           3.0,
-  'tanque':          2.0,  // vazio
-  'caixa-agua-100':  6.5,  // vazio
-  'quadro':          1.5,
-  'tanque-40':       3.5,  // vazio
-
-  // Iluminação
-  'led-strip':       0.5,
-  'plafon':          0.4,
-  'spot-led':        0.2,
-
-  // Ventilação
-  'claraboia-280':   1.0,
-  'claraboia-400':   1.5,
-  'grade-vent':      0.8,
-
-  // Banheiro
-  'box-banheiro':    4.0,
-  'ducha-ext':       1.5,
-
-  // Acessórios
-  'escada-ret':      3.0,
-  'porta-copo':      0.8,
-  'mesa-dob':        2.5,
-  'calco':           1.0,
-  'calco-inox':      1.2,
-  'pingadeira':      0.6,
-  'boiler':          3.0,
-  'cozinha-compacta': 8.0,
-  'trava-porta':     0.3,
-  'caixa-gas':       2.0,
-
-  // Climatização
-  'clima-evap':      4.0,
-  'ac-portatil':    12.0,
-  'ac-teto':         6.0,
-
-  // Elétrica
-  'entrada-cabos':   0.5,
-  'painel-dj':       1.0,
-};
+// DISCLAIMER/HOOK: Esta tabela de pesos foi removida. A fonte de verdade é
+// data/palette-catalog.json (campo weightKg por item.kind). Se precisar de
+// pesos de paleta, carregue-os do catálogo via constructor (paletteWeights).
+// NÃO re-hardcode pesos de objetos aqui — edite o JSON e recarregue o app.
 
 // Peso da água (kg/L)
 const WATER_KG_PER_LITER = 1.0;
 
 export default class WeightService {
-  constructor(projectWeights) {
+  constructor(projectWeights, paletteWeights) {
     this._listeners = [];
     this._waterLevel = 0;          // litros no tanque
     this._gasLevel = 0;            // kg de gás
     this._extraItems = {};         // { itemType: count }
     this._projectWeights = projectWeights || {};  // Pesos do projeto carregado
+    this._paletteWeights = paletteWeights || {};  // Pesos do catálogo (weightKg por kind)
     this._pbtLimit = this._projectWeights.pbt_limit || 750;
     this._warnThreshold = this._projectWeights.warn_threshold || 600;
   }
@@ -190,7 +123,7 @@ export default class WeightService {
     const palette = {};
     let paletteKg = 0;
     for (const [type, count] of Object.entries(this._extraItems)) {
-      const unitW = PALETTE_WEIGHTS[type] || 1.0;
+      const unitW = this._paletteWeights[type] || 1.0;
       palette[type] = { count, unitWeight: unitW, total: unitW * count };
       paletteKg += unitW * count;
     }

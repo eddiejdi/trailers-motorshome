@@ -40,62 +40,9 @@ import UserFilesService from './services/UserFilesService.js';
 import WeightService from './services/WeightService.js';
 import ProjectService from './services/ProjectService.js';
 
-const PALLET_DATA = {
-  'comoda':         { name:'Cômoda 3 gav.',           cat:'Móveis & Eletro', w:12,  mat:'Compensado',     v:null,    dims:'600×400×500mm', desc:'Cômoda com 3 gavetas de compensado naval, acabamento em laca.' },
-  'armario':        { name:'Armário 40×60',           cat:'Móveis & Eletro', w:14,  mat:'Compensado',     v:null,    dims:'400×600×350mm', desc:'Armário de parede com duas portas, prateleira interna.' },
-  'banco':          { name:'Banco-baú',               cat:'Móveis & Eletro', w:8,   mat:'Compensado',     v:null,    dims:'1200×450×450mm', desc:'Banco com tampa articulada, espaço interno para armazenamento.' },
-  'mesa':           { name:'Mesa Lagun',               cat:'Móveis & Eletro', w:5,   mat:'Laminado',       v:null,    dims:'Ø700×720mm', desc:'Mesa de coluna Lagun, base pivotante, tampa redonda.' },
-  'dinette':        { name:'Banco + mesa',             cat:'Móveis & Eletro', w:18,  mat:'Compensado',     v:null,    dims:'1200×900×720mm', desc:'Conjunto dinette: banco com encosto + mesa articulada.' },
-  'recpro-38':      { name:'RecPro 38" booth',        cat:'Móveis & Eletro', w:22,  mat:'MDF/Compensado', v:null,    dims:'965×1016×457mm', desc:'Booth de canto RecPro 38", com prateleiras e nichos.' },
-  'recpro-44':      { name:'RecPro 44" combo',        cat:'Móveis & Eletro', w:28,  mat:'MDF/Compensado', v:null,    dims:'1118×1016×457mm', desc:'Combo RecPro 44": nichos laterais + painel central.' },
-  'camper-40':      { name:'Camper Comfort 40"',      cat:'Móveis & Eletro', w:25,  mat:'MDF',            v:null,    dims:'1016×965×457mm', desc:'Módulo Camper Comfort 40", gavetas e armário integrado.' },
-  'pe-dinete-12v':  { name:'Pé dinete 12V',           cat:'Móveis & Eletro', w:3.5, mat:'Compósito',      v:'12V',   dims:'400×400×720mm', desc:'Pé de mesa com motor 12V para elevação automática.' },
-  'snap-base':      { name:'SNAP table base',          cat:'Móveis & Eletro', w:6,   mat:'Aço/Alumínio',   v:null,    dims:'600×600×720mm', desc:'Base articulada SNAP para mesa, fixação no piso.' },
-  'geladeira':      { name:'Geladeira 12V',            cat:'Móveis & Eletro', w:15,  mat:'Plástico/Aço',   v:'12V DC', dims:'480×500×530mm', desc:'Geladeira compressor 12V DC, 40L, portão reversível.' },
-  'porta':          { name:'Porta 62×160',             cat:'Portas & Janelas', w:18,  mat:'Compensado',     v:null,    dims:'620×1600×40mm', desc:'Porta externa de entrada, compensado naval, dobradiça inox.' },
-  'porta-int':      { name:'Porta int. 55×170',        cat:'Portas & Janelas', w:12,  mat:'Compensado',     v:null,    dims:'550×1700×35mm', desc:'Porta interna divisória, compensado 15mm, dobradiça escondida.' },
-  'janela':         { name:'Janela 50×50',             cat:'Portas & Janelas', w:3.5, mat:'Alumínio/Vidro', v:null,    dims:'500×500mm', desc:'Janela basculante em alumínio com vidro temperado.' },
-  'janela-50x35':   { name:'Janela SANJO 50×35',      cat:'Portas & Janelas', w:2.8, mat:'Alumínio/Vidro', v:null,    dims:'500×350mm', desc:'Janela SANJO basculante, perfil de alumínio extrudado.' },
-  'janela-70x40':   { name:'Janela SANJO 70×40',      cat:'Portas & Janelas', w:3.6, mat:'Alumínio/Vidro', v:null,    dims:'700×400mm', desc:'Janela SANJO, vidro duplo, vedação em EPDM.' },
-  'janela-90x45':   { name:'Janela SANJO 90×45',      cat:'Portas & Janelas', w:4.5, mat:'Alumínio/Vidro', v:null,    dims:'900×450mm', desc:'Janela SANJO ampla, basculante com travas laterais.' },
-  'janela-120x50':  { name:'Janela SANJO 120×50',     cat:'Portas & Janelas', w:5.8, mat:'Alumínio/Vidro', v:null,    dims:'1200×500mm', desc:'Janela SANJO panorâmica, perfil duplo, vidro 4mm.' },
-  'janela-pp-350':  { name:'Polyplastic 35×50',        cat:'Portas & Janelas', w:1.2, mat:'Plástico',       v:null,    dims:'350×500mm', desc:'Janela Polyplastic flexível, acrílico policarbonato.' },
-  'janela-fixa-120':{ name:'Fixa panorâmica 120×50',  cat:'Portas & Janelas', w:4.2, mat:'Alumínio/Vidro', v:null,    dims:'1200×500mm', desc:'Janela fixa panorâmica, vidro temperado 5mm.' },
-  'janela-kg-750':  { name:'Janela KG fumê 75×50',    cat:'Portas & Janelas', w:4.8, mat:'Alumínio/Vidro', v:null,    dims:'750×500mm', desc:'Janela KG Acryl fumê, perfil de alumínio, vedação dupla.' },
-  'janela-kg-leitosa':{ name:'Janela KG leitosa 60×45',cat:'Portas & Janelas', w:3.2, mat:'Alumínio/Vidro', v:null,    dims:'600×450mm', desc:'Janela KG Acryl leitosa, translúcida, perfil extrudado.' },
-  'exaustor':       { name:'Exaustor teto',            cat:'Portas & Janelas', w:0.8, mat:'Plástico',       v:'12V DC', dims:'Ø280mm', desc:'Exaustor de teto 12V, fluxo 300m³/h, baixo ruído.' },
-  'exaustor-anti':  { name:'Exaustor Anti-Chuva',     cat:'Portas & Janelas', w:1.2, mat:'Plástico',       v:'12V DC', dims:'150×80mm', desc:'Exaustor com proteção anti-chuva, DPI 44, 12V.' },
-  'vent-exaust':    { name:'Ventilador Exaustão 12V',  cat:'Portas & Janelas', w:1.0, mat:'Plástico',       v:'12V DC', dims:'245×245mm', desc:'Ventilador de exaustão 12V, 4 velocidades, grade removível.' },
-  'exaustor-coifa': { name:'Exaustor Coifa 12V LED',  cat:'Portas & Janelas', w:1.5, mat:'Plástico/Metal', v:'12V DC', dims:'387×233mm', desc:'Exaustor coifa com LED integrado, 3 velocidades.' },
-  'potti':          { name:'Porta Potti',              cat:'Instalações', w:2.5,  mat:'Plástico',       v:null,    dims:'330×450mm', desc:'Porta porta-papel higiênico Potti, fixação na parede.' },
-  'tanque':         { name:'Tanque 20L',               cat:'Instalações', w:1.2,  mat:'Polietileno',    v:null,    dims:'300×200×300mm', desc:'Tanque de água limpa 20L, polietileno alimentício, tampa rosqueável.' },
-  'quadro':         { name:'Quadro 12V',               cat:'Instalações', w:2.0,  mat:'Plástico/Aço',   v:'12V DC', dims:'300×250×100mm', desc:'Quadro de distribuição 12V, disjuntores termomagnéticos.' },
-  'tanque-40':      { name:'Tanque 40L',               cat:'Instalações', w:2.2,  mat:'Polietileno',    v:null,    dims:'500×300×400mm', desc:'Tanque de água limpa 40L, formato axial, tampa rosqueável.' },
-  'caixa-agua-100': { name:'Caixa d\'água 100L',      cat:'Instalações', w:6.5,  mat:'Polietileno',    v:null,    dims:'1100×560×210mm', desc:'Caixa d\'água 100 litros para trailer/van/motorhome.' },
-  'led-strip':      { name:'LED Strip 5m 12V',         cat:'Iluminação', w:0.3,  mat:'Silicone/LED',   v:'12V DC', dims:'5000×10×2mm', desc:'Fita LED 5m 12V, 60 LEDs/m, branco quente, IP65.' },
-  'plafon':         { name:'Plafon LED Ø140',          cat:'Iluminação', w:0.2,  mat:'Plástico/LED',   v:'12V DC', dims:'Ø140×35mm', desc:'Plafon LED redondo 12V, 10W, 800lm, branco neutro.' },
-  'spot-led':       { name:'Spot LED 3W',              cat:'Iluminação', w:0.08, mat:'Alumínio/LED',   v:'12V DC', dims:'Ø50×40mm', desc:'Spot LED embutido 12V, 3W, 250lm, branco quente.' },
-  'claraboia-280':  { name:'Claraboia 280mm',          cat:'Ventilação', w:1.5,  mat:'Plástico',       v:null,    dims:'280×280×120mm', desc:'Claraboia redonda 280mm, Tampa Anti-UV, vedação EPDM.' },
-  'claraboia-400':  { name:'Claraboia 400mm',          cat:'Ventilação', w:2.8,  mat:'Plástico',       v:null,    dims:'400×400×150mm', desc:'Claraboia quadrada 400mm, Tampa dupla, isolamento térmico.' },
-  'grade-vent':     { name:'Grade Vent 525×280',       cat:'Ventilação', w:0.6,  mat:'Alumínio',       v:null,    dims:'525×280mm', desc:'Grade de ventilação em alumínio, perfil extrudado, pintura eletrostática.' },
-  'box-banheiro':   { name:'Box Banheiro 108cm',       cat:'Banheiro', w:12,   mat:'Acrílico/Fibra', v:null,    dims:'1080×800×1850mm', desc:'Box de banheiro em acrílico branco, porta basculante, perfil cromado.' },
-  'ducha-ext':      { name:'Ducha Externa',            cat:'Banheiro', w:1.5,  mat:'Inox/Plástico',  v:null,    dims:'300×200×600mm', desc:'Ducha externa com registro, acabamento cromado, altura ajustável.' },
-  'escada-ret':     { name:'Escada Retrátil',          cat:'Acessórios', w:3.2,  mat:'Alumínio',       v:null,    dims:'450×300×700mm', desc:'Escada retrátil 2 degraus, alumínio anodizado, capacidade 150kg.' },
-  'porta-copo':     { name:'Porta-copo Dobrável',      cat:'Acessórios', w:0.4,  mat:'Plástico/Aço',   v:null,    dims:'200×150×100mm', desc:'Porta-copo dobrável, suporte para 2 copos, fixação na parede.' },
-  'mesa-dob':       { name:'Mesa Dobrável 70×40',      cat:'Acessórios', w:3.5,  mat:'Laminado',       v:null,    dims:'700×400×680mm', desc:'Mesa dobrável de parede, tampa laminada, dobradiça reforçada.' },
-  'calco':          { name:'Calço Roda UK36',           cat:'Acessórios', w:0.8,  mat:'Borracha',       v:null,    dims:'150×100×80mm', desc:'Calço de roda em borracha vulcanizada, tamanho UK36.' },
-  'calco-inox':     { name:'Calço Inox KG 50cm',       cat:'Acessórios', w:1.0,  mat:'Aço Inoxidável', v:null,    dims:'500×80×60mm', desc:'Calço inox articulado KG 50cm, trava de segurança.' },
-  'pingadeira':     { name:'Kit Pingadeira 1400',      cat:'Acessórios', w:0.6,  mat:'Alumínio',       v:null,    dims:'1400×50×30mm', desc:'Kit pingadeira em alumínio extrudado, perfil em L, 1.4m.' },
-  'boiler':         { name:'Boiler 10L 12V/220V',      cat:'Acessórios', w:4.5,  mat:'Inox',           v:'12V/220V', dims:'Ø250×380mm', desc:'Boiler 10L bivolt, aquecimento rápido, isolamento térmico.' },
-  'cozinha-compacta':{ name:'Cozinha compacta 120',    cat:'Acessórios', w:18,   mat:'MDF/Inox',       v:null,    dims:'1200×450×900mm', desc:'Módulo de cozinha compacto 120cm, fogareiro + armário.' },
-  'trava-porta':    { name:'Trava Push-Lock',          cat:'Acessórios', w:0.2,  mat:'Nylon/Aço',      v:null,    dims:'80×60×40mm', desc:'Trava Push-Lock para porta de trailer, trava por pressão.' },
-  'caixa-gas':      { name:'Caixa de Gás 88×61',      cat:'Acessórios', w:3.0,  mat:'Compensado',     v:null,    dims:'880×610×400mm', desc:'Caixa de armazenamento de gás, ventilação inferior, acesso rápido.' },
-  'clima-evap':     { name:'Climatiz. Evap. 12V',     cat:'Climatização', w:5.5,  mat:'Plástico',       v:'12V DC', dims:'500×300×400mm', desc:'Climatizador evaporativo 12V, tanque 6L, 3 velocidades.' },
-  'ac-portatil':    { name:'Ar Cond. Portátil',        cat:'Climatização', w:25,   mat:'Plástico',       v:'220V',  dims:'400×350×700mm', desc:'Ar condicionado portátil 7500 BTU, 220V, modo frio/ar.' },
-  'ac-teto':        { name:'Ar Cond. Teto 12V',        cat:'Climatização', w:8,    mat:'Plástico/Metal', v:'12V DC', dims:'400×300×150mm', desc:'Ar condicionado de teto 12V, 3000 BTU, baixo consumo.' },
-  'entrada-cabos':  { name:'Entrada Cabos Telhado',    cat:'Elétrica', w:0.3,  mat:'EPDM/Plástico',  v:null,    dims:'Ø30×40mm', desc:'Boot de entrada de cabos, vedação IP67, silicone EPDM.' },
-  'painel-dj':      { name:'Painel Disjuntores',       cat:'Elétrica', w:1.5,  mat:'Plástico/Aço',   v:'12V DC', dims:'300×250×100mm', desc:'Painel de disjuntores 12V, 6 circuitos, LEDs indicadores.' },
-};
+// DISCLAIMER/HOOK: Este bloco foi removido. A fonte de verdade é data/palette-catalog.json.
+// Se você precisa de PALLET_DATA, carregue-o do catálogo (this._catalogMap).
+// NÃO re-hardcode objetos aqui — edite o JSON e recarregue o app.
 
 function showFatalOnScreen(err, where = 'runtime') {
   const msg = err && err.message ? err.message : String(err);
@@ -129,7 +76,7 @@ class TrailerApp {
 
     const chassisBeamH = CHASSIS_BEAM_H;
     const chassisBeamW = CHASSIS_BEAM_W;
-    const chassisDeckT = 0.04;
+    const chassisDeckT = FLOOR_T; // usa a configuração do dimensions.js (pode ser ajustado para caixas sob o piso)
     const FLOOR_Y = CHASSIS_Y + 0.04 + chassisBeamH + chassisDeckT;
 
     const zRoofFront = -Lt / 2 - mzL;
@@ -209,6 +156,22 @@ class TrailerApp {
       return;
     }
     const THREE = window.THREE;
+
+    // Carregar catálogo de objetos (data/palette-catalog.json)
+    try {
+      const resp = await fetch('data/palette-catalog.json', { cache: 'no-store' });
+      if (!resp.ok) throw new Error(resp.status + ' ' + resp.statusText);
+      const catalog = await resp.json();
+      this.catalog = catalog;
+      this._catalogMap = {};
+      for (const item of catalog.items) this._catalogMap[item.kind] = item;
+    } catch (err) {
+      console.error('[catalog] Falha ao carregar data/palette-catalog.json:', err);
+      this.catalog = { items: [] };
+      this._catalogMap = {};
+    }
+
+    this._renderPaletteButtons();
 
     if (THREE.Quaternion && !THREE.Quaternion.prototype.invert && THREE.Quaternion.prototype.inverse) {
       THREE.Quaternion.prototype.invert = THREE.Quaternion.prototype.inverse;
@@ -364,8 +327,17 @@ class TrailerApp {
 
       const matFn = (color, opts) => mat(color, opts, THREE);
 
+      this.services.auth = new AuthService();
+      this.services.project = new ProjectService();
+      if (this.services.export && this.services.export.setProjectService) {
+        this.services.export.setProjectService(this.services.project);
+      }
+      const paletteWeights = {};
+      for (const item of (this.catalog.items || [])) paletteWeights[item.kind] = item.weightKg || 1.0;
+      this.services.weight = new WeightService(this.services.project.getWeights(), paletteWeights);
+
       this.services.palette = new PaletteService({
-        interior, body, FLOOR_Y: C2.FLOOR_Y,
+        catalog: this.catalog, interior, body, FLOOR_Y: C2.FLOOR_Y,
         editableMeshes: this.editableMeshes,
         pushUndoFn: () => ed.pushUndo(),
         resolvePlacementFn: (obj) => ed.resolvePlacement(obj),
@@ -401,12 +373,6 @@ class TrailerApp {
         FLOOR_Y: C2.FLOOR_Y
       });
 
-      this.services.auth = new AuthService();
-      this.services.project = new ProjectService();
-      if (this.services.export && this.services.export.setProjectService) {
-        this.services.export.setProjectService(this.services.project);
-      }
-      this.services.weight = new WeightService(this.services.project.getWeights());
       this.services.userFiles = new UserFilesService({
         auth: this.services.auth,
         saveService: this.services.save,
@@ -426,6 +392,38 @@ this.initUI();
         '<div style="color:#a00;padding:20px;font-family:monospace;white-space:pre-wrap">ERRO:\n' +
         (err && err.message ? err.message : String(err)) + '</div>';
     }
+  }
+
+  _renderPaletteButtons() {
+    const grid = document.querySelector('#palette .grid');
+    const catalog = this.catalog;
+    if (!grid || !catalog || !catalog.items) return;
+    grid.innerHTML = '';
+    const catOrder = [];
+    for (const item of catalog.items) {
+      if (!catOrder.includes(item.cat)) catOrder.push(item.cat);
+    }
+    for (const cat of catOrder) {
+      const h = document.createElement('div');
+      h.className = 'pal-cat';
+      h.textContent = cat;
+      grid.appendChild(h);
+      for (const item of catalog.items) {
+        if (item.cat !== cat || !item.svg) continue;
+        const btn = document.createElement('button');
+        btn.className = 'pi';
+        btn.setAttribute('data-item', item.kind);
+        const thumb = document.createElement('span');
+        thumb.className = 'thumb';
+        thumb.innerHTML = item.svg;
+        btn.appendChild(thumb);
+        btn.appendChild(document.createTextNode(item.name || item.kind));
+        grid.appendChild(btn);
+      }
+    }
+    const countEl = document.getElementById('pal-count');
+    if (countEl) countEl.textContent = catalog.items.length + '/' + catalog.items.length;
+    window.dispatchEvent(new CustomEvent('palette:rendered'));
   }
 
   _collectEditableMeshes() {
@@ -1900,7 +1898,7 @@ this.initUI();
 
     document.querySelectorAll('#palette .pi[data-item]').forEach((btn) => {
       const key = btn.dataset.item;
-      const data = PALLET_DATA[key];
+      const data = this._catalogMap[key];
       const label = btn.childNodes[btn.childNodes.length - 1];
       if (label && data) {
         const span = document.createElement('span');
