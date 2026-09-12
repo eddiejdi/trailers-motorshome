@@ -7,7 +7,6 @@
 
 const PALETTE_WEIGHTS = {
   // Móveis & Eletro
-  'pia':             2.5,
   'comoda':          8.0,
   'armario':        10.0,
   'banco':           6.0,
@@ -40,6 +39,7 @@ const PALETTE_WEIGHTS = {
   // Instalações
   'potti':           3.0,
   'tanque':          2.0,  // vazio
+  'caixa-agua-100':  6.5,  // vazio
   'quadro':          1.5,
   'tanque-40':       3.5,  // vazio
 

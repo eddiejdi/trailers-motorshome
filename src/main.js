@@ -71,6 +71,7 @@ const PALLET_DATA = {
   'tanque':         { name:'Tanque 20L',               cat:'Instalações', w:1.2,  mat:'Polietileno',    v:null,    dims:'300×200×300mm', desc:'Tanque de água limpa 20L, polietileno alimentício, tampa rosqueável.' },
   'quadro':         { name:'Quadro 12V',               cat:'Instalações', w:2.0,  mat:'Plástico/Aço',   v:'12V DC', dims:'300×250×100mm', desc:'Quadro de distribuição 12V, disjuntores termomagnéticos.' },
   'tanque-40':      { name:'Tanque 40L',               cat:'Instalações', w:2.2,  mat:'Polietileno',    v:null,    dims:'500×300×400mm', desc:'Tanque de água limpa 40L, formato axial, tampa rosqueável.' },
+  'caixa-agua-100': { name:'Caixa d\'água 100L',      cat:'Instalações', w:6.5,  mat:'Polietileno',    v:null,    dims:'1100×560×210mm', desc:'Caixa d\'água 100 litros para trailer/van/motorhome.' },
   'led-strip':      { name:'LED Strip 5m 12V',         cat:'Iluminação', w:0.3,  mat:'Silicone/LED',   v:'12V DC', dims:'5000×10×2mm', desc:'Fita LED 5m 12V, 60 LEDs/m, branco quente, IP65.' },
   'plafon':         { name:'Plafon LED Ø140',          cat:'Iluminação', w:0.2,  mat:'Plástico/LED',   v:'12V DC', dims:'Ø140×35mm', desc:'Plafon LED redondo 12V, 10W, 800lm, branco neutro.' },
   'spot-led':       { name:'Spot LED 3W',              cat:'Iluminação', w:0.08, mat:'Alumínio/LED',   v:'12V DC', dims:'Ø50×40mm', desc:'Spot LED embutido 12V, 3W, 250lm, branco quente.' },
@@ -95,6 +96,20 @@ const PALLET_DATA = {
   'entrada-cabos':  { name:'Entrada Cabos Telhado',    cat:'Elétrica', w:0.3,  mat:'EPDM/Plástico',  v:null,    dims:'Ø30×40mm', desc:'Boot de entrada de cabos, vedação IP67, silicone EPDM.' },
   'painel-dj':      { name:'Painel Disjuntores',       cat:'Elétrica', w:1.5,  mat:'Plástico/Aço',   v:'12V DC', dims:'300×250×100mm', desc:'Painel de disjuntores 12V, 6 circuitos, LEDs indicadores.' },
 };
+
+function showFatalOnScreen(err, where = 'runtime') {
+  const msg = err && err.message ? err.message : String(err);
+  const text = '[FATAL][' + where + '] ' + msg;
+  console.error(text, err);
+  let box = document.getElementById('fatal-runtime-overlay');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'fatal-runtime-overlay';
+    box.style.cssText = 'position:fixed;left:12px;right:12px;top:12px;z-index:99999;background:#2b0000;color:#ffd9d9;border:1px solid #ff6b6b;border-radius:8px;padding:10px 12px;font:12px/1.35 monospace;white-space:pre-wrap;max-height:42vh;overflow:auto;';
+    document.body.appendChild(box);
+  }
+  box.textContent = text + '\n\nVeja o console para stack trace completa.';
+}
 
 class TrailerApp {
   constructor() {
@@ -368,6 +383,8 @@ class TrailerApp {
         makeHingedDoorFn: (opts) => interior.makeHingedDoor(opts),
         makeRvWindowFn: (w, h) => windows.makeRvWindow(w, h),
         makeDinetteGroupFn: () => interior.makeDinetteGroup ? interior.makeDinetteGroup() : null,
+        rootGroupFn: () => this.trailer,
+        onFatalErrorFn: (err, where) => showFatalOnScreen(err, where),
         M, matFn,
         weightService: this.services.weight
       });
@@ -1215,6 +1232,7 @@ this.initUI();
       }
       this._collectEditableMeshes();
     };
+    this._materializeFactoryNow = materializeFactory;
 
     const hardResetUiForNewProject = () => {
       showWalls = false;

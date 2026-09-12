@@ -1,7 +1,6 @@
 const THREE = window.THREE;
 
 const PALETTE_CATALOG = {
-  pia: { q: 'pia inox Ø280 trailer motorhome', buy: 'https://www.google.com/search?tbm=shop&q=pia+inox+28cm+trailer' },
   comoda: { q: 'cômoda 3 gavetas compacta 50x40', buy: 'https://www.google.com/search?tbm=shop&q=c%C3%B4moda+3+gavetas+50cm' },
   armario: { q: 'armário suspenso 40x60 trailer', buy: 'https://www.google.com/search?tbm=shop&q=arm%C3%A1rio+40x60+trailer' },
   banco: { q: 'banco baú trailer motorhome', buy: 'https://www.google.com/search?tbm=shop&q=banco+ba%C3%BA+trailer' },
@@ -12,6 +11,7 @@ const PALETTE_CATALOG = {
   janela: { q: 'janela trailer 500x500', buy: 'https://www.google.com/search?tbm=shop&q=janela+trailer+50x50' },
   potti: { q: 'Thetford Porta Potti 365', buy: 'https://www.google.com/search?tbm=shop&q=Porta+Potti+365' },
   tanque: { q: 'tanque água 20L trailer', buy: 'https://www.google.com/search?tbm=shop&q=tanque+%C3%A1gua+20L+trailer' },
+  'caixa-agua-100': { q: 'caixa d\'agua 100 litros para trailer van motorhome', buy: 'https://www.mercadolivre.com.br/caixa-d-agua-100-litros-para-trailer-van-motorhome/up/MLBU1738593317?pdp_filters=item_id:MLB3770515600&sid=purchases' },
   quadro: { q: 'quadro elétrico 12V trailer', buy: 'https://www.google.com/search?tbm=shop&q=quadro+el%C3%A9trico+12V+trailer' },
   exaustor: { q: 'exaustor teto 12V trailer', buy: 'https://www.google.com/search?tbm=shop&q=exaustor+teto+12V+trailer' },
   'led-strip': { q: 'fita LED 12V 5m trailer', buy: 'https://www.google.com/search?tbm=shop&q=fita+LED+12V+5m+trailer' },
@@ -24,7 +24,7 @@ function productSearchUrl(q) {
 }
 
 export default class PaletteService {
-  constructor({ interior, body, FLOOR_Y, editableMeshes, pushUndoFn, resolvePlacementFn, selectObjectFn, addEditableFn, uniqueNameFn, roofTopFn, makeHingedDoorFn, makeRvWindowFn, makeDinetteGroupFn, M, matFn, weightService }) {
+  constructor({ interior, body, FLOOR_Y, editableMeshes, pushUndoFn, resolvePlacementFn, selectObjectFn, addEditableFn, uniqueNameFn, roofTopFn, makeHingedDoorFn, makeRvWindowFn, makeDinetteGroupFn, M, matFn, weightService, rootGroupFn = null, onFatalErrorFn = null }) {
     this.interior = interior;
     this.body = body || null;
     this.FLOOR_Y = FLOOR_Y;
@@ -41,6 +41,8 @@ export default class PaletteService {
     this.M = M;
     this.mat = matFn;
     this.weightService = weightService || null;
+    this.rootGroup = rootGroupFn;
+    this.onFatalError = onFatalErrorFn;
 
     this.PALETTE_CATALOG = PALETTE_CATALOG;
   }
@@ -64,16 +66,31 @@ export default class PaletteService {
     return (this.interior && this.interior.interior) ? this.interior.interior : this.interior;
   }
 
+  _isAttachedToRoot(group) {
+    if (!group) return false;
+    const root = typeof this.rootGroup === 'function' ? this.rootGroup() : null;
+    if (!root) return !!group.parent;
+    let cur = group;
+    while (cur) {
+      if (cur === root) return true;
+      cur = cur.parent;
+    }
+    return false;
+  }
+
+  targetGroup() {
+    const interior = this.interiorGroup();
+    if (interior && this._isAttachedToRoot(interior)) return interior;
+    return typeof this.rootGroup === 'function' ? this.rootGroup() : null;
+  }
+
   spawnPaletteItem(kind) {
     const M = this.M;
     const matFn = this.mat;
     let mesh, name, cat = 'acessorios';
     const roofTop = this.roofTop;
 
-    if (kind === 'pia') {
-      mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.12, 0.12, 16), new THREE.MeshStandardMaterial({ color: 0xa8a8a8, metalness: 0.7 }));
-      mesh.position.set(0.2, 0.90, 0); name = 'Pia'; cat = 'encanamento';
-    } else if (kind === 'porta') {
+    if (kind === 'porta') {
       mesh = this.makeHingedDoor({ w: 0.62, h: 1.60, open: -0.9 });
       mesh.position.set(0.3, 0.08, 0.4); name = 'Porta entrada'; cat = 'paredes';
     } else if (kind === 'porta-int') {
@@ -101,6 +118,9 @@ export default class PaletteService {
     } else if (kind === 'tanque') {
       mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.40, 12), new THREE.MeshStandardMaterial({ color: 0x4a8ab0, transparent: true, opacity: 0.7 }));
       mesh.position.set(0.2, 0.20, -0.5); name = 'Tanque 20L'; cat = 'encanamento';
+    } else if (kind === 'caixa-agua-100') {
+      mesh = new THREE.Mesh(new THREE.BoxGeometry(1.10, 0.21, 0.56), new THREE.MeshStandardMaterial({ color: 0x4a8ab0, transparent: true, opacity: 0.72 }));
+      mesh.position.set(0.10, 0.105, -0.45); name = 'Caixa d\'água 100L'; cat = 'encanamento';
     } else if (kind === 'quadro') {
       mesh = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.28, 0.06), new THREE.MeshStandardMaterial({ color: 0x1a1a1a }));
       mesh.position.set(0.55, 1.20, 0); name = 'Quadro 12V'; cat = 'eletrica';
@@ -271,10 +291,14 @@ export default class PaletteService {
     mesh.userData.kind = kind;
     this.attachProductMeta(mesh, kind);
     mesh.castShadow = true;
-    const group = this.interiorGroup();
-    if (!group || typeof group.add !== 'function') return null;
+    const group = this.targetGroup();
+    if (!group || typeof group.add !== 'function') {
+      const err = new Error('Grupo de interior indisponível para spawn da paleta.');
+      if (typeof this.onFatalError === 'function') this.onFatalError(err, 'spawnPaletteItem');
+      throw err;
+    }
     group.add(mesh);
-    this.addEditable(mesh, this.uniqueName(name), cat);
+    this.addEditable(mesh, this.uniqueName(name), cat, kind);
     if (this.weightService) this.weightService.addItem(kind);
     return mesh;
   }
@@ -298,7 +322,7 @@ export default class PaletteService {
     const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -this.FLOOR_Y);
     const hit = new THREE.Vector3();
     if (raycaster.ray.intersectPlane(plane, hit)) {
-      const group = this.interiorGroup();
+      const group = this.targetGroup();
       if (!group || typeof group.worldToLocal !== 'function') return null;
       const local = group.worldToLocal(hit.clone());
       item.position.x = local.x;

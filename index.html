@@ -543,6 +543,14 @@
   .gnome-menu-sep { height:1px; background:#d5d0cc; margin:4px 10px; }
   .gnome-menu-item.disabled { color:#77767b; pointer-events:none; }
 
+  /* ============ MENU DE CONTEXTO (clique direito) ============ */
+  #ctx-menu {
+    position:fixed; z-index:900; min-width:200px; background:#fafafa;
+    border:1px solid #d5d0cc; border-radius:8px;
+    box-shadow:0 4px 16px rgba(0,0,0,0.18), 0 1px 4px rgba(0,0,0,0.08);
+    padding:4px 0; display:none; user-select:none;
+  }
+
   /* ============ EDITOR 3D — GNOME ============ */
   #editor {
     top:330px; right:16px; width:270px;
@@ -1413,6 +1421,10 @@
         <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><ellipse cx="36" cy="42" rx="18" ry="5" fill="#2a5a70"/><rect x="18" y="10" width="36" height="32" fill="#4a8ab0" opacity="0.8"/><ellipse cx="36" cy="10" rx="18" ry="5" fill="#6aa8c8"/><rect x="32" y="2" width="8" height="8" fill="#2a5a70"/><text x="36" y="30" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">40L</text></svg></span>
         Tanque 40L
       </button>
+      <button class="pi" data-item="caixa-agua-100">
+        <span class="thumb"><svg viewBox="0 0 72 52" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="14" width="52" height="24" rx="4" fill="#4a8ab0" opacity="0.85" stroke="#1a3a50"/><rect x="30" y="8" width="12" height="6" rx="2" fill="#2a5a70"/><circle cx="56" cy="20" r="2" fill="#eaf8ff"/><text x="36" y="33" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">100L</text></svg></span>
+        Caixa d'água 100L
+      </button>
 
       <div class="pal-cat">Iluminação</div>
       <button class="pi" data-item="led-strip">
@@ -1563,6 +1575,9 @@
 
   <!-- Info de vista -->
   <div id="view-info" class="ui-win drag-bar"> vista: isométrica · ESC 1:50 </div>
+
+  <!-- Menu de contexto (clique direito no 3D) -->
+  <div id="ctx-menu" role="menu" aria-label="Ações do objeto"></div>
 
   <!-- Editor 3D -->
   <div id="editor" class="ui-win">
@@ -1793,7 +1808,7 @@
 <script src="trailer_lib/three.min.js"></script>
 <script src="trailer_lib/OrbitControls.js"></script>
 <script src="trailer_lib/TransformControls.js"></script>
-<script type="module" src="src/main.js?v=20260910-2685"></script>
+<script type="module" src="src/main.js?v=20260910-2688"></script>
 <script>
 window.addEventListener('error', function(e) {
   var el = document.createElement('div');
