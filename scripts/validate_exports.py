@@ -8,11 +8,16 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PORT = 8765
-BASE_URL = f"http://127.0.0.1:{PORT}/index.html"
 
 
-def wait_server(url: str, timeout_s: float = 20.0) -> None:
+def _free_port() -> int:
+    import socket
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind(("127.0.0.1", 0))
+        return int(s.getsockname()[1])
+
+
+def wait_server(url: str, timeout_s: float = 30.0) -> None:
     started = time.time()
     last_err = None
     while (time.time() - started) < timeout_s:
@@ -20,6 +25,7 @@ def wait_server(url: str, timeout_s: float = 20.0) -> None:
             with urllib.request.urlopen(url, timeout=2) as resp:
                 if resp.status == 200:
                     return
+                last_err = RuntimeError(f"HTTP {resp.status}")
         except Exception as err:  # noqa: BLE001
             last_err = err
             time.sleep(0.25)
@@ -27,6 +33,10 @@ def wait_server(url: str, timeout_s: float = 20.0) -> None:
 
 
 def run_browser_checks() -> dict:
+    return run_browser_checks_on(BASE_URL)
+
+
+def run_browser_checks_on(base_url: str) -> dict:
     try:
         from playwright.sync_api import sync_playwright
     except Exception as err:  # noqa: BLE001
@@ -37,7 +47,7 @@ def run_browser_checks() -> dict:
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
-        page.goto(BASE_URL, wait_until="load", timeout=120000)
+        page.goto(base_url, wait_until="load", timeout=120000)
         page.wait_for_function("() => typeof window.cutCSV === 'function' && !!window.trailerApp", timeout=120000)
 
         result = page.evaluate(
@@ -141,24 +151,46 @@ def validate_result(result: dict) -> list[str]:
 
 
 def main() -> int:
+    port = _free_port()
+    base_url = f"http://127.0.0.1:{port}/index.html"
+    log_path = ROOT / ".tmp" / f"validate_exports_{port}.log"
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    log_f = open(log_path, "w", encoding="utf-8")
     server = subprocess.Popen(
-        [sys.executable, "serve.py", str(PORT)],
+        [sys.executable, "serve.py", str(port)],
         cwd=str(ROOT),
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
+        stdout=log_f,
+        stderr=subprocess.STDOUT,
     )
+    # expõe a porta escolhida para run_browser_checks
+    global PORT, BASE_URL
+    PORT = port
+    BASE_URL = base_url
     try:
-        wait_server(BASE_URL)
-        result = run_browser_checks()
+        wait_server(base_url)
+        # patch run_browser_checks URL via env-like globals already set
+        result = run_browser_checks_on(base_url)
         failures = validate_result(result)
-        print(json.dumps({"result": result, "failures": failures}, ensure_ascii=True, indent=2))
+        print(json.dumps({"port": port, "result": result, "failures": failures}, ensure_ascii=True, indent=2))
         return 1 if failures else 0
+    except Exception as err:  # noqa: BLE001
+        log_f.flush()
+        try:
+            tail = log_path.read_text(encoding="utf-8", errors="replace")[-2000:]
+        except Exception:  # noqa: BLE001
+            tail = ""
+        print(json.dumps({"port": port, "error": str(err), "server_log_tail": tail}, ensure_ascii=True, indent=2))
+        return 1
     finally:
         server.terminate()
         try:
             server.wait(timeout=5)
         except Exception:  # noqa: BLE001
             server.kill()
+        try:
+            log_f.close()
+        except Exception:  # noqa: BLE001
+            pass
 
 
 if __name__ == "__main__":
