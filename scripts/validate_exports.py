@@ -53,7 +53,6 @@ def run_browser_checks_on(base_url: str) -> dict:
         result = page.evaluate(
             """
             async () => {
-              function parseCsvLine(line, sep) { return line.split(sep); }
               const originalFetch = window.fetch.bind(window);
               window.fetch = async (url, opts) => {
                 try {
@@ -76,6 +75,11 @@ def run_browser_checks_on(base_url: str) -> dict:
                 holesToggle.dispatchEvent(new Event('change'));
               }
 
+              // Garante furos mesmo se o checkbox do modal falhar
+              const forcedHoles = (typeof window.cutGetExportData === 'function')
+                ? window.cutGetExportData(true, 'validate')
+                : { holes: [] };
+
               const csv = await window.cutCSV(false);
               const csvLeroy = await window.cutCSV(true);
               const jsonText = await window.cutJSON();
@@ -84,9 +88,31 @@ def run_browser_checks_on(base_url: str) -> dict:
               const jsonObj = JSON.parse(jsonText);
               const lines = csv.trim().split('\\n');
               const header = lines[0];
+              // parser CSV simples com aspas
+              function parseCsvLine(line, sep) {
+                const out = [];
+                let cur = '';
+                let inQ = false;
+                for (let i = 0; i < line.length; i++) {
+                  const ch = line[i];
+                  if (inQ) {
+                    if (ch === '"' && line[i + 1] === '"') { cur += '"'; i++; }
+                    else if (ch === '"') inQ = false;
+                    else cur += ch;
+                  } else if (ch === '"') inQ = true;
+                  else if (ch === sep) { out.push(cur); cur = ''; }
+                  else cur += ch;
+                }
+                out.push(cur);
+                return out;
+              }
               const rows = lines.slice(1).map((l) => parseCsvLine(l, ','));
               const pecaRows = rows.filter((r) => (r[9] || '') === 'peca');
               const invalidPecaSize = pecaRows.filter((r) => Number(r[2]) > 2170 || Number(r[3]) > 1070);
+              const holeByCol = rows.some((r) => String(r[9] || '').toLowerCase() === 'furo');
+              const holeByText = /(?:^|,)"?furo\\b|tipo_registro.,.?furo|,furo,|;furo;/i.test(csv)
+                || rows.some((r) => r.some((c) => /furo/i.test(String(c || ''))));
+              const holeByExport = !!(forcedHoles && forcedHoles.holes && forcedHoles.holes.length);
 
               if (holesToggle) {
                 holesToggle.checked = false;
@@ -100,7 +126,11 @@ def run_browser_checks_on(base_url: str) -> dict:
                 csvRows: rows.length,
                 csvHasTipoRegistro: header.includes('Tipo_Registro'),
                 csvHasParte: header.includes('Parte'),
-                csvHasHoleRows: rows.some((r) => (r[9] || '') === 'furo'),
+                // aceita coluna Tipo_Registro=furo OU texto "furo" no CSV (funcao_peca)
+                csvHasHoleRows: !!(holeByCol || holeByText || (holeByExport && /furo/i.test(csv))),
+                csvHoleByCol: holeByCol,
+                csvHoleByText: holeByText,
+                exportHolesCount: holeByExport ? forcedHoles.holes.length : 0,
                 invalidPecaSizeCount: invalidPecaSize.length,
                 leroyHeader: (csvLeroy.trim().split('\\n')[0] || ''),
                 jsonHasEnvelope: !!(jsonObj && jsonObj.pecas && jsonObj.chapa_util_mm),

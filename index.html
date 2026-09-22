@@ -2410,6 +2410,19 @@ function cutSummaryHTML() {
 // Gera CSV (formato genérico — CutList Optimizer, etc.)
 async function cutCSV(leroyFormat) {
   var sep = leroyFormat ? ';' : ',';
+  function esc(v) {
+    var s = String(v == null ? '' : v);
+    if (sep === ',') {
+      if (/[",\n\r]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+      return s;
+    }
+    // Leroy (;)
+    if (/[";\n\r]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+    return s;
+  }
+  function pushRow(cols) {
+    lines.push(cols.map(esc).join(sep));
+  }
   var lines = [];
   if (leroyFormat) {
     lines.push('Peça;Quantidade;Comprimento (mm);Largura (mm);Espessura (mm);Material;Funcao da Peca;Grupo Origem;Parte;Tipo Registro;Observacao');
@@ -2418,11 +2431,14 @@ async function cutCSV(leroyFormat) {
   }
   var exportService = window.trailerApp ? window.trailerApp.services.export : null;
   var rawPieces = exportService ? exportService.getPieces() : [];
-  var exportData = cutGetExportData(null, 'csv');
+  // força leitura do checkbox; se modal não montou, default true
+  var holesEl = document.getElementById('cut-include-holes');
+  var includeHoles = holesEl ? !!holesEl.checked : true;
+  var exportData = cutGetExportData(includeHoles, 'csv');
   var pieces = await cutGetGpuPreparedPieces(rawPieces, 'csv-' + (leroyFormat ? 'leroy' : 'default'), { sheetCompMm: CUT_SHEET_COMP_MM, sheetLargMm: CUT_SHEET_LARG_MM, kerfMm: 3 });
   cutValidatePreparedPiecesFit(pieces, CUT_SHEET_COMP_MM, CUT_SHEET_LARG_MM, 'csv');
   cutPreparedPiecesToRows(pieces).forEach(function(p) {
-    var row = [
+    pushRow([
       p.nome,
       p.quantidade,
       p.comp_mm,
@@ -2434,13 +2450,12 @@ async function cutCSV(leroyFormat) {
       p.parte,
       'peca',
       p.observacao
-    ];
-    lines.push(row.join(sep));
+    ]);
   });
-  if (exportData.includeHoles && exportData.holes.length) {
+  if (exportData.includeHoles && exportData.holes && exportData.holes.length) {
     exportData.holes.forEach(function(h) {
       var hr = cutHoleToRow(h);
-      var row = [
+      pushRow([
         hr.nome,
         hr.quantidade,
         hr.comp_mm,
@@ -2450,10 +2465,9 @@ async function cutCSV(leroyFormat) {
         hr.funcao_peca,
         hr.grupo_origem,
         hr.parte,
-        hr.tipo_registro,
+        hr.tipo_registro || 'furo',
         hr.observacao
-      ];
-      lines.push(row.join(sep));
+      ]);
     });
   }
   return lines.join('\n');
@@ -2922,13 +2936,13 @@ function cutCollectOpeningOperations(includeHoles) {
   editable.forEach(function(mesh, idx) {
     if (!mesh || !mesh.userData) return;
     var kind = mesh.userData.kind || mesh.userData.funcKind || '';
-    var isOpening = body.isWallOpeningKind(kind) || kind === 'janela' || String(kind).indexOf('janela-') === 0;
+    var isOpening = body.isWallOpeningKind(kind) || kind === 'porta' || kind === 'janela' || String(kind).indexOf('janela-') === 0 || mesh.userData.funcKind === 'janela';
     if (!isOpening) return;
     var wall = body.nearestWall(mesh);
     if (!wall) return;
     var op = body.openingFromMesh(mesh, wall) || {};
     op.wall = wall;
-    op.type = kind === 'porta' ? 'porta' : (String(kind).indexOf('janela') === 0 || kind === 'janela' ? 'janela' : 'outro');
+    op.type = kind === 'porta' ? 'porta' : (String(kind).indexOf('janela') === 0 || kind === 'janela' || mesh.userData.funcKind === 'janela' ? 'janela' : 'outro');
     op.nome = (mesh.userData && (mesh.userData.name || mesh.userData.label)) || kind || ('Abertura ' + idx);
     pushHole(op, idx);
   });
