@@ -55,6 +55,11 @@ export default class Roof {
     const roofMesh = new THREE.Mesh(roofGeo, M.telhado);
     roofMesh.castShadow = true;
     roofMesh.receiveShadow = true;
+    roofMesh.userData.editable = true;
+    roofMesh.userData.layoutProtected = true;
+    roofMesh.userData.kind = 'telhado';
+    roofMesh.userData.name = 'Telhado';
+    roofMesh.userData.category = 'telhado';
     roofGroup.add(roofMesh);
 
     const addEaveRibbon = (sx, xOut) => {

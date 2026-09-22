@@ -44,7 +44,9 @@ export default class EditorService {
       this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
       this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
       this.raycaster.setFromCamera(this.mouse, this.camera);
-      const hits = this.raycaster.intersectObjects(this.editableMeshes, true);
+      // só raycast em meshes ainda na cena
+      const live = this.editableMeshes.filter((m) => m && this._isInScene(m));
+      const hits = this.raycaster.intersectObjects(live, true);
       const obj = this.pickFromHits(hits);
       if (obj) this.selectObject(obj);
       else this.deselectObject();
@@ -130,28 +132,83 @@ export default class EditorService {
     return roots[0];
   }
 
+  /** True se o objeto está ligado à scene (sobe pelos parents até this.scene). */
+  _isInScene(obj) {
+    if (!obj || !this.scene) return false;
+    let cur = obj;
+    while (cur) {
+      if (cur === this.scene) return true;
+      cur = cur.parent;
+    }
+    return false;
+  }
+
+  /** Reanexa órfão ao trailer/interior/mezz se ainda estiver em editableMeshes. */
+  _ensureInScene(obj) {
+    if (!obj || this._isInScene(obj)) return obj;
+    // JSON.p é fixo no trailer — sempre reanexa no root do trailer.
+    const parent = this.trailer || this.scene;
+    if (parent && typeof parent.add === 'function') {
+      parent.add(obj);
+      return obj;
+    }
+    return null;
+  }
+
   selectObject(obj) {
-    if (this.selected && this.selected !== obj) this.selected.userData.funcTarget = 0;
-    this.selected = obj;
-    if (!obj.userData.skipFunc) obj.userData.funcTarget = 1;
-    this.transformCtrl.attach(obj);
-    this.transformCtrl.visible = true;
+    if (!obj) {
+      this.deselectObject();
+      return;
+    }
+    // Garante que o alvo está no grafo da cena (TransformControls exige)
+    const attached = this._ensureInScene(obj);
+    if (!attached || !this._isInScene(attached)) {
+      // remove de editableMeshes se órfão irrecuperável
+      const ix = this.editableMeshes.indexOf(obj);
+      if (ix >= 0) this.editableMeshes.splice(ix, 1);
+      this.deselectObject();
+      return;
+    }
+    if (this.selected && this.selected !== attached) this.selected.userData.funcTarget = 0;
+    this.selected = attached;
+    if (!attached.userData) attached.userData = {};
+    if (!attached.userData.skipFunc) attached.userData.funcTarget = 1;
+    try {
+      this.transformCtrl.attach(attached);
+      this.transformCtrl.visible = true;
+    } catch (e) {
+      console.warn('TransformControls.attach failed', e);
+      this.deselectObject();
+      return;
+    }
     const selInfo = document.getElementById('sel-info');
-    if (selInfo) selInfo.innerHTML = this._productInfoHtml(obj);
+    if (selInfo) selInfo.innerHTML = this._productInfoHtml(attached);
     const selControls = document.getElementById('sel-controls');
     if (selControls) selControls.style.display = 'block';
-    if (typeof this.onSelectionChange === 'function') this.onSelectionChange(obj);
+    if (typeof this.onSelectionChange === 'function') this.onSelectionChange(attached);
   }
 
   deselectObject() {
     if (this.selected) this.selected.userData.funcTarget = 0;
     this.selected = null;
-    this.transformCtrl.detach();
+    try { this.transformCtrl.detach(); } catch (e) { /* ignore */ }
+    if (this.transformCtrl) this.transformCtrl.visible = false;
     const selInfo = document.getElementById('sel-info');
     if (selInfo) selInfo.innerHTML = 'Clique num objeto para selecionar';
     const selControls = document.getElementById('sel-controls');
     if (selControls) selControls.style.display = 'none';
     if (typeof this.onSelectionChange === 'function') this.onSelectionChange(null);
+  }
+
+  /** Remove de editableMeshes objetos sem parent na scene. */
+  pruneOrphanEditables() {
+    for (let i = this.editableMeshes.length - 1; i >= 0; i--) {
+      const m = this.editableMeshes[i];
+      if (!m || !this._isInScene(m)) {
+        if (this.selected === m) this.deselectObject();
+        this.editableMeshes.splice(i, 1);
+      }
+    }
   }
 
   _productInfoHtml(obj) {
@@ -317,6 +374,12 @@ export default class EditorService {
       this.body.applyOpening(obj);
       return;
     }
+    // Layout do JSON: não alterar Y sozinho
+    if (obj.userData && obj.userData.fixedLayout) return;
+    if (kind && /^(segundo-piso|caixa-agua-100|caixa-detrito-100|coluna-mez|viga-mez|piso-mezanino|colchao-casal|guarda-corpo|travesseiro|maderite-painel|stair-cab|dinette|carro-hb20|toldo-lateral)$/.test(kind)) {
+      return;
+    }
+    if (kind && String(kind).indexOf('maderite-painel') === 0) return;
     const floorY = this.FLOOR_Y;
     const wx0 = -this.Li / 2 + this.wth, wx1 = this.Li / 2 - this.wth;
     const wz0 = -this.Lt / 2 + this.wth, wz1 = this.Lt / 2 - this.wth;

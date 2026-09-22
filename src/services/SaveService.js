@@ -1,5 +1,15 @@
+/** kinds no máximo 1× na cena */
+const UNIQUE_KINDS = new Set(['caixa-agua-100','caixa-detrito-100','segundo-piso','dinette','carro-hb20']);
+const REBUILD_KINDS = new Set([
+  'segundo-piso', 'dinette', 'stair-cab', 'porta-int', 'potti', 'ducha', 'espelho',
+  'coluna-mez', 'viga-mez', 'piso-mezanino', 'colchao-casal', 'travesseiro', 'guarda-corpo',
+  'ecoflow-delta2', 'bateria-100ah', 'prateleira-60', 'prateleira-canto',
+  'toldo-lateral', 'luz-externa', 'carro-hb20', 'engate-trailer-link',
+  // janelas: NÃO rebuild por kind genérico — cada peça é kind da paleta (janela, janela-70x40, …)
+]);
+
 export default class SaveService {
-  constructor({ editableMeshes, scene = null, body = null, SAVE_KEY = 'trailer3d-layout-v7' }) {
+  constructor({ editableMeshes, scene = null, body = null, SAVE_KEY = 'trailer3d-layout-v10' }) {
     this.editableMeshes = editableMeshes;
     this.scene = scene;
     this.body = body;
@@ -12,23 +22,44 @@ export default class SaveService {
   }
 
   serializeLayout() {
+    const THREE = window.THREE;
     return {
-      v: 3,
+      v: 4,
+      coord: 'trailer-world',
       savedAt: new Date().toISOString(),
       objects: this.editableMeshes.filter((m) => m.parent).map((m) => {
+        // p sempre em coords do trailer (mundo local do root), não do parent intermediário
+        let px = m.position.x, py = m.position.y, pz = m.position.z;
+        if (THREE && typeof m.getWorldPosition === 'function' && this.scene) {
+          const wp = new THREE.Vector3();
+          m.getWorldPosition(wp);
+          // se trailer existe como ancestral, converter para local do trailer
+          let trailer = m.parent;
+          while (trailer && trailer.parent && trailer.parent !== this.scene) trailer = trailer.parent;
+          if (trailer && trailer !== this.scene && typeof trailer.worldToLocal === 'function') {
+            const lp = trailer.worldToLocal(wp.clone());
+            px = lp.x; py = lp.y; pz = lp.z;
+          } else {
+            px = wp.x; py = wp.y; pz = wp.z;
+          }
+        }
         const obj = {
           name: m.userData.name,
           kind: m.userData.kind || null,
           buyUrl: m.userData.buyUrl || null,
           searchUrl: m.userData.searchUrl || null,
           productQuery: m.userData.productQuery || null,
-          p: [m.position.x, m.position.y, m.position.z],
+          p: [px, py, pz],
           r: [m.rotation.x, m.rotation.y, m.rotation.z],
           s: [m.scale.x, m.scale.y, m.scale.z],
+          fixedLayout: true,
           // Caixa geometry.parts: guarda medidas base para reabrir corretamente
           baseSizeMm: m.userData.baseSizeMm || null,
           thicknessMm: m.userData.thicknessMm || null,
           box_mm: m.userData.box_mm || null,
+          cut_mm: m.userData.cut_mm || null,
+          cuts: Array.isArray(m.userData.cuts) ? m.userData.cuts : null,
+          params: m.userData.dinetteParams || m.userData.stairParams || null,
         };
         const mat = m.material;
         if (mat && mat.isMeshStandardMaterial) {
@@ -58,13 +89,76 @@ export default class SaveService {
     };
   }
 
-  applySaved(data, { spawnPaletteItem, attachProductMeta, attachCarpentryPart }) {
+
+  _findMeshForState(st) {
+    if (!st) return null;
+    const byName = this.editableMeshes.find((x) => x && x.userData && x.userData.name === st.name);
+    if (byName) return byName;
+    if (st.kind && UNIQUE_KINDS.has(st.kind)) {
+      return this.editableMeshes.find((x) => x && x.userData && x.userData.kind === st.kind) || null;
+    }
+    return null;
+  }
+
+  _dedupeUniqueKinds() {
+    const keep = new Map();
+    for (let i = this.editableMeshes.length - 1; i >= 0; i--) {
+      const m = this.editableMeshes[i];
+      const kind = m && m.userData ? m.userData.kind : null;
+      if (!kind || !UNIQUE_KINDS.has(kind)) continue;
+      if (keep.has(kind)) {
+        if (m.parent) m.parent.remove(m);
+        this.editableMeshes.splice(i, 1);
+      } else keep.set(kind, m);
+    }
+  }
+
+  applySaved(data, { spawnPaletteItem, attachProductMeta, attachCarpentryPart, applyMaderiteState } = {}) {
     if (!data || !data.objects) return 0;
     let n = 0;
     data.objects.forEach((st) => {
-      let m = this.editableMeshes.find((x) => x.userData.name === st.name);
-      if (!m && st.kind && typeof spawnPaletteItem === 'function') {
-        const fresh = spawnPaletteItem(st.kind);
+      let m = this._findMeshForState(st);
+      const isMaderite = st.kind && String(st.kind).indexOf('maderite-painel') === 0;
+      const isJanela = st.kind && String(st.kind).indexOf('janela') === 0;
+      const wantsRebuild = st.kind && (REBUILD_KINDS.has(st.kind) || isMaderite || isJanela)
+        && typeof spawnPaletteItem === 'function';
+      if (wantsRebuild) {
+        // Multi-instância (stair-cab, janela, maderite…): remove SÓ pelo nome.
+        // Unique kinds (dinette, tanques…): remove pelo kind. Nunca apagar irmãos do mesmo kind.
+        const toDrop = [];
+        for (let i = 0; i < this.editableMeshes.length; i++) {
+          const x = this.editableMeshes[i];
+          if (!x || !x.userData) continue;
+          const sameName = st.name && x.userData.name === st.name;
+          const sameUniqueKind = !st.name && st.kind && UNIQUE_KINDS.has(st.kind)
+            && x.userData.kind === st.kind;
+          if (sameName || sameUniqueKind) toDrop.push(x);
+        }
+        toDrop.forEach((x) => {
+          if (x.parent) x.parent.remove(x);
+          const ix = this.editableMeshes.indexOf(x);
+          if (ix >= 0) this.editableMeshes.splice(ix, 1);
+        });
+        m = null;
+        const spawnOpts = { forceNew: true };
+        if (st.name) spawnOpts.name = st.name;
+        if (st.params) spawnOpts.params = st.params;
+        if (st.box_mm) spawnOpts.box_mm = st.box_mm;
+        if (st.cuts) spawnOpts.cuts = st.cuts;
+        if (st.cut_mm) spawnOpts.cut_mm = st.cut_mm;
+        const fresh = spawnPaletteItem(st.kind, spawnOpts);
+        if (fresh) {
+          fresh.userData.name = st.name || fresh.userData.name;
+          m = fresh;
+        }
+      }
+      if (!m && st.kind && !wantsRebuild && typeof spawnPaletteItem === 'function') {
+        const spawnOpts = {};
+        if (st.params) spawnOpts.params = st.params;
+        if (st.box_mm) spawnOpts.box_mm = st.box_mm;
+        if (st.cuts) spawnOpts.cuts = st.cuts;
+        if (st.cut_mm) spawnOpts.cut_mm = st.cut_mm;
+        const fresh = spawnPaletteItem(st.kind, spawnOpts);
         if (fresh) {
           fresh.userData.name = st.name;
           m = fresh;
@@ -72,12 +166,37 @@ export default class SaveService {
       }
       if (!m || !st.p) return;
       if (st.kind && typeof attachProductMeta === 'function') attachProductMeta(m, st.kind);
+      if (isMaderite) {
+        if (typeof applyMaderiteState === 'function') applyMaderiteState(m, st);
+        else if (Array.isArray(st.box_mm) && st.box_mm.length >= 3 && window.THREE) {
+          if (m.geometry && m.geometry.dispose) m.geometry.dispose();
+          m.geometry = new window.THREE.BoxGeometry(st.box_mm[0] / 1000, st.box_mm[1] / 1000, st.box_mm[2] / 1000);
+          m.userData.box_mm = st.box_mm.slice(0, 3);
+          m.userData.cut_mm = st.cut_mm || null;
+          m.userData.cuts = st.cuts || [];
+        }
+      }
+      if (st.params) {
+        m.userData.dinetteParams = st.params;
+        if (st.kind === 'stair-cab') m.userData.stairParams = st.params;
+      }
       if (st.buyUrl) m.userData.buyUrl = st.buyUrl;
       if (st.searchUrl) m.userData.searchUrl = st.searchUrl;
       if (st.productQuery) m.userData.productQuery = st.productQuery;
-      m.position.set(st.p[0], st.p[1], st.p[2]);
-      if (st.r) m.rotation.set(st.r[0], st.r[1], st.r[2]);
-      if (st.s) m.scale.set(st.s[0], st.s[1], st.s[2]);
+      // HOOK: geolocalização ABSOLUTA — p literal do JSON, sem somar FLOOR_Y/deck
+      m.userData.fixedLayout = true;
+      m.userData.coord = 'trailer-world';
+      // anexa ao root do trailer se spawn colocou em grupo intermediário
+      if (m.parent && m.parent.userData && m.parent.userData.kind === 'interior') {
+        /* ok se interior.y=0 */
+      }
+      const px = Number(st.p[0]) || 0;
+      const py = Number(st.p[1]) || 0;
+      const pz = Number(st.p[2]) || 0;
+      m.position.set(px, py, pz);
+      if (st.r) m.rotation.set(Number(st.r[0]) || 0, Number(st.r[1]) || 0, Number(st.r[2]) || 0);
+      if (st.s) m.scale.set(Number(st.s[0]) || 1, Number(st.s[1]) || 1, Number(st.s[2]) || 1);
+      if (typeof m.updateMatrixWorld === 'function') m.updateMatrixWorld(true);
       if (st.mat && m.material && m.material.isMeshStandardMaterial) {
         m.material = m.material.clone();
         const label = `${st.kind || ''} ${st.name || ''}`.toLowerCase();
@@ -111,6 +230,7 @@ export default class SaveService {
       }
       n++;
     });
+    this._dedupeUniqueKinds();
     return n;
   }
 
@@ -227,6 +347,16 @@ export default class SaveService {
    * Aceita as dependências necessárias (spawnPaletteItem, attachProductMeta, attachCarpentryPart).
    */
   applyCapturedFromLayout(layout, deps = {}) {
-    return this.applySaved(layout, deps);
+    const allowed = new Set((layout && layout.objects || []).map((o) => o && o.name).filter(Boolean));
+    if (typeof this._removeExtraByName === 'function') {
+      this._removeExtraByName(allowed, { pruneProtected: true });
+    }
+    const n = this.applySaved(layout, deps || {});
+    this._dedupeUniqueKinds();
+    if (typeof this._cleanupOrphans === 'function') this._cleanupOrphans();
+    if (deps && typeof deps.pruneEditor === 'function') {
+      try { deps.pruneEditor(); } catch (e) { /* ignore */ }
+    }
+    return n;
   }
 }

@@ -1,0 +1,369 @@
+{
+  "v": 1,
+  "description": "Rede de utilidades (água / esgoto / 12V / 220V / solar). O ConnectionService só interpreta este JSON + palette-catalog.utilities + scene_layout.",
+  "media": {
+    "water": {
+      "label": "Água potável",
+      "layer": "encanamento",
+      "color": "0x2f9fe0",
+      "marker": "0x8fdcff",
+      "radius": 0.01,
+      "speed": 0.22,
+      "markers": 2,
+      "runY": "underfloor",
+      "runYOffset": -0.12,
+      "flow": "hub_to_sink"
+    },
+    "drain": {
+      "label": "Dreno / cinza",
+      "layer": "encanamento",
+      "color": "0x45584e",
+      "marker": "0x86a58f",
+      "radius": 0.014,
+      "speed": 0.09,
+      "markers": 2,
+      "runY": "underfloor",
+      "runYOffset": -0.12,
+      "flow": "sink_to_hub"
+    },
+    "sewage": {
+      "label": "Esgoto / negro",
+      "layer": "encanamento",
+      "color": "0x4b3621",
+      "marker": "0x9a7a52",
+      "radius": 0.015,
+      "speed": 0.06,
+      "markers": 2,
+      "runY": "underfloor",
+      "runYOffset": -0.12,
+      "flow": "sink_to_hub"
+    },
+    "elec12": {
+      "label": "Elétrica 12V DC",
+      "layer": "eletrica",
+      "color": "0xe8a020",
+      "marker": "0xffd27a",
+      "radius": 0.006,
+      "speed": 0.55,
+      "markers": 3,
+      "runY": "baseboard",
+      "runYOffset": 0.1,
+      "flow": "hub_to_sink"
+    },
+    "elec220": {
+      "label": "Elétrica 220V AC",
+      "layer": "eletrica",
+      "color": "0xc0392b",
+      "marker": "0xff8a7a",
+      "radius": 0.007,
+      "speed": 0.45,
+      "markers": 3,
+      "runY": "baseboard",
+      "runYOffset": 0.12,
+      "flow": "hub_to_sink"
+    },
+    "solar": {
+      "label": "Geração solar PV",
+      "layer": "eletrica",
+      "color": "0x2ecc71",
+      "marker": "0xa8ffc8",
+      "radius": 0.007,
+      "speed": 0.4,
+      "markers": 3,
+      "runY": "ceiling",
+      "runYOffset": 1.78,
+      "flow": "source_to_hub",
+      "generateFromSupplies": true
+    }
+  },
+  "routing": {
+    "mode": "zoned_baseboard",
+    "wallInset": 0.035,
+    "rebuildIntervalSec": 0.5,
+    "mezzFloorY": 1.54,
+    "bulkheadZ": -1.48,
+    "cabinZ1": 1.4,
+    "mezzZ0": -3.2,
+    "maxRunY": 2.15,
+    "windows": [
+      {
+        "wall": "left",
+        "z0": -0.63,
+        "z1": 1.25,
+        "y0": 1.49,
+        "y1": 2.07,
+        "name": "sala esq"
+      },
+      {
+        "wall": "right",
+        "z0": 0.21,
+        "z1": 0.79,
+        "y0": 1.51,
+        "y1": 2.09,
+        "name": "sala dir"
+      },
+      {
+        "wall": "left",
+        "z0": -2.69,
+        "z1": -2.11,
+        "y0": 1.71,
+        "y1": 2.29,
+        "name": "mez esq"
+      },
+      {
+        "wall": "right",
+        "z0": -2.69,
+        "z1": -2.11,
+        "y0": 1.71,
+        "y1": 2.29,
+        "name": "mez dir"
+      }
+    ],
+    "note": "2 zonas (cabin/mezz). Rodapé. L↔R no bulkhead ou aft mez. Nunca porta. Drop só Z fora de janela. Fios no trailer."
+  },
+  "hubs": {
+    "water": {
+      "kindPrefix": [
+        "tanque",
+        "tanque-agua",
+        "caixa-agua",
+        "reservatorio",
+        "water-tank",
+        "bomba-12v"
+      ],
+      "boostY": 0.2
+    },
+    "drain": {
+      "kindPrefix": [
+        "caixa-detrito",
+        "tanque-cinza",
+        "tanque-negro",
+        "grey-tank",
+        "black-tank",
+        "sewage"
+      ],
+      "boostY": 0.18
+    },
+    "sewage": {
+      "kindPrefix": [
+        "caixa-detrito",
+        "tanque-cinza",
+        "tanque-negro",
+        "grey-tank",
+        "black-tank",
+        "sewage"
+      ],
+      "boostY": 0.18
+    },
+    "elec12": {
+      "kindPrefix": [
+        "ecoflow",
+        "bluetti",
+        "bateria",
+        "battery",
+        "quadro",
+        "painel-dj",
+        "mppt"
+      ],
+      "boostY": 0.1
+    },
+    "elec220": {
+      "kindPrefix": [
+        "ecoflow",
+        "bluetti",
+        "inversor",
+        "inverter",
+        "entrada-shore",
+        "shore",
+        "gerador"
+      ],
+      "boostY": 0.1
+    },
+    "solar": {
+      "kindPrefix": [
+        "ecoflow",
+        "bluetti",
+        "bateria",
+        "battery",
+        "mppt",
+        "solar-ctrl"
+      ],
+      "boostY": 0.1,
+      "alsoIfNeeds": [
+        "solar"
+      ]
+    }
+  },
+  "sources": {
+    "solar": {
+      "kindPrefix": [
+        "painel-solar",
+        "solar-panel",
+        "pv-"
+      ],
+      "note": "Gera cabo solar → hub; não é hub de carga 12V."
+    }
+  },
+  "kindNeeds": {
+    "boiler": [
+      "water",
+      "elec12",
+      "elec220"
+    ],
+    "clima-evap": [
+      "water",
+      "elec12"
+    ],
+    "ducha": [
+      "water",
+      "drain"
+    ],
+    "ducha-ext": [
+      "water",
+      "drain"
+    ],
+    "potti": [
+      "sewage"
+    ],
+    "pia": [
+      "water",
+      "drain"
+    ],
+    "mis-pia-armario": [
+      "water",
+      "drain"
+    ],
+    "bomba-12v": [
+      "water",
+      "elec12"
+    ],
+    "plafon": [
+      "elec12"
+    ],
+    "led-strip": [
+      "elec12"
+    ],
+    "spot-led": [
+      "elec12"
+    ],
+    "exaustor": [
+      "elec12"
+    ],
+    "exaustor-anti": [
+      "elec12"
+    ],
+    "exaustor-coifa": [
+      "elec12"
+    ],
+    "vent-exaust": [
+      "elec12"
+    ],
+    "geladeira": [
+      "elec12"
+    ],
+    "coz-gel-37": [
+      "elec12"
+    ],
+    "ac-teto": [
+      "elec12"
+    ],
+    "ac-portatil": [
+      "elec220"
+    ],
+    "pe-dinete-12v": [
+      "elec12"
+    ],
+    "tomada-12v": [
+      "elec12"
+    ],
+    "tomada-220v": [
+      "elec220"
+    ],
+    "usb-c-pd": [
+      "elec12"
+    ],
+    "entrada-cabos": [
+      "elec12"
+    ],
+    "microondas": [
+      "elec220"
+    ],
+    "fogao-inducao": [
+      "elec220"
+    ],
+    "ecoflow-delta2": [
+      "solar"
+    ],
+    "bateria-100ah": [
+      "solar"
+    ],
+    "mppt-20a": [
+      "solar"
+    ],
+    "inversor-1000w": [
+      "elec12"
+    ],
+    "luz-externa": [
+      "elec12"
+    ],
+    "toldo-lateral": []
+  },
+  "kindSupplies": {
+    "caixa-agua-100": [
+      "water"
+    ],
+    "tanque": [
+      "water"
+    ],
+    "tanque-40": [
+      "water"
+    ],
+    "bomba-12v": [
+      "water"
+    ],
+    "caixa-detrito-100": [
+      "drain",
+      "sewage"
+    ],
+    "quadro": [
+      "elec12"
+    ],
+    "painel-dj": [
+      "elec12"
+    ],
+    "ecoflow-delta2": [
+      "elec12",
+      "elec220"
+    ],
+    "bateria-100ah": [
+      "elec12"
+    ],
+    "mppt-20a": [
+      "elec12"
+    ],
+    "inversor-1000w": [
+      "elec220"
+    ],
+    "entrada-shore": [
+      "elec220"
+    ],
+    "painel-solar-100w": [
+      "solar"
+    ]
+  },
+  "aliases": {
+    "elec": "elec12"
+  },
+  "layers": {
+    "encanamento": [
+      "water",
+      "drain",
+      "sewage"
+    ],
+    "eletrica": [
+      "elec12",
+      "elec220",
+      "solar"
+    ]
+  }
+}

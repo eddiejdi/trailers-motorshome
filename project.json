@@ -2,54 +2,3464 @@
   "meta": {
     "name": "Trailer Nelcyr-Nardelli",
     "version": "1.0.0",
-    "rev": 23,
-    "description": "Família: 1 casal + 1 filha. Layout aberto (sem paredes divisórias), banheiro em cubo, mezanino da cama de casal sobre a lança (fora da caçamba). Estilo técnico com cotas e hatching de material."
+    "rev": 99,
+    "description": "Família: 1 casal + 1 filha. Layout aberto (sem paredes divisórias), banheiro em cubo, mezanino da cama de casal sobre a lança.",
+    "exportedAt": "2026-09-21T00:34:42.952242+00:00",
+    "auditedAt": "2026-09-17T22:49:56.648Z",
+    "auditSummary": {
+      "total": 4,
+      "critical": 2,
+      "warning": 2,
+      "info": 0,
+      "byCategory": {
+        "unknown": 4
+      }
+    },
+    "note_height": "mezzanine floor restored 1.54; main floor 0.48; tanks underfloor 0.20",
+    "tanks": "exactly 2x 100L (agua + detrito) underfloor",
+    "note_stack": "no tank intersection: floor above joist top",
+    "note_floor": "segundo-piso Y=0.3, deck/sala floor Y=0.49",
+    "catalogNote": "tanks only from trailer-catalog / scene_layout; max 1 per kind",
+    "note_segundo": "segundo-piso scaled to fit inside walls (joist outer bbox)",
+    "note_interior": "Interior factory vazio; layout 100% scene_layout/paleta",
+    "note_dinette": "rev45: dinette L=1.80m flush left wall, aft bath face p=[-0.438, 0.402, 0.3625] Z=[-0.537,1.263] clear bath 0.08m",
+    "restoredFrom": "exports/Trailer-Nelcyr-Nardelli_rev52_tanques_sobre_longarina.json",
+    "note_bulkhead": "bulkhead sala-mezanino completa no Interior",
+    "note_mezz": "piso mezanino back to Y=1.54 (lift undo)",
+    "note_kitchen": "removido conjunto pia/móvel/geladeira/fogareiro",
+    "note": "force-bluetti-pos-rev99",
+    "hook_coords": "ABSOLUTE trailer-world ALWAYS",
+    "notes": [
+      "rev99b: escada-armário reconstruída (4 degraus, rise→mezanino, X parede dir)",
+      "release: distribuição elétrica 8×12V + 7×220V + 5×USB sala/banho/mez",
+      "release: 8 spots LED 12V sala/banho/mez + fiação desvia porta",
+      "release: tomadas fora dos vãos de janela; fiação drop só em Z safe",
+      "release: toldo lateral dir. + 5 luzes externas 12V",
+      "release: toldo dir. armado (projeção 1,8m) + luzes sob lona",
+      "fix: luzes externas sob lona (downlight) + night SpotLight",
+      "fix: luzes externas só na parede (3 toldo + 1 entrada), sem pendentes",
+      "release: HB20 1.6 2017/18 Flex AT escala 1:1 (referência de porte)",
+      "release: HB20 1:1 detalhado + engate atrelado na lança (esfera chassis)",
+      "HB20 réplica 1:1 redrawing conforme ficha técnica oficial (3920×1680×1470, WB2500, RC165, 185/60R15)",
+      "HB20 réplica 1:1 v3 — reconstruída com STEP=30mm, silhueta suavizada, engate atrelado",
+      "HB20 réplica v4 — STEP=25mm, curvas top_y/belt_y corrigidas"
+    ],
+    "stair_rebuild": {
+      "at": "2026-09-20T23:37:07.131639+00:00",
+      "floor_y": 0.72,
+      "mezz_y": 1.54,
+      "rise": 0.205,
+      "stair_x": 0.785,
+      "count": 4
+    },
+    "elec_distribution": {
+      "at": "2026-09-20T23:55:42.705375+00:00",
+      "tomada_12v": 8,
+      "tomada_220v": 7,
+      "usb_c_pd": 5,
+      "zones": [
+        "sala/cozinha",
+        "entrada",
+        "banheiro",
+        "mezanino"
+      ],
+      "heights": {
+        "sala": 1.2,
+        "bancada": 1.55,
+        "mezzanine": 1.9
+      },
+      "wall_x": {
+        "left": -0.9,
+        "right": 0.9
+      }
+    },
+    "spots_12v": {
+      "at": "2026-09-21T00:03:05.085935+00:00",
+      "count": 8,
+      "names": [
+        "Spot 12V sala centro",
+        "Spot 12V dinete",
+        "Spot 12V cozinha",
+        "Spot 12V entrada",
+        "Spot 12V banheiro",
+        "Spot 12V mez. cabeceira",
+        "Spot 12V mez. centro",
+        "Spot 12V mez. fundo"
+      ]
+    },
+    "scale_ref": {
+      "vehicle": "Hyundai HB20",
+      "L_m": 3.92,
+      "W_m": 1.68,
+      "H_m": 1.47,
+      "wheelbase_m": 2.5,
+      "hitched": true,
+      "carPosition": [
+        0.0,
+        0.0,
+        -4.48
+      ],
+      "carRotation": [
+        0,
+        3.141593,
+        0
+      ]
+    }
   },
   "dimensions": {
-    "chassis":      { "L": 3.00, "W": 1.50, "unit": "m" },
-    "body":         { "L": 3.00, "W": 1.90, "H": 1.85, "unit": "m" },
-    "interior":     { "L": 2.90, "W": 1.80, "H": 1.80, "unit": "m" },
-    "wall_thickness": 0.05,
-    "mattress_casal": { "L": 1.88, "W": 1.38, "unit": "m" },
-    "bath_cube":    { "W": 0.80, "H": 1.85, "unit": "m" },
-    "bath_walls":   { "count": 3, "W": 0.80, "H": 1.85, "thickness": 0.015, "material": "compensado 15mm" },
-    "stair_cabs":   { "count": 4, "W": 0.30, "rise": 0.34, "unit": "m" },
-    "kitchen":      { "counter": "0.58×0.85×0.22", "geladeira": "0.32×0.585×0.22" },
-    "door_external":{ "W": 0.62, "H": 1.60 },
-    "door_internal":{ "W": 0.55, "H": 1.70 },
-    "potti":        { "W": 0.42, "H": 0.42, "unit": "m" }
+    "chassis": {
+      "L": 3,
+      "W": 1.5
+    },
+    "body": {
+      "L": 3,
+      "W": 1.9,
+      "H": 1.85
+    },
+    "interior": {
+      "L": 2.97,
+      "W": 1.87,
+      "H": 2
+    },
+    "wall_thickness": 0.015,
+    "mattress_casal": {
+      "L": 1.88,
+      "W": 1.38
+    },
+    "bath_cube": {
+      "W": 0.8,
+      "H": 1.85
+    },
+    "bath_walls": {
+      "count": 3,
+      "W": 0.8,
+      "H": 1.85,
+      "thickness": 0.015,
+      "material": "compensado 15mm"
+    },
+    "stair_cabs": {
+      "count": 4,
+      "W": 0.3,
+      "rise": 0.205,
+      "depth": 0.32,
+      "pitch_z": 0.34
+    },
+    "kitchen": {
+      "counter": "0.58×0.85×0.22",
+      "geladeira": "0.32×0.585×0.22"
+    },
+    "door_external": {
+      "W": 0.62,
+      "H": 1.6
+    },
+    "door_internal": {
+      "W": 0.55,
+      "H": 1.7
+    },
+    "potti": {
+      "W": 0.42,
+      "H": 0.42
+    },
+    "vertical": {
+      "coord": "trailer-world",
+      "fixed": true,
+      "rail_bot": 0.31999999999999995,
+      "rail_top": 0.47,
+      "tank_bot": 0.47,
+      "tank_y": 0.575,
+      "tank_top": 0.68,
+      "segundo_y": 0.7,
+      "deck_top": 0.72,
+      "cabin_floor_y": 0.72,
+      "mezz_floor_y": 1.54,
+      "segundo_s": [
+        1.525,
+        1,
+        1.7651
+      ],
+      "stack": "longarina top 0.47 → tanks 0.47-0.68 → painel → sala 0.72",
+      "absolute": true,
+      "wall_group_y": 0,
+      "note": "restaurado rev52 sem janelas; janelas só pela paleta"
+    },
+    "CHASSIS_Y": 0.28,
+    "CHASSIS_BEAM_H": 0.15,
+    "FLOOR_T": 0.04,
+    "WALL_H": 1.85,
+    "FLOOR_Y": 0.51
   },
   "weights_kg": {
-    "chassis":      52,
-    "wheels":       16,
-    "floor":        22,
-    "wallsExt":     38,
-    "roof":         18,
-    "skirt":         6,
-    "mezzanine":    14,
-    "bathWalls":     6,
-    "bathFixtures":  4,
-    "kitchen":      12,
-    "stairCabs":    10,
-    "mattress":     10,
-    "plumbing":      4,
-    "electrical":    3,
-    "insulation":    8,
-    "fasteners":     5,
-    "pbt_limit":   750,
-    "warn_threshold": 600
+    "chassis": 52,
+    "wheels": 16,
+    "floor": 22,
+    "wallsExt": 11,
+    "roof": 18,
+    "skirt": 6,
+    "mezzanine": 14,
+    "bathWalls": 6,
+    "bathFixtures": 4,
+    "kitchen": 12,
+    "stairCabs": 10,
+    "mattress": 10,
+    "plumbing": 4,
+    "electrical": 6,
+    "insulation": 8,
+    "fasteners": 5,
+    "pbt_limit": 750,
+    "warn_threshold": 600,
+    "caixa-agua-100": 6.5,
+    "caixa-detrito-100": 6,
+    "segundo-piso": 30
   },
   "specs": [
-    { "key": "chassi",          "label": "Chassi",                  "format": "{L} × {chassis.W}" },
-    { "key": "caixa",           "label": "Caixa (fora da roda)",    "format": "{L} × {body.W}" },
-    { "key": "internas",        "label": "Internas",                "format": "{interior.W} × {interior.L}" },
-    { "key": "altura-interna",  "label": "Altura interna",          "format": "{interior.H}" },
-    { "key": "cama-casal",      "label": "Cama casal",              "format": "{mattress_casal.W} × {mattress_casal.L}" },
-    { "key": "armarios-degrau", "label": "Armários-degrau",         "format": "{stair_cabs.W} · {stair_cabs.count} níveis" },
-    { "key": "banco-mesa",      "label": "Banco + mesa",            "format": "banco 1,60×0,45 · mesa à frente · cama 1,60×0,99" },
-    { "key": "cubo-banheiro",   "label": "Cubo banheiro",           "format": "{bath_cube.W} × {bath_cube.W}" },
-    { "key": "paredes-banheiro","label": "Paredes banheiro",        "format": "{bath_walls.count}× ({bath_walls.W}×{bath_walls.H}m) {bath_walls.material} · {weights_kg.bathWalls} kg" },
-    { "key": "geladeira",       "label": "Geladeira 12V",           "format": "0,585 × 0,44" },
-    { "key": "porta-potti",     "label": "Porta Potti",             "format": "{potti.W} × {potti.W}" }
-  ]
+    {
+      "key": "chassi",
+      "label": "Chassi",
+      "format": "{chassis.L} × {chassis.W}"
+    },
+    {
+      "key": "caixa",
+      "label": "Caixa (fora da roda)",
+      "format": "{body.L} × {body.W}"
+    },
+    {
+      "key": "internas",
+      "label": "Internas",
+      "format": "{interior.W} × {interior.L}"
+    },
+    {
+      "key": "altura-interna",
+      "label": "Altura interna",
+      "format": "{interior.H}"
+    },
+    {
+      "key": "cama-casal",
+      "label": "Cama casal",
+      "format": "{mattress_casal.W} × {mattress_casal.L}"
+    },
+    {
+      "key": "armarios-degrau",
+      "label": "Armários-degrau",
+      "format": "{stair_cabs.W} · {stair_cabs.count} níveis"
+    },
+    {
+      "key": "banco-mesa",
+      "label": "Banco + mesa",
+      "format": "banco 1,60×0,45 · mesa à frente"
+    },
+    {
+      "key": "cubo-banheiro",
+      "label": "Cubo banheiro",
+      "format": "{bath_cube.W} × {bath_cube.W}"
+    },
+    {
+      "key": "paredes-banheiro",
+      "label": "Paredes banheiro",
+      "format": "{bath_walls.count}× ({bath_walls.W}×{bath_walls.H}m) {bath_walls.material} · {weights_kg.bathWalls} kg"
+    },
+    {
+      "key": "geladeira",
+      "label": "Geladeira 12V",
+      "format": "0,585 × 0,44"
+    },
+    {
+      "key": "porta-potti",
+      "label": "Porta Potti",
+      "format": "{potti.W} × {potti.W}"
+    }
+  ],
+  "structure": {
+    "door": {
+      "wall": "rear",
+      "open": "out",
+      "hinge": "right"
+    },
+    "dinette": {
+      "length_m": 1.8,
+      "p": [
+        -0.438,
+        0,
+        0.31
+      ],
+      "note": "local interior; left wall; aft bath"
+    },
+    "kitchen": {
+      "present": false
+    },
+    "interior_source": "json",
+    "bath": {
+      "W": 0.8,
+      "corner": [
+        -0.935,
+        -1.47
+      ],
+      "door": "right"
+    },
+    "coord": "trailer-world",
+    "openings": {
+      "left": [],
+      "right": [],
+      "front": [],
+      "rear": [
+        {
+          "type": "door",
+          "x": 0,
+          "w": 0.62,
+          "h": 1.6
+        }
+      ]
+    },
+    "walls_int": {
+      "convention": "box_mm=[X,Y,Z] like THREE.BoxGeometry(w,h,d); Y=height; p.y=center",
+      "panels": [
+        {
+          "name": "Parede banheiro fundo",
+          "role": "bath-back",
+          "box_mm": [
+            800,
+            1850,
+            15
+          ],
+          "p": [
+            -0.535,
+            1.645,
+            -0.6775
+          ]
+        },
+        {
+          "name": "Parede banheiro frente",
+          "role": "bath-front",
+          "box_mm": [
+            800,
+            1850,
+            15
+          ],
+          "p": [
+            -0.535,
+            1.645,
+            -1.4625
+          ]
+        },
+        {
+          "name": "Parede banheiro lateral",
+          "role": "bath-left",
+          "box_mm": [
+            15,
+            1850,
+            800
+          ],
+          "p": [
+            -0.9275,
+            1.645,
+            -1.07
+          ]
+        },
+        {
+          "name": "Batente banheiro esq.",
+          "role": "bath-jamb-l",
+          "box_mm": [
+            15,
+            1850,
+            125
+          ],
+          "p": [
+            -0.1425,
+            1.645,
+            -1.4075
+          ]
+        },
+        {
+          "name": "Batente banheiro dir.",
+          "role": "bath-jamb-r",
+          "box_mm": [
+            15,
+            1850,
+            125
+          ],
+          "p": [
+            -0.1425,
+            1.645,
+            -0.7325
+          ]
+        },
+        {
+          "name": "Verga porta banheiro",
+          "role": "bath-lintel",
+          "box_mm": [
+            15,
+            130,
+            550
+          ],
+          "p": [
+            -0.1425,
+            2.505,
+            -1.07
+          ]
+        },
+        {
+          "name": "Teto banheiro",
+          "role": "bath-ceiling",
+          "box_mm": [
+            800,
+            20,
+            800
+          ],
+          "p": [
+            -0.535,
+            2.58,
+            -1.07
+          ]
+        },
+        {
+          "name": "Parede mezanino-sala esq.",
+          "role": "bulkhead-l",
+          "box_mm": [
+            1360,
+            820,
+            15
+          ],
+          "p": [
+            -0.255,
+            1.13,
+            -1.4775
+          ]
+        },
+        {
+          "name": "Verga mezanino-sala",
+          "role": "bulkhead-head",
+          "box_mm": [
+            505,
+            150,
+            15
+          ],
+          "p": [
+            0.6625,
+            1.465,
+            -1.4775
+          ]
+        },
+        {
+          "name": "Parede mezanino-sala dir.",
+          "role": "bulkhead-r",
+          "box_mm": [
+            50,
+            820,
+            15
+          ],
+          "p": [
+            0.925,
+            1.13,
+            -1.4775
+          ]
+        }
+      ]
+    }
+  },
+  "scene_layout": {
+    "v": 4,
+    "coord": "trailer-world",
+    "savedAt": "2026-09-21T03:29:14.529685+00:00",
+    "objects": [
+      {
+        "name": "Porta de entrada",
+        "kind": "porta",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Porta%2062%C3%97160",
+        "productQuery": "Porta 62×160",
+        "p": [
+          0,
+          0.72,
+          1.425
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Porta banheiro",
+        "kind": "porta-int",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Porta%20interna",
+        "productQuery": "Porta interna",
+        "p": [
+          -0.1425,
+          0.74,
+          -1.07
+        ],
+        "r": [
+          0,
+          1.5708,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": {
+          "w": 0.55,
+          "h": 1.7,
+          "hingeRight": true
+        }
+      },
+      {
+        "name": "Vaso Potti",
+        "kind": "potti",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Vaso%20Potti",
+        "productQuery": "Vaso Potti",
+        "p": [
+          -0.655,
+          0.72,
+          -1.19
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": {
+          "w": 0.38,
+          "h": 0.42,
+          "d": 0.38
+        }
+      },
+      {
+        "name": "Ducha",
+        "kind": "ducha",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Ducha",
+        "productQuery": "Ducha",
+        "p": [
+          -0.875,
+          1.92,
+          -1.07
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Espelho banheiro",
+        "kind": "espelho",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Espelho",
+        "productQuery": "Espelho",
+        "p": [
+          -0.875,
+          1.87,
+          -0.85
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": {
+          "w": 0.28,
+          "h": 0.32
+        },
+        "mat": {
+          "color": [
+            0.7215686274509804,
+            0.8313725490196079,
+            0.9098039215686274
+          ],
+          "roughness": 0.04,
+          "metalness": 0.15,
+          "opacity": 0.18,
+          "transparent": true
+        }
+      },
+      {
+        "name": "Armário-degrau 1",
+        "kind": "stair-cab",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Arm%C3%A1rio-degrau",
+        "productQuery": "Armário-degrau",
+        "p": [
+          0.785,
+          0.72,
+          -0.23
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": {
+          "w": 0.3,
+          "h": 0.205,
+          "d": 0.32,
+          "doorFace": "x-"
+        }
+      },
+      {
+        "name": "Armário-degrau 2",
+        "kind": "stair-cab",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Arm%C3%A1rio-degrau",
+        "productQuery": "Armário-degrau",
+        "p": [
+          0.785,
+          0.72,
+          -0.57
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": {
+          "w": 0.3,
+          "h": 0.41,
+          "d": 0.32,
+          "doorFace": "x-"
+        }
+      },
+      {
+        "name": "Armário-degrau 3",
+        "kind": "stair-cab",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Arm%C3%A1rio-degrau",
+        "productQuery": "Armário-degrau",
+        "p": [
+          0.785,
+          0.72,
+          -0.91
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": {
+          "w": 0.3,
+          "h": 0.615,
+          "d": 0.32,
+          "doorFace": "x-"
+        }
+      },
+      {
+        "name": "Armário-degrau 4",
+        "kind": "stair-cab",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Arm%C3%A1rio-degrau",
+        "productQuery": "Armário-degrau",
+        "p": [
+          0.785,
+          0.72,
+          -1.25
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": {
+          "w": 0.3,
+          "h": 0.82,
+          "d": 0.32,
+          "doorFace": "x-"
+        }
+      },
+      {
+        "name": "Dinete",
+        "kind": "dinette",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Banco%20%2B%20mesa",
+        "productQuery": "Banco + mesa",
+        "p": [
+          -0.438,
+          0.72,
+          0.31
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": {
+          "benchL": 1.8,
+          "benchD": 0.45,
+          "tableL": 1.7,
+          "tableD": 0.5,
+          "seatH": 0.42,
+          "dual": false
+        }
+      },
+      {
+        "name": "Segundo piso (mezzanine)",
+        "kind": "segundo-piso",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Segundo%20piso%20(painel%2Bcaibros)",
+        "productQuery": "Segundo piso (painel+caibros)",
+        "p": [
+          0,
+          0.7,
+          0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1.525,
+          1,
+          1.7651
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Caixa d'água 100L",
+        "kind": "caixa-agua-100",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Caixa%20d'%C3%A1gua%20100L",
+        "productQuery": "Caixa d'água 100L",
+        "p": [
+          0,
+          0.575,
+          -0.4
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null,
+        "mat": {
+          "color": [
+            0.2901960784313726,
+            0.5411764705882353,
+            0.6901960784313725
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 0.72,
+          "transparent": true
+        }
+      },
+      {
+        "name": "Caixa de detrito 100L",
+        "kind": "caixa-detrito-100",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Caixa%20de%20detrito%20100L",
+        "productQuery": "Caixa de detrito 100L",
+        "p": [
+          0,
+          0.575,
+          0.4
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null,
+        "mat": {
+          "color": [
+            0.5411764705882353,
+            0.5411764705882353,
+            0.5411764705882353
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 0.72,
+          "transparent": true
+        }
+      },
+      {
+        "name": "Coluna mez. esq. frente",
+        "kind": "coluna-mez",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Coluna%20mezanino",
+        "productQuery": "Coluna mezanino",
+        "p": [
+          -0.855,
+          0.76,
+          -1.495
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": {
+          "h": 1.52,
+          "s": 0.05
+        },
+        "mat": {
+          "color": [
+            0.7843137254901961,
+            0.7843137254901961,
+            0.7843137254901961
+          ],
+          "roughness": 0.4,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Coluna mez. dir. frente",
+        "kind": "coluna-mez",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Coluna%20mezanino",
+        "productQuery": "Coluna mezanino",
+        "p": [
+          0.855,
+          0.76,
+          -1.495
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": {
+          "h": 1.52,
+          "s": 0.05
+        },
+        "mat": {
+          "color": [
+            0.7843137254901961,
+            0.7843137254901961,
+            0.7843137254901961
+          ],
+          "roughness": 0.4,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Coluna mez. esq. trás",
+        "kind": "coluna-mez",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Coluna%20mezanino",
+        "productQuery": "Coluna mezanino",
+        "p": [
+          -0.855,
+          0.76,
+          -3.235
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": {
+          "h": 1.52,
+          "s": 0.05
+        },
+        "mat": {
+          "color": [
+            0.7843137254901961,
+            0.7843137254901961,
+            0.7843137254901961
+          ],
+          "roughness": 0.4,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Coluna mez. dir. trás",
+        "kind": "coluna-mez",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Coluna%20mezanino",
+        "productQuery": "Coluna mezanino",
+        "p": [
+          0.855,
+          0.76,
+          -3.235
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": {
+          "h": 1.52,
+          "s": 0.05
+        },
+        "mat": {
+          "color": [
+            0.7843137254901961,
+            0.7843137254901961,
+            0.7843137254901961
+          ],
+          "roughness": 0.4,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Viga mez. frente",
+        "kind": "viga-mez",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Viga%20mezanino",
+        "productQuery": "Viga mezanino",
+        "p": [
+          0,
+          1.52,
+          -1.495
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": {
+          "w": 1.8,
+          "h": 0.04,
+          "d": 0.05
+        },
+        "mat": {
+          "color": [
+            0.7843137254901961,
+            0.7843137254901961,
+            0.7843137254901961
+          ],
+          "roughness": 0.4,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Viga mez. trás",
+        "kind": "viga-mez",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Viga%20mezanino",
+        "productQuery": "Viga mezanino",
+        "p": [
+          0,
+          1.52,
+          -3.235
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": {
+          "w": 1.8,
+          "h": 0.04,
+          "d": 0.05
+        },
+        "mat": {
+          "color": [
+            0.7843137254901961,
+            0.7843137254901961,
+            0.7843137254901961
+          ],
+          "roughness": 0.4,
+          "metalness": 0.7,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Piso mezanino",
+        "kind": "piso-mezanino",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Piso%20mezanino",
+        "productQuery": "Piso mezanino",
+        "p": [
+          0,
+          1.54,
+          -2.365
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": {
+          "w": 1.76,
+          "h": 0.04,
+          "d": 1.79
+        },
+        "mat": {
+          "color": [
+            0.8313725490196079,
+            0.7058823529411765,
+            0.5137254901960784
+          ],
+          "roughness": 0.7,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Cama casal",
+        "kind": "colchao-casal",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Colch%C3%A3o%20casal",
+        "productQuery": "Colchão casal",
+        "p": [
+          0,
+          1.61,
+          -2.365
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": {
+          "w": 1.7,
+          "h": 0.1,
+          "d": 1.73
+        },
+        "mat": {
+          "color": [
+            0.8156862745098039,
+            0.5019607843137255,
+            0.5019607843137255
+          ],
+          "roughness": 0.95,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Travesseiro esq.",
+        "kind": "travesseiro",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Travesseiro",
+        "productQuery": "Travesseiro",
+        "p": [
+          -0.435,
+          1.71,
+          -1.695
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": {
+          "w": 0.83,
+          "h": 0.1,
+          "d": 0.35
+        },
+        "mat": {
+          "color": [
+            0.9411764705882353,
+            0.9411764705882353,
+            0.8784313725490196
+          ],
+          "roughness": 0.95,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Travesseiro dir.",
+        "kind": "travesseiro",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Travesseiro",
+        "productQuery": "Travesseiro",
+        "p": [
+          0.435,
+          1.71,
+          -1.695
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": {
+          "w": 0.83,
+          "h": 0.1,
+          "d": 0.35
+        },
+        "mat": {
+          "color": [
+            0.9411764705882353,
+            0.9411764705882353,
+            0.8784313725490196
+          ],
+          "roughness": 0.95,
+          "metalness": 0.1,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Guarda-corpo",
+        "kind": "guarda-corpo",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Guarda-corpo",
+        "productQuery": "Guarda-corpo",
+        "p": [
+          0,
+          1.82,
+          -3.23
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": {
+          "len": 1.68,
+          "h": 0.55
+        }
+      },
+      {
+        "name": "Parede banheiro fundo",
+        "kind": "maderite-painel-15",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Painel%20maderite%2015mm",
+        "productQuery": "Painel maderite 15mm",
+        "p": [
+          -0.535,
+          1.645,
+          -0.6775
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": {
+          "L": 800,
+          "H": 1850,
+          "P": 15
+        },
+        "thicknessMm": null,
+        "box_mm": [
+          800,
+          1850,
+          15
+        ],
+        "cut_mm": {
+          "comp": 1850,
+          "larg": 800,
+          "esp": 15,
+          "sheet": "2200x1100"
+        },
+        "cuts": [],
+        "params": null,
+        "mat": {
+          "color": [
+            0.788,
+            0.659,
+            0.424
+          ],
+          "roughness": 0.85,
+          "metalness": 0.05,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Parede banheiro frente",
+        "kind": "maderite-painel-15",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Painel%20maderite%2015mm",
+        "productQuery": "Painel maderite 15mm",
+        "p": [
+          -0.535,
+          1.645,
+          -1.4625
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": {
+          "L": 800,
+          "H": 1850,
+          "P": 15
+        },
+        "thicknessMm": null,
+        "box_mm": [
+          800,
+          1850,
+          15
+        ],
+        "cut_mm": {
+          "comp": 1850,
+          "larg": 800,
+          "esp": 15,
+          "sheet": "2200x1100"
+        },
+        "cuts": [],
+        "params": null,
+        "mat": {
+          "color": [
+            0.788,
+            0.659,
+            0.424
+          ],
+          "roughness": 0.85,
+          "metalness": 0.05,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Parede banheiro lateral",
+        "kind": "maderite-painel-15",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Painel%20maderite%2015mm",
+        "productQuery": "Painel maderite 15mm",
+        "p": [
+          -0.9275,
+          1.645,
+          -1.07
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": {
+          "L": 15,
+          "H": 1850,
+          "P": 800
+        },
+        "thicknessMm": null,
+        "box_mm": [
+          15,
+          1850,
+          800
+        ],
+        "cut_mm": {
+          "comp": 1850,
+          "larg": 15,
+          "esp": 15,
+          "sheet": "2200x1100"
+        },
+        "cuts": [],
+        "params": null,
+        "mat": {
+          "color": [
+            0.788,
+            0.659,
+            0.424
+          ],
+          "roughness": 0.85,
+          "metalness": 0.05,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Batente banheiro esq.",
+        "kind": "maderite-painel-15",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Painel%20maderite%2015mm",
+        "productQuery": "Painel maderite 15mm",
+        "p": [
+          -0.1425,
+          1.645,
+          -1.4075
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": {
+          "L": 15,
+          "H": 1850,
+          "P": 125
+        },
+        "thicknessMm": null,
+        "box_mm": [
+          15,
+          1850,
+          125
+        ],
+        "cut_mm": {
+          "comp": 1850,
+          "larg": 15,
+          "esp": 15,
+          "sheet": "2200x1100"
+        },
+        "cuts": [],
+        "params": null,
+        "mat": {
+          "color": [
+            0.788,
+            0.659,
+            0.424
+          ],
+          "roughness": 0.85,
+          "metalness": 0.05,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Batente banheiro dir.",
+        "kind": "maderite-painel-15",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Painel%20maderite%2015mm",
+        "productQuery": "Painel maderite 15mm",
+        "p": [
+          -0.1425,
+          1.645,
+          -0.7325
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": {
+          "L": 15,
+          "H": 1850,
+          "P": 125
+        },
+        "thicknessMm": null,
+        "box_mm": [
+          15,
+          1850,
+          125
+        ],
+        "cut_mm": {
+          "comp": 1850,
+          "larg": 15,
+          "esp": 15,
+          "sheet": "2200x1100"
+        },
+        "cuts": [],
+        "params": null,
+        "mat": {
+          "color": [
+            0.788,
+            0.659,
+            0.424
+          ],
+          "roughness": 0.85,
+          "metalness": 0.05,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Verga porta banheiro",
+        "kind": "maderite-painel-15",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Painel%20maderite%2015mm",
+        "productQuery": "Painel maderite 15mm",
+        "p": [
+          -0.1425,
+          2.505,
+          -1.07
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": {
+          "L": 15,
+          "H": 130,
+          "P": 550
+        },
+        "thicknessMm": null,
+        "box_mm": [
+          15,
+          130,
+          550
+        ],
+        "cut_mm": {
+          "comp": 130,
+          "larg": 15,
+          "esp": 15,
+          "sheet": "2200x1100"
+        },
+        "cuts": [],
+        "params": null,
+        "mat": {
+          "color": [
+            0.788,
+            0.659,
+            0.424
+          ],
+          "roughness": 0.85,
+          "metalness": 0.05,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Teto banheiro",
+        "kind": "maderite-painel-15",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Painel%20maderite%2015mm",
+        "productQuery": "Painel maderite 15mm",
+        "p": [
+          -0.535,
+          2.58,
+          -1.07
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": {
+          "L": 800,
+          "H": 20,
+          "P": 800
+        },
+        "thicknessMm": null,
+        "box_mm": [
+          800,
+          20,
+          800
+        ],
+        "cut_mm": {
+          "comp": 800,
+          "larg": 800,
+          "esp": 20,
+          "sheet": "2200x1100"
+        },
+        "cuts": [],
+        "params": null,
+        "mat": {
+          "color": [
+            0.788,
+            0.659,
+            0.424
+          ],
+          "roughness": 0.85,
+          "metalness": 0.05,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Parede mezanino-sala esq.",
+        "kind": "maderite-painel-15",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Painel%20maderite%2015mm",
+        "productQuery": "Painel maderite 15mm",
+        "p": [
+          -0.01,
+          1.17,
+          -1.4775
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": {
+          "L": 1360,
+          "H": 820,
+          "P": 15
+        },
+        "thicknessMm": null,
+        "box_mm": [
+          1360,
+          820,
+          15
+        ],
+        "cut_mm": {
+          "comp": 1330,
+          "larg": 1010,
+          "esp": 15,
+          "sheet": "2200x1100"
+        },
+        "cuts": [],
+        "params": null,
+        "mat": {
+          "color": [
+            0.788,
+            0.659,
+            0.424
+          ],
+          "roughness": 0.85,
+          "metalness": 0.05,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Parede mezanino-sala dir.",
+        "kind": "maderite-painel-15",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Painel%20maderite%2015mm",
+        "productQuery": "Painel maderite 15mm",
+        "p": [
+          0.925,
+          1.13,
+          -1.4775
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": {
+          "L": 50,
+          "H": 820,
+          "P": 15
+        },
+        "thicknessMm": null,
+        "box_mm": [
+          50,
+          820,
+          15
+        ],
+        "cut_mm": {
+          "comp": 1010,
+          "larg": 50,
+          "esp": 15,
+          "sheet": "2200x1100"
+        },
+        "cuts": [],
+        "params": null,
+        "mat": {
+          "color": [
+            0.788,
+            0.659,
+            0.424
+          ],
+          "roughness": 0.85,
+          "metalness": 0.05,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Verga mezanino-sala",
+        "kind": "maderite-painel-15",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Painel%20maderite%2015mm",
+        "productQuery": "Painel maderite 15mm",
+        "p": [
+          0.6625,
+          1.465,
+          -1.4775
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": {
+          "L": 505,
+          "H": 150,
+          "P": 15
+        },
+        "thicknessMm": null,
+        "box_mm": [
+          505,
+          150,
+          15
+        ],
+        "cut_mm": {
+          "comp": 780,
+          "larg": 150,
+          "esp": 15,
+          "sheet": "2200x1100"
+        },
+        "cuts": [],
+        "params": null,
+        "mat": {
+          "color": [
+            0.788,
+            0.659,
+            0.424
+          ],
+          "roughness": 0.85,
+          "metalness": 0.05,
+          "opacity": 1,
+          "transparent": false
+        }
+      },
+      {
+        "name": "Janela sala esq.",
+        "kind": "janela-are-180x50",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Janela%20Sanjo%20Retro%20180%C3%9750",
+        "productQuery": "Janela Sanjo Retro 180×50",
+        "p": [
+          -0.9249999999999999,
+          1.78,
+          0.31
+        ],
+        "r": [
+          0,
+          -1.5707963267948966,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": [
+          1.8,
+          0.5,
+          0.08
+        ]
+      },
+      {
+        "name": "Janela sala dir.",
+        "kind": "janela",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Janela%2050%C3%9750",
+        "productQuery": "Janela 50×50",
+        "p": [
+          0.9249999999999999,
+          1.8,
+          0.5
+        ],
+        "r": [
+          0,
+          1.5707963267948966,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Janela mez. esq.",
+        "kind": "janela",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Janela%2050%C3%9750",
+        "productQuery": "Janela 50×50",
+        "p": [
+          -0.9249999999999999,
+          2,
+          -2.4
+        ],
+        "r": [
+          0,
+          -1.5707963267948966,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Janela mez. dir.",
+        "kind": "janela",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Janela%2050%C3%9750",
+        "productQuery": "Janela 50×50",
+        "p": [
+          0.9249999999999999,
+          2,
+          -2.4
+        ],
+        "r": [
+          0,
+          1.5707963267948966,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Pia com armário 60",
+        "kind": "mis-pia-armario",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Pia%20com%20arm%C3%A1rio%2060",
+        "productQuery": "Pia com armário 60",
+        "p": [
+          0.675,
+          0.95,
+          0.5
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Armário gaveta + geladeira 37L",
+        "kind": "coz-gel-37",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Arm%C3%A1rio%20gaveta%20%2B%20geladeira%20EOS%2037L",
+        "productQuery": "Armário gaveta + geladeira EOS 37L",
+        "p": [
+          0.675,
+          0.95,
+          1.05
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Bluetti AC200L",
+        "kind": "ecoflow-delta2",
+        "buyUrl": "https://www.shoppingchina.com.py/producto/estacion-de-enregia-portatil-ecoflow-river-3-max-1041443",
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=EcoFlow%20RIVER%203%20Max",
+        "productQuery": "EcoFlow RIVER 3 Max",
+        "p": [
+          0.63,
+          1.98,
+          1.24
+        ],
+        "r": [
+          0,
+          4.71238898038469,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Quadro 12V",
+        "kind": "quadro",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Quadro%2012V",
+        "productQuery": "Quadro 12V",
+        "p": [
+          0.845,
+          1.9,
+          -0.24
+        ],
+        "r": [
+          0,
+          -1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Bomba 12V",
+        "kind": "bomba-12v",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Bomba%20d'%C3%A1gua%2012V",
+        "productQuery": "Bomba d'água 12V",
+        "p": [
+          0.22,
+          0.58,
+          -0.4
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Entrada shore 220V",
+        "kind": "entrada-shore",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Entrada%20shore%20220V",
+        "productQuery": "Entrada shore 220V",
+        "p": [
+          0.92,
+          0.95,
+          1.38
+        ],
+        "r": [
+          0,
+          -1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Painel solar 100W",
+        "kind": "painel-solar-100w",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Painel%20solar%20100W",
+        "productQuery": "Painel solar 100W",
+        "p": [
+          0,
+          2.8,
+          0.1
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Bateria LiFePO4 100Ah",
+        "kind": "bateria-100ah",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Bateria%20LiFePO4%20100Ah",
+        "productQuery": "Bateria LiFePO4 100Ah",
+        "p": [
+          -0.72,
+          0.62,
+          0.95
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "MPPT 20A",
+        "kind": "mppt-20a",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Controlador%20MPPT%2020A",
+        "productQuery": "Controlador MPPT 20A",
+        "p": [
+          0.84,
+          1.94,
+          -0.55
+        ],
+        "r": [
+          0,
+          -1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Inversor 1000W",
+        "kind": "inversor-1000w",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Inversor%201000W%2012%E2%86%92220",
+        "productQuery": "Inversor 1000W 12→220",
+        "p": [
+          0.72,
+          0.58,
+          1.05
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Prateleira canto",
+        "kind": "prateleira-60",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Prateleira%2060cm",
+        "productQuery": "Prateleira 60cm",
+        "p": [
+          0.775,
+          1.82,
+          1.1
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Tomada 12V cozinha",
+        "kind": "tomada-12v",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Tomada%2012V",
+        "productQuery": "Tomada 12V",
+        "p": [
+          0.9,
+          1.55,
+          0.95
+        ],
+        "r": [
+          0,
+          -1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Tomada 12V sala dir.",
+        "kind": "tomada-12v",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Tomada%2012V",
+        "productQuery": "Tomada 12V",
+        "p": [
+          0.9,
+          1.15,
+          0.05
+        ],
+        "r": [
+          0,
+          -1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Tomada 12V dinete",
+        "kind": "tomada-12v",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Tomada%2012V",
+        "productQuery": "Tomada 12V",
+        "p": [
+          -0.9,
+          1.15,
+          0.7
+        ],
+        "r": [
+          0,
+          1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Tomada 12V entrada",
+        "kind": "tomada-12v",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Tomada%2012V",
+        "productQuery": "Tomada 12V",
+        "p": [
+          0.9,
+          1.2,
+          1.28
+        ],
+        "r": [
+          0,
+          -1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Tomada 220V cozinha",
+        "kind": "tomada-220v",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Tomada%20220V",
+        "productQuery": "Tomada 220V",
+        "p": [
+          0.9,
+          1.55,
+          1.12
+        ],
+        "r": [
+          0,
+          -1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Tomada 220V sala esq.",
+        "kind": "tomada-220v",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Tomada%20220V",
+        "productQuery": "Tomada 220V",
+        "p": [
+          -0.9,
+          1.15,
+          1.1
+        ],
+        "r": [
+          0,
+          1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Tomada 220V entrada",
+        "kind": "tomada-220v",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Tomada%20220V",
+        "productQuery": "Tomada 220V",
+        "p": [
+          0.9,
+          1.2,
+          1.35
+        ],
+        "r": [
+          0,
+          -1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "USB-C dinete",
+        "kind": "usb-c-pd",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Tomada%20USB-C%20PD",
+        "productQuery": "Tomada USB-C PD",
+        "p": [
+          -0.9,
+          1.15,
+          0.25
+        ],
+        "r": [
+          0,
+          1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "USB-C cozinha",
+        "kind": "usb-c-pd",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Tomada%20USB-C%20PD",
+        "productQuery": "Tomada USB-C PD",
+        "p": [
+          0.9,
+          1.45,
+          0.88
+        ],
+        "r": [
+          0,
+          -1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Tomada 12V banheiro",
+        "kind": "tomada-12v",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Tomada%2012V",
+        "productQuery": "Tomada 12V",
+        "p": [
+          -0.155,
+          1.45,
+          -0.85
+        ],
+        "r": [
+          0,
+          1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Tomada 220V banheiro",
+        "kind": "tomada-220v",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Tomada%20220V",
+        "productQuery": "Tomada 220V",
+        "p": [
+          -0.155,
+          1.45,
+          -1.25
+        ],
+        "r": [
+          0,
+          1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "USB-C banheiro",
+        "kind": "usb-c-pd",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Tomada%20USB-C%20PD",
+        "productQuery": "Tomada USB-C PD",
+        "p": [
+          -0.155,
+          1.55,
+          -1.07
+        ],
+        "r": [
+          0,
+          1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Tomada 12V mez. esq. cabeceira",
+        "kind": "tomada-12v",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Tomada%2012V",
+        "productQuery": "Tomada 12V",
+        "p": [
+          -0.9,
+          1.85,
+          -1.7
+        ],
+        "r": [
+          0,
+          1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Tomada 12V mez. dir. cabeceira",
+        "kind": "tomada-12v",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Tomada%2012V",
+        "productQuery": "Tomada 12V",
+        "p": [
+          0.9,
+          1.85,
+          -1.7
+        ],
+        "r": [
+          0,
+          -1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Tomada 220V mez. esq.",
+        "kind": "tomada-220v",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Tomada%20220V",
+        "productQuery": "Tomada 220V",
+        "p": [
+          -0.9,
+          1.85,
+          -1.88
+        ],
+        "r": [
+          0,
+          1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Tomada 220V mez. dir.",
+        "kind": "tomada-220v",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Tomada%20220V",
+        "productQuery": "Tomada 220V",
+        "p": [
+          0.9,
+          1.85,
+          -1.88
+        ],
+        "r": [
+          0,
+          -1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "USB-C mez. esq.",
+        "kind": "usb-c-pd",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Tomada%20USB-C%20PD",
+        "productQuery": "Tomada USB-C PD",
+        "p": [
+          -0.9,
+          1.8,
+          -1.75
+        ],
+        "r": [
+          0,
+          1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "USB-C mez. dir.",
+        "kind": "usb-c-pd",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Tomada%20USB-C%20PD",
+        "productQuery": "Tomada USB-C PD",
+        "p": [
+          0.9,
+          1.8,
+          -1.75
+        ],
+        "r": [
+          0,
+          -1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Tomada 12V mez. fundo",
+        "kind": "tomada-12v",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Tomada%2012V",
+        "productQuery": "Tomada 12V",
+        "p": [
+          0.9,
+          1.85,
+          -2.95
+        ],
+        "r": [
+          0,
+          -1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Tomada 220V mez. fundo",
+        "kind": "tomada-220v",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Tomada%20220V",
+        "productQuery": "Tomada 220V",
+        "p": [
+          -0.9,
+          1.85,
+          -2.95
+        ],
+        "r": [
+          0,
+          1.57,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Spot 12V sala centro",
+        "kind": "spot-led",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Spot%20LED%2012V",
+        "productQuery": "Spot LED 12V",
+        "p": [
+          0.0,
+          2.5,
+          0.45
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Spot 12V dinete",
+        "kind": "spot-led",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Spot%20LED%2012V",
+        "productQuery": "Spot LED 12V",
+        "p": [
+          -0.35,
+          2.5,
+          0.25
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Spot 12V cozinha",
+        "kind": "spot-led",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Spot%20LED%2012V",
+        "productQuery": "Spot LED 12V",
+        "p": [
+          0.45,
+          2.5,
+          0.85
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Spot 12V entrada",
+        "kind": "spot-led",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Spot%20LED%2012V",
+        "productQuery": "Spot LED 12V",
+        "p": [
+          0.25,
+          2.5,
+          1.15
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Spot 12V banheiro",
+        "kind": "spot-led",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Spot%20LED%2012V",
+        "productQuery": "Spot LED 12V",
+        "p": [
+          -0.535,
+          2.42,
+          -1.07
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Spot 12V mez. cabeceira",
+        "kind": "spot-led",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Spot%20LED%2012V",
+        "productQuery": "Spot LED 12V",
+        "p": [
+          0.0,
+          2.26,
+          -1.9
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Spot 12V mez. centro",
+        "kind": "spot-led",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Spot%20LED%2012V",
+        "productQuery": "Spot LED 12V",
+        "p": [
+          0.0,
+          2.26,
+          -2.5
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Spot 12V mez. fundo",
+        "kind": "spot-led",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Spot%20LED%2012V",
+        "productQuery": "Spot LED 12V",
+        "p": [
+          0.0,
+          2.26,
+          -3.0
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Toldo lateral dir. (armado)",
+        "kind": "toldo-lateral",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Toldo%20lateral%20trailer%202.5m",
+        "productQuery": "Toldo lateral trailer 2.5m",
+        "p": [
+          0.95,
+          2.32,
+          0.15
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Luz externa toldo esq.",
+        "kind": "luz-externa",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Luz%20externa%20LED%2012V%20trailer",
+        "productQuery": "Luz externa LED 12V trailer",
+        "p": [
+          0.955,
+          2.1,
+          -0.75
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Luz externa toldo centro",
+        "kind": "luz-externa",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Luz%20externa%20LED%2012V%20trailer",
+        "productQuery": "Luz externa LED 12V trailer",
+        "p": [
+          0.955,
+          2.1,
+          0.15
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Luz externa toldo dir.",
+        "kind": "luz-externa",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Luz%20externa%20LED%2012V%20trailer",
+        "productQuery": "Luz externa LED 12V trailer",
+        "p": [
+          0.955,
+          2.1,
+          1.05
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "Luz externa entrada",
+        "kind": "luz-externa",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?tbm=shop&q=Luz%20externa%20LED%2012V%20trailer",
+        "productQuery": "Luz externa LED 12V trailer",
+        "p": [
+          0.35,
+          2.2,
+          1.5
+        ],
+        "r": [
+          0,
+          1.5707963267948966,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      },
+      {
+        "name": "HB20 1.6 2017/18 Flex AT",
+        "kind": "carro-hb20",
+        "buyUrl": null,
+        "searchUrl": "https://www.google.com/search?q=Hyundai+HB20+1.6+2017+2018+flex+automatico",
+        "productQuery": "Hyundai HB20 1.6 Flex AT 2017/2018",
+        "p": [
+          0.0,
+          0.0,
+          -4.48
+        ],
+        "r": [
+          0,
+          3.141593,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": {
+          "L": 3.92,
+          "W": 1.68,
+          "H": 1.47,
+          "wheelbase": 2.5,
+          "scale": "1:1",
+          "hitched": true,
+          "trailerHitch": [
+            0,
+            0.395,
+            -2.4
+          ],
+          "ballLocal": [
+            0.0,
+            0.405,
+            -2.08
+          ],
+          "orientation": "rear-to-hitch (ry=π)",
+          "groundClearance": 0.165,
+          "tire": "185/60R15"
+        },
+        "dims": "3920×1680×1470mm · WB 2500mm · RC 165mm · 185/60R15"
+      },
+      {
+        "name": "Luva engate (atrelado)",
+        "kind": "engate-trailer-link",
+        "buyUrl": null,
+        "searchUrl": null,
+        "productQuery": "engate esfera reboque",
+        "p": [
+          0.0,
+          0.42500000000000004,
+          -2.4
+        ],
+        "r": [
+          0,
+          0,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          1
+        ],
+        "fixedLayout": true,
+        "baseSizeMm": null,
+        "thicknessMm": null,
+        "box_mm": null,
+        "cut_mm": null,
+        "cuts": null,
+        "params": null
+      }
+    ]
+  },
+  "networks": {
+    "v": 1,
+    "auto": true,
+    "buses": {
+      "elec12": {
+        "hubKind": [
+          "ecoflow-delta2",
+          "bateria-100ah",
+          "quadro",
+          "painel-dj",
+          "mppt-20a"
+        ],
+        "outlets": [
+          "Tomada 12V cozinha",
+          "Tomada 12V sala dir.",
+          "Tomada 12V dinete",
+          "Tomada 12V entrada",
+          "USB-C dinete",
+          "USB-C cozinha",
+          "Tomada 12V banheiro",
+          "USB-C banheiro",
+          "Tomada 12V mez. esq. cabeceira",
+          "Tomada 12V mez. dir. cabeceira",
+          "USB-C mez. esq.",
+          "USB-C mez. dir.",
+          "Tomada 12V mez. fundo",
+          "Spot 12V sala centro",
+          "Spot 12V dinete",
+          "Spot 12V cozinha",
+          "Spot 12V entrada",
+          "Spot 12V banheiro",
+          "Spot 12V mez. cabeceira",
+          "Spot 12V mez. centro",
+          "Spot 12V mez. fundo"
+        ]
+      },
+      "elec220": {
+        "hubKind": [
+          "ecoflow-delta2",
+          "inversor-1000w",
+          "entrada-shore"
+        ],
+        "outlets": [
+          "Tomada 220V cozinha",
+          "Tomada 220V sala esq.",
+          "Tomada 220V entrada",
+          "Tomada 220V banheiro",
+          "Tomada 220V mez. esq.",
+          "Tomada 220V mez. dir.",
+          "Tomada 220V mez. fundo"
+        ]
+      },
+      "water": {
+        "hubKind": [
+          "caixa-agua-100",
+          "tanque",
+          "tanque-40",
+          "bomba-12v"
+        ]
+      },
+      "drain": {
+        "hubKind": [
+          "caixa-detrito-100"
+        ]
+      },
+      "sewage": {
+        "hubKind": [
+          "caixa-detrito-100"
+        ]
+      },
+      "solar": {
+        "hubKind": [
+          "ecoflow-delta2",
+          "bateria-100ah",
+          "mppt-20a"
+        ]
+      }
+    }
+  }
 }

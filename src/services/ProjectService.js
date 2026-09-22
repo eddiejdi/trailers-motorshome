@@ -95,9 +95,30 @@ export default class ProjectService {
   getSpecs()          { return this.project.specs; }
 
   loadProject(data) {
-    if (!data || typeof data !== 'object') throw new Error('Projeto inválido');
+    if (!data || typeof data !== 'object') return this.resetToDefault();
     data = ProjectService.normalize(data);
-    if (!data.dimensions && !data.geometry) throw new Error('Projeto faltando dimensions ou geometry');
+    if (!data.dimensions && !data.geometry) {
+      console.warn('Projeto sem dimensions ou geometry, usando padrão:', data.meta?.name || 'desconhecido');
+      const defaultProject = JSON.parse(JSON.stringify(DEFAULT_PROJECT));
+      if (data.meta?.name && !defaultProject.meta?.name) {
+        defaultProject.meta.name = data.meta.name;
+      }
+      this.project = defaultProject;
+      this._emit('change', this.project);
+      return this.project;
+    }
+    // Underfloor: no máximo 1× cada tank kind (nunca 4 caixas 100L)
+    if (data.scene_layout && Array.isArray(data.scene_layout.objects)) {
+      const TANK = new Set(['caixa-agua-100', 'caixa-detrito-100']);
+      const seen = new Set();
+      data.scene_layout.objects = data.scene_layout.objects.filter((o) => {
+        const k = o && o.kind;
+        if (!TANK.has(k)) return true;
+        if (seen.has(k)) return false;
+        seen.add(k);
+        return true;
+      });
+    }
     this.project = data;
     this._emit('change', this.project);
     return this.project;

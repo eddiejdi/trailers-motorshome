@@ -120,10 +120,16 @@ export default class PaletteService {
 
   _buildGroup(spec) {
     const g = new THREE.Group();
-    for (const [partSpec, off] of spec.parts) {
+    for (const entry of spec.parts) {
+      // formats: [partSpec, offset] | [partSpec, offset, rotation]
+      const partSpec = entry[0];
+      const off = entry[1];
+      const rot = entry[2];
       const m = this._buildPart(partSpec);
-      if (m && off) m.position.set(off[0], off[1], off[2]);
-      if (m) g.add(m);
+      if (!m) continue;
+      if (off) m.position.set(off[0] || 0, off[1] || 0, off[2] || 0);
+      if (rot) m.rotation.set(rot[0] || 0, rot[1] || 0, rot[2] || 0);
+      g.add(m);
     }
     return g;
   }
@@ -143,18 +149,215 @@ export default class PaletteService {
 
   _buildFactory(spec) {
     const f = spec.factory;
-    if (f === 'hingedDoor' && this.makeHingedDoor) {
-      const p = spec.params || {};
-      return this.makeHingedDoor(p);
-    }
+    const p = (spec.params && typeof spec.params === 'object') ? spec.params : {};
+    const I = this.interior;
+    if (f === 'hingedDoor' && this.makeHingedDoor) return this.makeHingedDoor(p);
     if (f === 'rvWindow' && this.makeRvWindow) {
-      const [w, h] = spec.params || [0.50, 0.50];
-      return this.makeRvWindow(w, h);
+      let w = 0.50, h = 0.50, cornerRadius = 0;
+      if (Array.isArray(spec.params) && spec.params.length >= 2) {
+        w = Number(spec.params[0]) || w;
+        h = Number(spec.params[1]) || h;
+        if (spec.params.length >= 3) cornerRadius = Number(spec.params[2]) || 0;
+      } else if (p && typeof p === 'object') {
+        w = Number(p.w) || w;
+        h = Number(p.h) || h;
+        cornerRadius = Number(p.cornerRadius) || 0;
+      }
+      // opts.params do JSON (applySaved) tem prioridade
+      if (spec._jsonParams) {
+        w = Number(spec._jsonParams.w) || w;
+        h = Number(spec._jsonParams.h) || h;
+        if (spec._jsonParams.cornerRadius != null) cornerRadius = Number(spec._jsonParams.cornerRadius) || 0;
+      }
+      const g = this.makeRvWindow(w, h, cornerRadius);
+      if (g) {
+        g.userData.funcKind = 'janela';
+        g.userData.winW = w;
+        g.userData.winH = h;
+        g.userData.glassW = w;
+        g.userData.glassH = h;
+        g.userData.fromPalette = true;
+      }
+      return g;
     }
-    if (f === 'dinetteGroup' && this.makeDinetteGroup) {
-      return this.makeDinetteGroup();
+    if (f === 'dinetteGroup' && this.makeDinetteGroup) return this.makeDinetteGroup(p);
+    if (f === 'maderitePanel') return this._buildMaderitePanel(p);
+    if (f === 'stairCab' && I && I.makeStairCab) return I.makeStairCab(p);
+    if (f === 'potti' && I && I.makePotti) return I.makePotti(p);
+    if (f === 'ducha' && I && I.makeDucha) return I.makeDucha(p);
+    if (f === 'mirror' && I && I.makeMirror) return I.makeMirror(p);
+    if (f === 'mattress' && I && I.makeMattress) return I.makeMattress(p);
+    if (f === 'pillow' && I && I.makePillow) return I.makePillow(p);
+    if (f === 'mezzColumn' && I && I.makeMezzColumn) return I.makeMezzColumn(p);
+    if (f === 'mezzBeam' && I && I.makeMezzBeam) return I.makeMezzBeam(p);
+    if (f === 'mezzFloor' && I && I.makeMezzFloor) return I.makeMezzFloor(p);
+    if (f === 'guardRail' && I && I.makeGuardRail) {
+      const gp = Object.assign({}, (p && !Array.isArray(p)) ? p : {});
+      if (spec._jsonParams && typeof spec._jsonParams === 'object' && !Array.isArray(spec._jsonParams)) {
+        Object.assign(gp, spec._jsonParams);
+      }
+      return I.makeGuardRail(gp);
     }
+    if (f === 'telhado') return this._buildTelhado(p);
     return null;
+  }
+
+  _buildTelhado(params = {}) {
+    const THREE = this.THREE || window.THREE;
+    if (!THREE) return null;
+    const p = params;
+    const BODY_W = Number(p.BODY_W) || 1.90;
+    const Lt = Number(p.Lt) || 3.00;
+    const WALL_H = Number(p.WALL_H) || 1.85;
+    const zRoofFront = Number(p.zRoofFront) || -(Lt / 2) - 1.88;
+    const zRoofRear = Number(p.zRoofRear) || Lt / 2;
+    const roofTotalL = zRoofRear - zRoofFront;
+    const roofCurveR = Number(p.roofCurveR) || 0.40;
+    const roofRise = Number(p.roofRise) || roofCurveR;
+    const roofFlatStart = zRoofFront + roofCurveR;
+    const roofFlatEnd = zRoofRear - roofCurveR;
+    function roofY(z) {
+      if (z < roofFlatStart) { const dz = z - roofFlatStart; return Math.sqrt(Math.max(0, roofCurveR * roofCurveR - dz * dz)); }
+      if (z > roofFlatEnd) { const dz = z - roofFlatEnd; return Math.sqrt(Math.max(0, roofCurveR * roofCurveR - dz * dz)); }
+      return roofRise;
+    }
+    const roofGroup = new THREE.Group();
+    const roofW = BODY_W;
+    const roofSegs = 40, roofWSegs = 10;
+    const halfW = roofW / 2;
+    const rVerts = [], rIdx = [], rUVs = [];
+    const rows = roofWSegs + 1;
+    for (let ix = 0; ix <= roofWSegs; ix++) {
+      const x = -halfW + ix * (roofW / roofWSegs);
+      for (let iz = 0; iz <= roofSegs; iz++) {
+        const t = iz / roofSegs;
+        const z = zRoofFront + t * roofTotalL;
+        rVerts.push(x, roofY(z), z);
+        rUVs.push(ix / roofWSegs, t);
+      }
+    }
+    for (let ix = 0; ix < roofWSegs; ix++) {
+      for (let iz = 0; iz < roofSegs; iz++) {
+        const a = ix * rows + iz, b = a + 1, c = a + rows, d = c + 1;
+        rIdx.push(a, b, c, b, d, c);
+      }
+    }
+    const roofGeo = new THREE.BufferGeometry();
+    roofGeo.setAttribute('position', new THREE.Float32BufferAttribute(rVerts, 3));
+    roofGeo.setAttribute('uv', new THREE.Float32BufferAttribute(rUVs, 2));
+    roofGeo.setIndex(rIdx);
+    roofGeo.computeVertexNormals();
+    const M = this.M || {};
+    const telhMat = M.telhado || new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.7, metalness: 0.2 });
+    const aluminioMat = M.aluminioD || new THREE.MeshStandardMaterial({ color: 0xaaaaaa, roughness: 0.3, metalness: 0.6 });
+    const roofMesh = new THREE.Mesh(roofGeo, telhMat);
+    roofMesh.castShadow = true;
+    roofMesh.receiveShadow = true;
+    roofGroup.add(roofMesh);
+    const addEaveRibbon = (sx, xOut) => {
+      const segs = 56, drop = 0.045, out = xOut;
+      const verts = [], idx = [];
+      for (let i = 0; i <= segs; i++) {
+        const z = zRoofFront + (i / segs) * roofTotalL;
+        const y = roofY(z);
+        verts.push(sx, y, z, sx + out, y, z, sx + out, y - drop, z, sx, y - drop, z);
+        if (i > 0) {
+          const b = (i - 1) * 4, c = i * 4;
+          idx.push(b, c, b + 1, c, c + 1, b + 1, b + 1, c + 1, b + 2, c + 1, c + 2, b + 2, b + 2, c + 2, b + 3, c + 2, c + 3, b + 3);
+        }
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
+      geo.setIndex(idx);
+      geo.computeVertexNormals();
+      roofGroup.add(new THREE.Mesh(geo, aluminioMat));
+    };
+    addEaveRibbon(-halfW, -0.04);
+    addEaveRibbon(halfW, 0.04);
+    const addEndEave = (zPos) => {
+      const e = new THREE.Mesh(new THREE.BoxGeometry(roofW + 0.08, 0.045, 0.04), aluminioMat);
+      e.position.set(0, roofY(zPos) - 0.02, zPos);
+      roofGroup.add(e);
+    };
+    addEndEave(zRoofFront);
+    addEndEave(zRoofRear);
+    roofGroup.userData.kind = 'telhado';
+    roofGroup.userData.name = 'Telhado';
+    roofGroup.userData.funcKind = 'telhado';
+    return roofGroup;
+  }
+
+  /**
+   * Painel maderite.
+   * box_mm SEMPRE [X, Y, Z] em mm no eixo local Three.js:
+   *   Y = altura (vertical) para parede em pé
+   *   X,Z = largura/espessura na horizontal
+   * Igual Interior.wall(w,h,d) antigo: BoxGeometry(w,h,d).
+   */
+  _buildMaderitePanel(params = {}) {
+    const box = this._normalizeMaderiteBoxMm(params.box_mm, params);
+    const sx = box[0] / 1000;
+    const sy = box[1] / 1000;
+    const sz = box[2] / 1000;
+    const mat = this.mat
+      ? this.mat(0xc9a86c, { roughness: 0.85, metalness: 0.05 })
+      : new THREE.MeshStandardMaterial({ color: 0xc9a86c, roughness: 0.85, metalness: 0.05 });
+    const mesh = new THREE.Mesh(new THREE.BoxGeometry(sx, sy, sz), mat);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    mesh.userData.box_mm = box;
+    mesh.userData.cuttable = true;
+    mesh.userData.matFamily = 'wood';
+    mesh.userData.category = 'paredes-int';
+    mesh.userData.baseSizeMm = { L: box[0], H: box[1], P: box[2] };
+    mesh.userData.upright = true;
+    const face = [box[0], box[1], box[2]].filter((v, i, a) => true);
+    const dims = [box[0], box[1], box[2]].slice().sort((a, b) => b - a);
+    mesh.userData.cut_mm = params.cut_mm || {
+      comp: dims[0], larg: dims[1], esp: Math.min(box[0], box[1], box[2]), sheet: '2200x1100',
+    };
+    mesh.userData.cuts = Array.isArray(params.cuts) ? params.cuts : [];
+    return mesh;
+  }
+
+  /**
+   * box_mm do JSON é a fonte de verdade: [X,Y,Z] = BoxGeometry(w,h,d).
+   * NÃO reordenar eixos — o autor do JSON (ou o export factory) já definiu.
+   */
+  _normalizeMaderiteBoxMm(boxMm, params = {}) {
+    if (Array.isArray(boxMm) && boxMm.length >= 3) {
+      return [
+        Math.max(1, Math.round(Number(boxMm[0]) || 15)),
+        Math.max(1, Math.round(Number(boxMm[1]) || 15)),
+        Math.max(1, Math.round(Number(boxMm[2]) || 15)),
+      ];
+    }
+    const t = Math.max(1, Math.round(Number(params.esp_mm) || 15));
+    return [800, 1200, t];
+  }
+
+  applyMaderiteState(mesh, st) {
+    if (!mesh || !st) return mesh;
+    const box = this._normalizeMaderiteBoxMm(st.box_mm, {
+      esp_mm: st.cut_mm && st.cut_mm.esp,
+      role: st.role,
+    });
+    const sx = box[0] / 1000;
+    const sy = box[1] / 1000;
+    const sz = box[2] / 1000;
+    if (mesh.geometry && mesh.geometry.dispose) mesh.geometry.dispose();
+    mesh.geometry = new THREE.BoxGeometry(sx, sy, sz);
+    mesh.userData.box_mm = box;
+    mesh.userData.baseSizeMm = { L: box[0], H: box[1], P: box[2] };
+    if (st.cut_mm) mesh.userData.cut_mm = st.cut_mm;
+    if (Array.isArray(st.cuts)) mesh.userData.cuts = st.cuts;
+    if (st.role) mesh.userData.role = st.role;
+    mesh.userData.cuttable = true;
+    mesh.userData.matFamily = 'wood';
+    mesh.userData.category = 'paredes-int';
+    mesh.userData.upright = true;
+    mesh.userData.fixedLayout = true;
+    return mesh;
   }
 
   /* ── target group ──────────────────────────────────────────────── */
@@ -175,19 +378,45 @@ export default class PaletteService {
     return false;
   }
 
-  targetGroup() {
-    const interior = this.interiorGroup();
-    if (interior) return interior;
-    return typeof this.rootGroup === 'function' ? this.rootGroup() : null;
+  targetGroup(kind) {
+    // Tudo sob o trailer root: JSON.p = posição fixa no trailer (não relativa a FLOOR_Y).
+    if (typeof this.rootGroup === 'function') {
+      const root = this.rootGroup();
+      if (root) return root;
+    }
+    if (this.interior && this.interior.mezz && kind &&
+        /^(coluna-mez|viga-mez|piso-mezanino|colchao-casal|travesseiro|guarda-corpo)$/.test(kind)) {
+      return this.interior.mezz;
+    }
+    return this.interiorGroup();
   }
 
   /* ── spawn (data-driven) ────────────────────────────────────────── */
 
-  spawnPaletteItem(kind) {
+  spawnPaletteItem(kind, opts = {}) {
     const item = this._item(kind);
     if (!item) return null;
 
-    const spec = item.geometry;
+    if (!opts.forceNew && (item.unique || item.maxCount === 1)) {
+      const existing = this.editableMeshes.find((m) => m && m.userData && m.userData.kind === kind);
+      if (existing) return existing;
+    }
+
+    const spec = item.geometry ? Object.assign({}, item.geometry) : null;
+    // permite sobrescrever params (ex.: dinette benchL=1.80 do JSON)
+    if (spec && opts.params) {
+      if (Array.isArray(spec.params) && Array.isArray(opts.params)) {
+        spec.params = opts.params.slice();
+      } else if (Array.isArray(opts.params)) {
+        spec.params = opts.params.slice();
+      } else {
+        spec.params = Object.assign({}, spec.params || {}, opts.params);
+      }
+      spec._jsonParams = opts.params;
+    }
+    if (spec && opts.box_mm && spec.factory === 'maderitePanel') {
+      spec.params = Object.assign({}, spec.params || {}, { box_mm: opts.box_mm, cuts: opts.cuts, cut_mm: opts.cut_mm });
+    }
     let mesh;
 
     if (spec) {
@@ -212,14 +441,32 @@ export default class PaletteService {
       if (spec.bedY != null)  mesh.userData.bedY  = spec.bedY;
     }
 
-    const name = item.spawnName || item.name || kind;
+    const name = opts.name || item.spawnName || item.name || kind;
     const cat  = item.spawnCat || null;
 
     mesh.userData.kind = kind;
+    mesh.userData.name = name;
+    mesh.userData.fromPalette = true;
+    if (String(kind).indexOf('janela') === 0) {
+      mesh.userData.funcKind = 'janela';
+      mesh.userData.editable = true;
+      const wallH = 1.85;
+      mesh.position.set(-0.70, wallH / 2, 0);
+    }
+    // carimba utilities do catálogo (auto-connect 12V/220V/água)
+    if (item.utilities) {
+      mesh.userData.utilities = item.utilities;
+    }
+    if (item.spawnCat) mesh.userData.category = item.spawnCat;
+    else if (item.cat) {
+      const c = String(item.cat).toLowerCase();
+      if (c.indexOf('el') >= 0) mesh.userData.category = 'eletrica';
+      else if (c.indexOf('encan') >= 0 || c.indexOf('hidr') >= 0) mesh.userData.category = 'encanamento';
+    }
     this.attachProductMeta(mesh, kind);
     mesh.castShadow = true;
 
-    const group = this.targetGroup();
+    const group = this.targetGroup(kind);
     if (!group || typeof group.add !== 'function') {
       const err = new Error('Grupo de interior indisponível para spawn da paleta.');
       if (typeof this.onFatalError === 'function') this.onFatalError(err, 'spawnPaletteItem');

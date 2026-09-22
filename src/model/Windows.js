@@ -1,114 +1,112 @@
+/**
+ * Windows — factory de geometria de janela RV (paleta).
+ * Nenhuma janela de projeto é criada aqui; só makeRvWindow(w,h).
+ */
 export default class Windows {
-  constructor(THREE, M, { BODY_W, wth, Lt, WALL_H, roofTop, roofY, zRoofFront, zRoofRear, mzFloorH, mzWallY0, mzInnerZ, mzInnerW, colTopY, mzW }) {
+  constructor(THREE, M, dims = {}) {
     this.THREE = THREE;
     this.M = M;
-    this.BODY_W = BODY_W;
-    this.wth = wth;
-    this.Lt = Lt;
-    this.WALL_H = WALL_H;
-    this.roofTop = roofTop;
-    this.roofY = roofY;
-    this.zRoofFront = zRoofFront;
-    this.zRoofRear = zRoofRear;
-    this.mzFloorH = mzFloorH;
-    this.mzWallY0 = mzWallY0;
-    this.mzInnerZ = mzInnerZ;
-    this.mzInnerW = mzInnerW;
-    this.colTopY = colTopY;
-    this.mzW = mzW;
+    // dims opcionais (legado); não usados para layout
+    Object.assign(this, dims);
     this.windowMeshes = [];
     this.windowGroups = [];
     this.sky = null;
     this.mzSky = null;
   }
 
-  makeRvWindow(w, h) {
+  _roundedRectShape(w, h, r) {
+    const { THREE } = this;
+    const s = new THREE.Shape();
+    const x0 = -w / 2, y0 = -h / 2;
+    const x1 = w / 2, y1 = h / 2;
+    r = Math.max(0.001, Math.min(r, Math.min(w, h) / 2));
+    s.moveTo(x0 + r, y0);
+    s.lineTo(x1 - r, y0);
+    s.quadraticCurveTo(x1, y0, x1, y0 + r);
+    s.lineTo(x1, y1 - r);
+    s.quadraticCurveTo(x1, y1, x1 - r, y1);
+    s.lineTo(x0 + r, y1);
+    s.quadraticCurveTo(x0, y1, x0, y1 - r);
+    s.lineTo(x0, y0 + r);
+    s.quadraticCurveTo(x0, y0, x0 + r, y0);
+    return s;
+  }
+
+  /**
+   * Geometria genérica de janela (objeto de paleta).
+   * w,h em metros (vão de vidro). r>0 → cantos arredondados.
+   */
+  makeRvWindow(w = 0.50, h = 0.50, r = 0) {
     const { THREE, M } = this;
+    w = Math.max(0.15, Number(w) || 0.50);
+    h = Math.max(0.15, Number(h) || 0.50);
     const g = new THREE.Group();
-    const t = 0.028, d = 0.036;
-    const top = new THREE.Mesh(new THREE.BoxGeometry(w + t * 2, t, d), M.aluminioD);
-    top.position.y = h / 2 + t / 2;
-    const bot = new THREE.Mesh(new THREE.BoxGeometry(w + t * 2, t, d), M.aluminioD);
-    bot.position.y = -h / 2 - t / 2;
-    const left = new THREE.Mesh(new THREE.BoxGeometry(t, h, d), M.aluminioD);
-    left.position.x = -w / 2 - t / 2;
-    const right = new THREE.Mesh(new THREE.BoxGeometry(t, h, d), M.aluminioD);
-    right.position.x = w / 2 + t / 2;
-    const glass = new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.006), M.vidro);
-    const sash = new THREE.Group();
-    sash.position.x = -w / 2;
-    glass.position.x = w / 2;
-    sash.add(glass);
-    sash.userData.role = 'sash';
-    g.add(top); g.add(bot); g.add(left); g.add(right); g.add(sash);
-    g.userData.glassW = w; g.userData.glassH = h;
+    const t = 0.028;
+    const d = 0.036;
+    r = Math.max(0, Number(r) || 0);
+
+    if (r > 0) {
+      // Moldura retangular com cantos arredondados: extrude do anel externo/interno
+      const outer = this._roundedRectShape(w + t * 2, h + t * 2, r + t);
+      const inner = this._roundedRectShape(w, h, r);
+      outer.holes.push(inner);
+      const frameGeo = new THREE.ExtrudeGeometry(outer, {
+        depth: d,
+        bevelEnabled: false,
+        curveSegments: 8,
+      });
+      frameGeo.translate(0, 0, -d / 2);
+      const frame = new THREE.Mesh(frameGeo, M.aluminioD);
+      frame.castShadow = true;
+      const glassGeo = new THREE.ShapeGeometry(this._roundedRectShape(w, h, r), 8);
+      const glassMat = M.vidro.clone ? M.vidro.clone() : M.vidro;
+      if (glassMat.side !== undefined) glassMat.side = THREE.DoubleSide;
+      const glass = new THREE.Mesh(glassGeo, glassMat);
+      const sash = new THREE.Group();
+      sash.add(glass);
+      sash.userData.role = 'sash';
+      g.add(frame, sash);
+    } else {
+      const top = new THREE.Mesh(new THREE.BoxGeometry(w + t * 2, t, d), M.aluminioD);
+      top.position.y = h / 2 + t / 2;
+      const bot = new THREE.Mesh(new THREE.BoxGeometry(w + t * 2, t, d), M.aluminioD);
+      bot.position.y = -h / 2 - t / 2;
+      const left = new THREE.Mesh(new THREE.BoxGeometry(t, h, d), M.aluminioD);
+      left.position.x = -w / 2 - t / 2;
+      const right = new THREE.Mesh(new THREE.BoxGeometry(t, h, d), M.aluminioD);
+      right.position.x = w / 2 + t / 2;
+      const glass = new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.006), M.vidro);
+      const sash = new THREE.Group();
+      sash.position.x = -w / 2;
+      glass.position.x = w / 2;
+      sash.add(glass);
+      sash.userData.role = 'sash';
+      g.add(top, bot, left, right, sash);
+    }
+    g.userData.glassW = w;
+    g.userData.glassH = h;
+    g.userData.winW = w;
+    g.userData.winH = h;
     g.userData.funcKind = 'janela';
-    return g;
-  }
-
-  janela(wallsExt, w, h, x, y, z, ry, nome) {
-    const g = this.makeRvWindow(w, h);
-    g.position.set(x, y, z);
-    g.rotation.y = ry || 0;
-    wallsExt.add(g);
-    g.userData.name = nome || 'Janela';
-    g.userData.winName = g.userData.name;
-    g.userData.editable = true;
-    g.userData.layoutProtected = true;
     g.userData.kind = 'janela';
-    this.windowMeshes.push(g);
-    this.windowGroups.push(g);
-    return g;
-  }
-
-  mzJanela(mezz, w, h, x, y, z, ry, nome) {
-    const g = this.makeRvWindow(w, h);
-    g.position.set(x, y, z);
-    g.rotation.y = ry || 0;
-    mezz.add(g);
-    g.userData.name = nome || 'Janela mezanino';
-    g.userData.winName = g.userData.name;
     g.userData.editable = true;
-    g.userData.layoutProtected = true;
-    g.userData.kind = 'janela';
-    this.windowMeshes.push(g);
-    this.windowGroups.push(g);
+    g.userData.collider = true;
+    g.userData.fromPalette = true;
     return g;
   }
 
-  build(wallsExt, wallG, mezz) {
-    const { THREE, M, BODY_W, wth, Lt, roofTop, mzInnerZ, mzInnerW, colTopY, mzW, zRoofFront, WALL_H } = this;
-
-    const winCut = (z, y, w, h) => ({ z0: z - w / 2, z1: z + w / 2, y0: y - h / 2, y1: y + h / 2 });
-    const winLCuts = [winCut(0.20, 1.20, 0.50, 0.50), winCut(0.95, 1.20, 0.50, 0.50)];
-    // Porta saiu da lateral direita para a traseira; a antiga janela traseira (0.80×0.50)
-    // agora é a janela lateral direita traseira, na posição onde ficava a porta.
-    const winRCuts = [
-      winCut(-0.35, 1.20, 0.50, 0.50),
-      winCut(0.40, 1.20, 0.50, 0.50),
-      winCut(1.15, 1.20, 0.80, 0.50),
-    ];
-
-    this.janela(wallsExt, 0.50, 0.50, -BODY_W / 2 + wth / 2, 1.20, 0.20, -Math.PI / 2, 'Janela esquerda 1');
-    this.janela(wallsExt, 0.50, 0.50, -BODY_W / 2 + wth / 2, 1.20, 0.95, -Math.PI / 2, 'Janela esquerda 2');
-    this.janela(wallsExt, 0.50, 0.50, BODY_W / 2 - wth / 2, 1.20, -0.35, Math.PI / 2, 'Janela direita 1');
-    this.janela(wallsExt, 0.50, 0.50, BODY_W / 2 - wth / 2, 1.20, 0.40, Math.PI / 2, 'Janela direita 2');
-    this.janela(wallsExt, 0.70, 0.32, 0, 0.32, -Lt / 2 + wth / 2, Math.PI, 'Janela frontal');
-
-    const sky = new THREE.Mesh(new THREE.BoxGeometry(0.40, 0.04, 0.40), M.vidro);
-    sky.position.set(0, roofTop(0.4) + 0.02, 0.4);
-    wallG.add(sky);
-    this.sky = sky;
-
-    this.mzJanela(mezz, 0.50, 0.40, -BODY_W / 2 + 0.012, colTopY + 0.60, mzInnerZ, Math.PI / 2, 'Janela mez. esquerda');
-    this.mzJanela(mezz, 0.50, 0.40, BODY_W / 2 - 0.012, colTopY + 0.60, mzInnerZ, -Math.PI / 2, 'Janela mez. direita');
-    this.mzJanela(mezz, 0.80, 0.45, 0, colTopY + 0.70, zRoofFront + wth / 2, Math.PI, 'Janela mez. frontal');
-
-    const mzSky = new THREE.Mesh(new THREE.BoxGeometry(0.30, 0.04, 0.30), M.vidro);
-    mzSky.position.set(0, roofTop(0) + 0.03, 0);
-    wallG.add(mzSky);
-    this.mzSky = mzSky;
-
-    return { windowMeshes: this.windowMeshes, sky, mzSky, winLCuts, winRCuts };
+  /** Sem layout de projeto — janelas só via paleta/JSON. */
+  build() {
+    this.windowMeshes = [];
+    this.windowGroups = [];
+    this.sky = null;
+    this.mzSky = null;
+    return {
+      windowMeshes: this.windowMeshes,
+      sky: null,
+      mzSky: null,
+      winLCuts: [],
+      winRCuts: [],
+    };
   }
 }

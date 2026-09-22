@@ -34,11 +34,15 @@ import WalkthroughService from './services/WalkthroughService.js';
 import AIService from './services/AIService.js?v=20260909-2230';
 import ExportService from './services/ExportService.js';
 import PaletteService from './services/PaletteService.js';
+import PhotoBookService from './services/PhotoBookService.js';
 import MarcenariaService from './services/MarcenariaService.js';
 import AuthService from './services/AuthService.js';
 import UserFilesService from './services/UserFilesService.js';
 import WeightService from './services/WeightService.js';
 import ProjectService from './services/ProjectService.js';
+import TrailerCatalogService from './services/TrailerCatalogService.js';
+import PlanView2D from './views/PlanView2D.js';
+import ConnectionService from './services/ConnectionService.js';
 
 // DISCLAIMER/HOOK: Este bloco foi removido. A fonte de verdade é data/palette-catalog.json.
 // Se você precisa de PALLET_DATA, carregue-o do catálogo (this._catalogMap).
@@ -159,16 +163,19 @@ class TrailerApp {
 
     // Carregar catálogo de objetos (data/palette-catalog.json)
     try {
-      const resp = await fetch('data/palette-catalog.json', { cache: 'no-store' });
-      if (!resp.ok) throw new Error(resp.status + ' ' + resp.statusText);
-      const catalog = await resp.json();
-      this.catalog = catalog;
-      this._catalogMap = {};
-      for (const item of catalog.items) this._catalogMap[item.kind] = item;
+      await this.reloadCatalog();
     } catch (err) {
       console.error('[catalog] Falha ao carregar data/palette-catalog.json:', err);
       this.catalog = { items: [] };
       this._catalogMap = {};
+    }
+
+    this.services = this.services || {};
+    this.services.trailerCatalog = new TrailerCatalogService();
+    try {
+      await this.services.trailerCatalog.load('data/trailer-catalog.json');
+    } catch (err) {
+      console.error('[trailer-catalog] Falha ao carregar:', err);
     }
 
     this._renderPaletteButtons();
@@ -210,19 +217,9 @@ class TrailerApp {
         zRoofFront: C2.zRoofFront,
         mzWallY0: C2.mzWallY0, mzFloorH: D.mzFloorH
       });
-      // Window cuts
-      function winCut(z, y, w, h) {
-        return { z0: z - w / 2, z1: z + w / 2, y0: y - h / 2, y1: y + h / 2 };
-      }
-      const winLCuts = [winCut(0.20, 1.20, 0.50, 0.50), winCut(0.95, 1.20, 0.50, 0.50)];
-      const winRCuts = [
-        { z0: C2.doorZ0, z1: C2.doorZ1, y0: D.DOOR_SILL, y1: D.DOOR_SILL + D.DOOR_H },
-        winCut(-0.35, 1.20, 0.50, 0.50),
-        winCut(0.85, 1.20, 0.50, 0.50),
-      ];
-
+      // Cortes de abertura: vazios no factory; o layout do projeto (JSON) define janelas/portas.
       this.models.body = body;
-      const bodyResult = body.build(null, winLCuts, winRCuts, chassisG);
+      const bodyResult = body.build(null, [], [], chassisG);
       this.entryDoor = bodyResult.entryDoor;
       this.trailer.add(bodyResult.group);
 
@@ -302,12 +299,12 @@ class TrailerApp {
         mzFloorH: D.mzFloorH, mzInnerZ: C2.mzInnerZ
       });
       this.services.walkthrough.setEntryDoor(bodyResult.entryDoor);
-      this.services.walkthrough.setMZFloorY(interiorResult.colTopY + 0.04);
-      [interiorResult.counter, interiorResult.counterTop, interiorResult.kidBed,
-        interiorResult.potti, interiorResult.stairCabs, interiorResult.guard].forEach((obj) => {
-        this.services.walkthrough.addWalkSolid(obj, 'cabin');
+      this.services.walkthrough.setMZFloorY((interiorResult.colTopY || D.mzFloorH || 1.5) + 0.04);
+      [interiorResult.stairCabs, interiorResult.guard].forEach((obj) => {
+        if (obj) this.services.walkthrough.addWalkSolid(obj, 'cabin');
       });
-      [interiorResult.casalBed].forEach((obj) => this.services.walkthrough.addWalkSolid(obj, 'mezz'));
+      if (interiorResult.kidBed) this.services.walkthrough.addWalkSolid(interiorResult.kidBed, 'cabin');
+      if (interiorResult.casalBed) this.services.walkthrough.addWalkSolid(interiorResult.casalBed, 'mezz');
       const ed = this.services.editor;
       this.services.ai = new AIService({
         editableMeshes: this.editableMeshes,
@@ -345,6 +342,7 @@ class TrailerApp {
         addEditableFn: (mesh, name, cat, kind) => {
           ed.addEditable(mesh, name || (mesh.userData && mesh.userData.name) || 'Objeto', cat, kind);
           if (!this.editableMeshes.includes(mesh)) this.editableMeshes.push(mesh);
+          if (this.services.connections) this.services.connections.invalidate();
         },
         uniqueNameFn: (base) => {
           let n = base, i = 2;
@@ -353,13 +351,28 @@ class TrailerApp {
         },
         roofTopFn: (z) => C2.roofTop(z),
         makeHingedDoorFn: (opts) => interior.makeHingedDoor(opts),
-        makeRvWindowFn: (w, h) => windows.makeRvWindow(w, h),
-        makeDinetteGroupFn: () => interior.makeDinetteGroup ? interior.makeDinetteGroup() : null,
+        makeRvWindowFn: (w, h, r) => windows.makeRvWindow(w, h, r),
+        makeDinetteGroupFn: (opts) => interior.makeDinetteGroup ? interior.makeDinetteGroup(opts || {}) : null,
         rootGroupFn: () => this.trailer,
         onFatalErrorFn: (err, where) => showFatalOnScreen(err, where),
-        M, matFn,
         weightService: this.services.weight
       });
+
+      // Auto-connect água / esgoto / 12V / 220V (hubs = scene_layout + catálogo)
+      const sceneRoot = this.sceneManager.getScene();
+      this.services.connections = new ConnectionService({
+        scene: sceneRoot,
+        trailer: this.trailer,
+        editableMeshes: this.editableMeshes,
+        FLOOR_Y: C2.FLOOR_Y,
+        Li: D.Li || D.Lt || 2.9,
+        Lt: D.Lt || 2.9,
+        BODY_W: D.BODY_W || 1.9,
+        wth: D.wth || 0.05,
+        catalog: this.catalog,
+      });
+      // carrega data/utilities-network.json (água/elétrica data-driven)
+      this.services.connections.loadNetworkSpec('data/utilities-network.json');
 
       this.services.marcenaria = new MarcenariaService({
         M, matFn,
@@ -380,8 +393,17 @@ class TrailerApp {
         loadDeps: {},
       });
 
+      // ── Visão Planta 2D ──
+      this.services.planView2D = new PlanView2D({
+        scene, camera, renderer,
+        editableMeshes: this.editableMeshes,
+        trailer: this.trailer,
+        computed: this.computed,
+        D, editor: this.services.editor,
+        persistFn: (reason) => this.persistProjectNow?.(reason)
+      });
+
 this.initUI();
-       this._collectAllEditable();
        this.startLoop();
        window.trailerApp = this;
        console.log('Trailer 3D Studio inicializado com sucesso!');
@@ -394,11 +416,59 @@ this.initUI();
     }
   }
 
+  /** Recarrega o catálogo de objetos da paleta a partir de data/palette-catalog.json.
+   *  Retorna true em sucesso. Permite que kinds novos (ex.: janela-are-180x50)
+   *  cheguem a um app já em execução sem precisar recarregar a página. */
+  async reloadCatalog() {
+    const resp = await fetch('data/palette-catalog.json', { cache: 'no-store' });
+    if (!resp.ok) throw new Error(resp.status + ' ' + resp.statusText);
+    const catalog = await resp.json();
+    this.catalog = catalog;
+    this._catalogMap = {};
+    for (const item of catalog.items) this._catalogMap[item.kind] = item;
+    // PaletteService guarda referência própria — sincroniza
+    if (this.services && this.services.palette) {
+      this.services.palette.catalog = catalog;
+    }
+    if (this.services && this.services.connections) {
+      this.services.connections.setCatalog(catalog);
+      try { await this.services.connections.loadNetworkSpec('data/utilities-network.json'); } catch (e) { /* ignore */ }
+      this.services.connections.invalidate();
+    }
+    return true;
+  }
+
   _renderPaletteButtons() {
     const grid = document.querySelector('#palette .grid');
     const catalog = this.catalog;
     if (!grid || !catalog || !catalog.items) return;
     grid.innerHTML = '';
+
+    // ── Reboques conhecidos (data/trailer-catalog.json) ──
+    const trailers = (this.services && this.services.trailerCatalog)
+      ? this.services.trailerCatalog.list()
+      : [];
+    if (trailers.length) {
+      const h0 = document.createElement('div');
+      h0.className = 'pal-cat';
+      h0.textContent = 'Reboques';
+      grid.appendChild(h0);
+      for (const tr of trailers) {
+        if (!tr || !tr.id) continue;
+        const btn = document.createElement('button');
+        btn.className = 'pi';
+        btn.setAttribute('data-trailer', tr.id);
+        btn.title = (tr.brand || '') + ' · ' + (tr.length_m || '?') + ' m · ' + (tr.notes || tr.source || '');
+        const thumb = document.createElement('span');
+        thumb.className = 'thumb';
+        thumb.innerHTML = tr.svg || '';
+        btn.appendChild(thumb);
+        btn.appendChild(document.createTextNode(tr.name || tr.id));
+        btn.addEventListener('click', () => this._applyTrailerCatalogModel(tr.id));
+        grid.appendChild(btn);
+      }
+    }
+
     const catOrder = [];
     for (const item of catalog.items) {
       if (!catOrder.includes(item.cat)) catOrder.push(item.cat);
@@ -422,48 +492,55 @@ this.initUI();
       }
     }
     const countEl = document.getElementById('pal-count');
-    if (countEl) countEl.textContent = catalog.items.length + '/' + catalog.items.length;
+    const nObj = catalog.items.length;
+    const nTr = trailers.length;
+    if (countEl) countEl.textContent = nObj + ' objs · ' + nTr + ' reboques';
     window.dispatchEvent(new CustomEvent('palette:rendered'));
+  }
+
+  _applyTrailerCatalogModel(id) {
+    const tc = this.services && this.services.trailerCatalog;
+    const project = this.services && this.services.project;
+    const save = this.services && this.services.save;
+    const ai = this.services && this.services.ai;
+    if (!tc || !project) return;
+    const base = project.getProject ? project.getProject() : null;
+    const built = tc.buildProjectFromTemplate(id, base);
+    if (!built) {
+      ai && ai.aiLog('Modelo de reboque não encontrado: ' + id, 'err');
+      return;
+    }
+    // prune tanks again
+    if (built.scene_layout && built.scene_layout.objects) {
+      built.scene_layout.objects = TrailerCatalogService.pruneTankDuplicates(built.scene_layout.objects);
+    }
+    project.loadProject(built);
+    const saveDeps = {
+      spawnPaletteItem: (kind, opts) => this.services.palette && this.services.palette.spawnPaletteItem(kind, opts),
+      attachProductMeta: (mesh, kind) => this.services.palette && this.services.palette.attachProductMeta(mesh, kind),
+      attachCarpentryPart: () => null,
+      applyMaderiteState: (mesh, st) => this.services.palette && this.services.palette.applyMaderiteState(mesh, st),
+      pruneEditor: () => this.services.editor && this.services.editor.pruneOrphanEditables(),
+      aiLog: (text, cls) => ai && ai.aiLog(text, cls),
+    };
+    if (save && typeof save.applyCapturedFromLayout === 'function' && built.scene_layout) {
+      try {
+        save.resetLayout && save.resetLayout(null, { forceFactory: true });
+        save.applyCapturedFromLayout(built.scene_layout, saveDeps);
+      } catch (e) {
+        console.warn('apply trailer catalog layout', e);
+      }
+    }
+    this.renderSpecPanel && this.renderSpecPanel(document.getElementById('specs-list'));
+    ai && ai.aiLog('Reboque aplicado: ' + (built.meta && built.meta.name || id) + ' (tanques do JSON do modelo).', 'sys');
   }
 
   _collectEditableMeshes() {
     const meshes = [];
     const interior = this.models.interior;
 
-    const NAMES = {
-      bath: ['Vaso sanitário', 'Tampa vaso', 'Ducha higiênica', 'Mangueira ducha', 'Espelho banheiro', 'Cuba banheiro'],
-      kitchen: ['Balcão cozinha', 'Tampo balcão', 'Geladeira 37L', 'Alça geladeira', 'Galão água 20L', 'Fogareiro 1', 'Fogareiro 2'],
-      stairCabs: ['Armário-degrau 1', 'Armário-degrau 2', 'Armário-degrau 3', 'Armário-degrau 4'],
-      mezz: ['Coluna mez. esq. frente', 'Coluna mez. dir. frente', 'Coluna mez. esq. trás', 'Coluna mez. dir. trás', 'Viga mez. frente', 'Viga mez. trás', 'Piso mezanino', 'Cama casal', 'Travesseiro esq.', 'Travesseiro dir.', 'Guarda-corpo'],
-      wallsInt: ['Parede banheiro fundo', 'Parede banheiro frente', 'Parede banheiro lateral'],
-    };
-    if (interior) {
-      const groups = [
-        { g: interior.bath, names: NAMES.bath },
-        { g: interior.kitchen, names: NAMES.kitchen },
-        { g: interior.stairCabs, names: NAMES.stairCabs },
-        { g: interior.mezz, names: NAMES.mezz },
-        { g: interior.wallsInt, names: NAMES.wallsInt },
-      ];
-      groups.forEach(({ g, names }) => {
-        if (!g) return;
-        let idx = 0;
-        g.traverse((c) => {
-          if (c.isMesh) {
-            c.userData.editable = true;
-            c.userData.name = names[idx] || 'Objeto Interior';
-            idx++;
-            meshes.push(c);
-          }
-        });
-      });
-    }
-    // Also collect kidBed (dinette)
-    if (interior && interior.kidBed) {
-      interior.kidBed.traverse((c) => {
-        if (c.isMesh) { c.userData.editable = true; c.userData.name = 'Dinete'; meshes.push(c); }
-      });
-    }
+    // Interior layout vem do JSON (scene_layout) — factory só expõe grupos vazios.
+    // Meshes editáveis de interior são adicionados via Palette/Save applyCapturedFromLayout.
 
     // Janelas e porta de entrada são movíveis pelo layout (projeto manda):
     const addGroup = (g) => {
@@ -472,7 +549,7 @@ this.initUI();
         meshes.push(g);
       }
     };
-    if (this.models.windows) this.models.windows.windowGroups.forEach(addGroup);
+    // Janelas: só via paleta/JSON (não há windowGroups de factory).
     addGroup(this.entryDoor);
 
     // Mutate in place — never reassign: Editor/Save/Palette hold the same array ref.
@@ -572,6 +649,74 @@ this.initUI();
       if (labels.labelsGroup) labels.labelsGroup.visible = showLabels;
       document.getElementById('btn-labels').classList.toggle('active', showLabels);
     });
+    // modo noturno: céu escuro + spots/plafons acesos
+    if (sceneManager && typeof sceneManager.setEditableMeshes === 'function') {
+      sceneManager.setEditableMeshes(this.editableMeshes);
+    }
+    const toggleNight = () => {
+      if (!sceneManager || typeof sceneManager.setNightMode !== 'function') return;
+      sceneManager.setEditableMeshes(this.editableMeshes);
+      const on = sceneManager.setNightMode();
+      const vi = document.getElementById('view-info');
+      if (vi) {
+        const base = (vi.textContent || '').replace(/\s*·\s*noite.+$/i, '').replace(/\s*·\s*dia.+$/i, '');
+        vi.textContent = base + (on ? ' · noite (luzes on)' : ' · dia');
+      }
+      if (ai && typeof ai.aiLog === 'function') {
+        ai.aiLog(on ? 'Modo noturno: spots 12V acesos.' : 'Modo diurno.', 'sys');
+      }
+    };
+    bind('btn-night', toggleNight);
+    bind('btn-night-float', toggleNight);
+    this.toggleNightMode = toggleNight;
+
+    // Photo book (multi-vista dia/noite)
+    this.services.photoBook = new PhotoBookService({
+      sceneManager,
+      getApp: () => this,
+      getProjectMeta: () => {
+        const p = this.services.project && this.services.project.project;
+        const m = (p && p.meta) || {};
+        return {
+          name: m.name || 'Trailer',
+          rev: m.rev,
+          version: m.version,
+          source: m.source || 'scene_layout',
+          description: m.description || '',
+        };
+      },
+    });
+    const runPhotoBook = async () => {
+      const btn = document.getElementById('btn-book') || document.getElementById('btn-book-float');
+      const vi = document.getElementById('view-info');
+      if (!this.services.photoBook) return;
+      if (this.services.photoBook.busy) return;
+      try {
+        if (btn) { btn.disabled = true; btn.classList.add('active'); }
+        const result = await this.services.photoBook.generate({
+          onProgress: (i, n, title) => {
+            if (vi) vi.textContent = `book ${i}/${n}: ${title}`;
+            if (btn) btn.textContent = `book ${i}/${n}`;
+          },
+        });
+        this.services.photoBook.openBook(result.html);
+        this.services.photoBook.downloadBook(result.html, `photo-book-rev${result.meta.rev || 'x'}.html`);
+        if (ai && ai.aiLog) ai.aiLog(`Photo book gerado (${result.pages.length} fotos).`, 'sys');
+        if (vi) vi.textContent = `book pronto · ${result.pages.length} fotos`;
+      } catch (e) {
+        console.error(e);
+        alert('Falha ao gerar book: ' + (e && e.message ? e.message : e));
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.classList.remove('active');
+          btn.textContent = btn.id === 'btn-book-float' ? 'book' : 'gerar book';
+        }
+      }
+    };
+    bind('btn-book', runPhotoBook);
+    bind('btn-book-float', runPhotoBook);
+    this.runPhotoBook = runPhotoBook;
     bind('btn-rotate', () => {
       controls.autoRotate = !controls.autoRotate;
       controls.autoRotateSpeed = 0.6;
@@ -923,9 +1068,9 @@ this.initUI();
         updateEditorPanel();
       });
     };
-    bindNum('pos-x', (o, v) => { o.position.x = v; });
-    bindNum('pos-y', (o, v) => { o.position.y = v; });
-    bindNum('pos-z', (o, v) => { o.position.z = v; });
+    bindNum('pos-x', (o, v) => { o.position.x = v; }, { resolve: false });
+    bindNum('pos-y', (o, v) => { o.position.y = v; }, { resolve: false });
+    bindNum('pos-z', (o, v) => { o.position.z = v; }, { resolve: false });
     bindNum('scl-x', (o, v) => { o.scale.x = Math.max(0.01, v); });
     bindNum('scl-y', (o, v) => { o.scale.y = Math.max(0.01, v); });
     bindNum('scl-z', (o, v) => { o.scale.z = Math.max(0.01, v); });
@@ -1105,9 +1250,11 @@ this.initUI();
     try { palette.setupDragAndDrop(this.sceneManager.getRenderer(), this.sceneManager.getCamera()); } catch (e) { console.warn('setupDragAndDrop not available:', e); }
 
     const saveDeps = {
-      spawnPaletteItem: (kind) => palette.spawnPaletteItem(kind),
+      spawnPaletteItem: (kind, opts) => palette.spawnPaletteItem(kind, opts),
       attachProductMeta: (mesh, kind) => palette.attachProductMeta(mesh, kind),
       attachCarpentryPart: (parent, spec, worldPoint, localPoint) => marcenaria.attachCarpentryPart(parent, spec, worldPoint, localPoint),
+      applyMaderiteState: (mesh, st) => palette.applyMaderiteState(mesh, st),
+      pruneEditor: () => editor.pruneOrphanEditables(),
       aiLog: (text, cls) => ai && ai.aiLog(text, cls),
     };
         save.captureFactoryLayout(() => editor.captureLayout());
@@ -1462,59 +1609,178 @@ this.initUI();
       return this.services.project.syncFromBoxGroup(box);
     };
 
-    const runOpenProject = () => {
-      project.openProjectFile().then((proj) => {
-        if (!proj) return;
-        try { project.loadProject(proj); } catch (e) { return; }
-        if (app.services.export) {
-          // Força plano de corte a partir do JSON importado (nunca trailer default)
-          const fromFile = app.services.export.extractPartsFromProject
-            ? app.services.export.extractPartsFromProject(proj)
-            : [];
-          app.services.export.setScenePieces(fromFile.length ? fromFile : null);
-        }
-        const built = buildGeometryFromProject(proj);
-        if (!built) {
-          clearProjectBoxFromScene();
-          materializeFactory();
-          restoreSceneFromEmpty();
-          this.ensureEnvelopeVisibility(true, true);
-          if (proj.scene_layout && Array.isArray(proj.scene_layout.objects)) {
-            try {
-              save.resetLayout((text, cls) => ai && ai.aiLog(text, cls), { forceFactory: true });
-              save.applyCapturedFromLayout(proj.scene_layout, saveDeps);
-            } catch (e) {
-              console.warn('apply scene_layout from project json', e);
-            }
+    /** Aplica um objeto de projeto já parseado (menu Abrir ou auto-reload do disco). */
+    const applyLoadedProject = async (proj, { source = 'import', quiet = false } = {}) => {
+      if (!proj) return false;
+      try { project.loadProject(proj); } catch (e) { return false; }
+      try { await this.reloadCatalog(); } catch (e) { console.warn('reload catalog on apply', e); }
+      if (typeof this._renderPaletteButtons === 'function') {
+        try { this._renderPaletteButtons(); } catch (e) { /* ignore */ }
+      }
+      if (app.services.export) {
+        const fromFile = app.services.export.extractPartsFromProject
+          ? app.services.export.extractPartsFromProject(proj)
+          : [];
+        app.services.export.setScenePieces(fromFile.length ? fromFile : null);
+      }
+      const built = buildGeometryFromProject(proj);
+      if (!built) {
+        clearProjectBoxFromScene();
+        materializeFactory();
+        restoreSceneFromEmpty();
+        this.ensureEnvelopeVisibility(true, true);
+        if (proj.scene_layout && Array.isArray(proj.scene_layout.objects)) {
+          try {
+            // limpa layout salvo no browser (senão posições antigas ganham)
+            try { localStorage.removeItem(save.SAVE_KEY); } catch (e) { /* ignore */ }
+            save.resetLayout((text, cls) => ai && ai.aiLog(text, cls), { forceFactory: true });
+            save.applyCapturedFromLayout(proj.scene_layout, saveDeps);
+            // 2ª passada: garante p/r do JSON (esp. ecoflow/bluetti)
+            (proj.scene_layout.objects || []).forEach((st) => {
+              if (!st || !st.name || !st.p) return;
+              const m = this.editableMeshes.find((x) => x && x.userData && (
+                x.userData.name === st.name || (st.kind && x.userData.kind === st.kind && st.kind === 'ecoflow-delta2')
+              ));
+              if (!m) return;
+              m.userData.fixedLayout = true;
+              m.position.set(Number(st.p[0]) || 0, Number(st.p[1]) || 0, Number(st.p[2]) || 0);
+              if (st.r) m.rotation.set(Number(st.r[0]) || 0, Number(st.r[1]) || 0, Number(st.r[2]) || 0);
+              if (st.s) m.scale.set(Number(st.s[0]) || 1, Number(st.s[1]) || 1, Number(st.s[2]) || 1);
+              if (st.name) m.userData.name = st.name;
+            });
+          } catch (e) {
+            console.warn('apply scene_layout from project json', e);
           }
         }
-
-        // ── HOOK: aberturas 100% derivadas do JSON do projeto ──
-        // O layout posiciona as janelas/porta; o tool só corta o que está no layout.
-        const openSrc = this.editableMeshes.filter((m) => m && m.parent && m.userData && m.position
-          && m.position.y < 2
-          && (m.userData.kind === 'porta' || m.userData.funcKind === 'janela'));
-        if (openSrc.length && this.models.body && typeof this.models.body.setLayoutOpenings === 'function') {
-          this.models.body.setLayoutOpenings(openSrc);
+      }
+      if (this.models.body && this.models.body.wallGroup) {
+        const fy = this.models.body.FLOOR_Y || 0.51;
+        this.models.body.wallGroup.position.y = fy;
+        this.models.body.FLOOR_Y = fy;
+      }
+      const openSrc = this.editableMeshes.filter((m) => {
+        if (!m || !m.userData) return false;
+        const k = m.userData.kind || '';
+        return k === 'porta' || k.indexOf('janela') === 0 || m.userData.funcKind === 'janela';
+      });
+      if (openSrc.length && this.models.body && typeof this.models.body.setLayoutOpenings === 'function') {
+        this.models.body.setLayoutOpenings(openSrc);
+      }
+      // re-acende spots se modo noturno estiver ativo
+      if (this.sceneManager && typeof this.sceneManager.refreshNightFixtures === 'function') {
+        this.sceneManager.setEditableMeshes(this.editableMeshes);
+        this.sceneManager.refreshNightFixtures();
+      }
+      const doorCfg = proj.structure && proj.structure.door;
+      const doorMesh = openSrc.find((m) => m.userData && m.userData.kind === 'porta');
+      if (this.services.walkthrough) {
+        const wall = doorMesh ? this.models.body.nearestWall(doorMesh) : null;
+        this.services.walkthrough.setDoorGeo(wall, doorMesh ? doorMesh.position : null);
+        this.services.walkthrough.setDoorOpen(doorCfg && doorCfg.open === 'out' ? 'out' : 'in');
+      }
+      weight.setProjectWeights(project.getWeights());
+      this.renderSpecPanel(document.getElementById('specs-list'));
+      if (typeof updateCurrentProjectName === 'function') updateCurrentProjectName();
+      // sincroniza localStorage com o JSON aplicado (evita boot com layout antigo)
+      try {
+        localStorage.setItem('trailer3d-project-json-v1', JSON.stringify(proj));
+        if (save && typeof save.serializeLayout === 'function') {
+          localStorage.setItem(save.SAVE_KEY || 'trailer3d-layout-v10', JSON.stringify(save.serializeLayout()));
         }
-        const doorCfg = proj.structure && proj.structure.door;
-        const doorMesh = openSrc.find((m) => m.userData && m.userData.kind === 'porta');
-        if (this.services.walkthrough) {
-          const wall = doorMesh ? this.models.body.nearestWall(doorMesh) : null;
-          this.services.walkthrough.setDoorGeo(wall, doorMesh ? doorMesh.position : null);
-          this.services.walkthrough.setDoorOpen(doorCfg && doorCfg.open === 'out' ? 'out' : 'in');
-        }
-
-        weight.setProjectWeights(project.getWeights());
-        this.renderSpecPanel(document.getElementById('specs-list'));
-        updateCurrentProjectName();
+      } catch (e) { /* ignore quota */ }
+      if (this.services.connections) this.services.connections.invalidate();
+      if (!quiet) {
         const dim = proj.dimensions_mm && proj.dimensions_mm.externo;
         const dimTxt = dim
           ? ` ${dim.largura_X||dim.L||'?'}×${dim.profundidade_Z||dim.P||'?'}×${dim.altura_Y||dim.H||'?'} mm`
           : '';
-        ai && ai.aiLog('Projeto importado: ' + (proj.meta?.name || '') + ' rev' + (proj.meta?.rev||'') + dimTxt, 'sys');
+        const tag = source === 'disk-watch' ? 'Atualizado do disco' : 'Projeto importado';
+        ai && ai.aiLog(tag + ': ' + (proj.meta?.name || '') + ' rev' + (proj.meta?.rev||'') + dimTxt, 'sys');
+      }
+      return true;
+    };
+
+    /** Carrega project.json do disco (serve estático) e aplica. */
+    const applyProjectFromDisk = async (opts = {}) => {
+      try {
+        const resp = await fetch('project.json', { cache: 'no-store' });
+        if (!resp.ok) throw new Error(resp.status + ' ' + resp.statusText);
+        const proj = await resp.json();
+        return await applyLoadedProject(proj, opts);
+      } catch (e) {
+        console.warn('[disk-project]', e.message || e);
+        return false;
+      }
+    };
+
+    this.applyLoadedProject = applyLoadedProject;
+    this.applyProjectFromDisk = applyProjectFromDisk;
+
+    const runOpenProject = () => {
+      project.openProjectFile().then(async (proj) => {
+        if (!proj) return;
+        await applyLoadedProject(proj, { source: 'import' });
       }).catch((err) => alert('Erro: ' + err.message));
     };
+
+    // ── Auto-refresh: project.json + palette-catalog no disco ──
+    // JS continua com full reload via index.html /dev-version.version
+    // Aqui só soft-apply quando muda o JSON do projeto ou o catálogo.
+    {
+      let lastProjectHash = null;
+      let lastCatalogHash = null;
+      let lastUtilHash = null;
+      let diskBusy = false;
+      const DISK_POLL_MS = 2000;
+      const pollDiskJson = async () => {
+        if (diskBusy) return;
+        try {
+          const r = await fetch('/dev-version', { cache: 'no-store' });
+          if (!r.ok) return;
+          const d = await r.json();
+          const projH = d.project || null;
+          const catH = d.catalog || null;
+          const utilH = d.utilities || null;
+          if (lastProjectHash == null && lastCatalogHash == null && lastUtilHash == null) {
+            lastProjectHash = projH;
+            lastCatalogHash = catH;
+            lastUtilHash = utilH;
+            return;
+          }
+          const projChanged = projH && projH !== lastProjectHash;
+          const catChanged = catH && catH !== lastCatalogHash;
+          const utilChanged = utilH && utilH !== lastUtilHash;
+          if (!projChanged && !catChanged && !utilChanged) return;
+          diskBusy = true;
+          lastProjectHash = projH || lastProjectHash;
+          lastCatalogHash = catH || lastCatalogHash;
+          lastUtilHash = utilH || lastUtilHash;
+          try {
+            if (utilChanged && this.services.connections) {
+              await this.services.connections.loadNetworkSpec('data/utilities-network.json');
+            }
+            if (projChanged || catChanged) {
+              await applyProjectFromDisk({ source: 'disk-watch', quiet: false });
+            } else if (utilChanged) {
+              this.services.connections && this.services.connections.invalidate();
+              ai && ai.aiLog('Rede utilidades atualizada (utilities-network.json).', 'sys');
+            }
+          } finally {
+            diskBusy = false;
+          }
+        } catch (e) {
+          diskBusy = false;
+        }
+      };
+      // Boot: carrega project.json do disco (fonte de verdade em dev)
+      queueMicrotask(() => {
+        applyProjectFromDisk({ source: 'disk-boot', quiet: false }).then((ok) => {
+          if (ok) ai && ai.aiLog('Projeto carregado de project.json (disco).', 'sys');
+        });
+        setInterval(pollDiskJson, DISK_POLL_MS);
+        pollDiskJson();
+      });
+    }
     const btnNewProject = document.getElementById('btn-new-project');
     if (btnNewProject && btnNewProject.dataset.boundDirectAction !== '1') {
       btnNewProject.dataset.boundDirectAction = '1';
@@ -1615,6 +1881,26 @@ this.initUI();
           case 'view-mezzanino':
             document.getElementById('btn-mezz')?.click();
             break;
+          case 'view-planta-2d': {
+            const pv = this.services.planView2D;
+            if (pv) {
+              pv.activate('horizontal');
+              document.getElementById('plan2d-active-hint').style.display = 'flex';
+              const vi = document.getElementById('view-info');
+              if (vi) vi.textContent = 'vista: PLANTA 2D (horizontal) · Scroll zoom · Arraste mover';
+            }
+            break;
+          }
+          case 'view-elevacao-2d': {
+            const pv = this.services.planView2D;
+            if (pv) {
+              pv.activate('vertical');
+              document.getElementById('plan2d-active-hint').style.display = 'flex';
+              const vi = document.getElementById('view-info');
+              if (vi) vi.textContent = 'vista: ELEVAÇÃO 2D (vertical) · Scroll zoom · Arraste mover';
+            }
+            break;
+          }
           case 'toggle-walls':
             showWalls = !showWalls;
             if (body.wallsExt) body.wallsExt.visible = showWalls;
@@ -1660,6 +1946,12 @@ this.initUI();
               if (roof.group) roof.group.visible = active;
               if (windowsM.sky) windowsM.sky.visible = active;
               if (windowsM.mzSky) windowsM.mzSky.visible = active;
+            }
+            // tubulações / cabos do auto-connect
+            if (this.services.connections) {
+              if (cat === 'encanamento' || cat === 'eletrica') {
+                this.services.connections.setLayerVisible(cat, active);
+              }
             }
             const catBtn = document.querySelector(`.cat-btn[data-cat="${cat}"]`);
             if (catBtn) catBtn.classList.toggle('active', active);
@@ -1708,6 +2000,20 @@ this.initUI();
     this._flashT = setTimeout(() => { vi.textContent = prev; vi.style.background = ''; }, 2400);
   }
 
+  _exitPlanView2D() {
+    const pv = this.services.planView2D;
+    if (!pv || !pv.active) return;
+    pv.deactivate();
+    document.getElementById('plan2d-active-hint').style.display = 'none';
+    const vi = document.getElementById('view-info');
+    if (vi) vi.textContent = 'vista: 3D restaurada · ESC 1:50';
+  }
+
+  _isPlanView2DActive() {
+    const pv = this.services.planView2D;
+    return pv && pv.active;
+  }
+
   _focusEntryDoor() {
     const sm = this.sceneManager;
     const door = this.entryDoor || (this.editableMeshes || []).find((m) => m.userData && m.userData.kind === 'porta');
@@ -1742,9 +2048,77 @@ this.initUI();
       if (this._rpaFsActive) return;
       const edtr = this.services.editor;
       const W = this.services.walkthrough;
+
+      // ── Atalhos 2D (F2/F3/Escape) funcionam sempre ──
+      if (e.key === 'F2') {
+        e.preventDefault();
+        const pv = this.services.planView2D;
+        if (pv) {
+          if (pv.active) { this._exitPlanView2D(); }
+          else {
+            pv.activate('horizontal');
+            document.getElementById('plan2d-active-hint').style.display = 'flex';
+            const vi = document.getElementById('view-info');
+            if (vi) vi.textContent = 'vista: PLANTA 2D (horizontal)';
+          }
+        }
+        return;
+      }
+      if (e.key === 'F3') {
+        e.preventDefault();
+        const pv = this.services.planView2D;
+        if (pv) {
+          if (pv.active) { this._exitPlanView2D(); }
+          else {
+            pv.activate('vertical');
+            document.getElementById('plan2d-active-hint').style.display = 'flex';
+            const vi = document.getElementById('view-info');
+            if (vi) vi.textContent = 'vista: ELEVAÇÃO 2D (vertical)';
+          }
+        }
+        return;
+      }
+      if (e.key === 'n' || e.key === 'N') {
+        e.preventDefault();
+        if (typeof this.toggleNightMode === 'function') this.toggleNightMode();
+        return;
+      }
+      if (e.key === 'b' || e.key === 'B') {
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+        e.preventDefault();
+        if (typeof this.runPhotoBook === 'function') this.runPhotoBook();
+        return;
+      }
+
       if (W && W.walkMode) return;
 
       const k = e.key.toLowerCase();
+
+      // ── Em modo 2D: atalhos de ferramentas ──
+      if (this._isPlanView2DActive()) {
+        const pv = this.services.planView2D;
+        if (k === 'escape') { e.preventDefault(); this._exitPlanView2D(); return; }
+        if (k === 'v') { pv.setTool('select'); pv.render(); return; }
+        if (k === 'w') { pv.setTool('wall'); pv.render(); return; }
+        if (k === 'j') { pv.setTool('window'); pv.render(); return; }
+        if (k === 'd') { pv.setTool('door'); pv.render(); return; }
+        if (k === 'x') { pv.setTool('resize'); pv.render(); return; }
+        if (k === 'a' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); pv.selectAll(); return; }
+        if (k === 'delete' || k === 'backspace') { e.preventDefault(); pv.deleteSelected(); return; }
+        if ((e.ctrlKey || e.metaKey) && k === 'g') {
+          e.preventDefault();
+          if (e.shiftKey) pv.ungroupSelected();
+          else pv.groupSelected();
+          return;
+        }
+        if (pv.mode === 'vertical') {
+          if (k === '1') { pv.setViewSide('front'); return; }
+          if (k === '2') { pv.setViewSide('back'); return; }
+          if (k === '3') { pv.setViewSide('left'); return; }
+          if (k === '4') { pv.setViewSide('right'); return; }
+        }
+        return;
+      }
 
       if (e.ctrlKey || e.metaKey) {
         if (k === 's') { e.preventDefault(); if (this.persistProjectNow) this.persistProjectNow('teclado Ctrl+S'); return; }
@@ -2233,6 +2607,7 @@ this.initUI();
         controls.update();
       }
       walkthrough.tickDoor(dt);
+      if (this.services.connections) this.services.connections.update(dt);
       renderer.render(scene, camera);
     };
     animate();

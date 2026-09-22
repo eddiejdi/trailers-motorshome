@@ -65,3 +65,29 @@ Regra dura, prioritária sobre qualquer conveniência de implementação:
 - Script: `hooks/no-project-hardcode-check.sh`
 - Instalação local: `.git/hooks/pre-commit` chama o script automaticamente.
 - O commit é bloqueado se o diff staged em `src/main.js`, `src/model/*` ou `src/constants/Dimensions.js` adicionar padrões de hardcode de projeto (ex.: `CABIN_RISE`, `cabinRise`, `_upsertUnderfloorTanksIntoProjectJson`, `geometry.kind`, `geometry.projectType`).
+
+## HOOK (2026-09-18): Coordenadas ABSOLUTAS sempre (geolocalização)
+
+Regra dura — **valores fixos no espaço do trailer**, nunca relativos a grupos intermediários:
+
+- **`scene_layout.objects[].p` = coordenadas absolutas no root do trailer** (`coord: "trailer-world"`).
+- **NÃO** usar posição relativa a `interior` com `interior.position.y = FLOOR_Y` (isso soma offset e “move sozinho”).
+- **NÃO** “corrigir” Y no load/drag via `resolvePlacement` para itens de layout (`fixedLayout: true`).
+- Spawn/anexar objetos de layout no **`trailer` root** (ou parent com origem 0,0,0 no trailer).
+- Ao serializar: gravar `p` no frame do trailer (mundo local do root), não no parent visual.
+- Ao aplicar JSON: `position.set(p[0], p[1], p[2])` **literal** — sem somar `FLOOR_Y`, `deck_top`, etc. no código.
+- Constantes de chassi/longarina só servem para **escrever** o JSON do projeto; a ferramenta na leitura **não recalcula**.
+
+**Errado:**
+```js
+interior.position.y = FLOOR_Y;
+mesh.position.set(0, 0, 0); // “no chão” relativo → mundo = FLOOR_Y
+obj.position.y += floorY - b.min.y; // auto-snap
+```
+
+**Certo:**
+```js
+interior.position.y = 0;
+mesh.position.set(st.p[0], st.p[1], st.p[2]); // absoluto do JSON
+// fixedLayout → resolvePlacement return
+```

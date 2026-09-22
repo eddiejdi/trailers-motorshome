@@ -39,6 +39,7 @@ import AuthService from './services/AuthService.js';
 import UserFilesService from './services/UserFilesService.js';
 import WeightService from './services/WeightService.js';
 import ProjectService from './services/ProjectService.js';
+import AuditorService from './services/AuditorService.js';
 
 const PALLET_DATA = {
   'comoda':         { name:'Cômoda 3 gav.',           cat:'Móveis & Eletro', w:12,  mat:'Compensado',     v:null,    dims:'600×400×500mm', desc:'Cômoda com 3 gavetas de compensado naval, acabamento em laca.' },
@@ -340,6 +341,19 @@ class TrailerApp {
       });
 
       this.services.export = new ExportService();
+
+      this.services.auditor = new AuditorService({
+        scene, camera,
+        project: this.project,
+        editableMeshes: this.editableMeshes,
+        selectObjectFn: (obj) => ed.selectObject(obj),
+        focusObjectFn: (obj) => ed.focusObject(obj),
+        updateProjectFn: (updatedProject) => {
+          this.project = updatedProject;
+          // Trigger project update
+          this._updateProjectFromJSON(updatedProject);
+        }
+      });
 
       const matFn = (color, opts) => mat(color, opts, THREE);
 
@@ -830,6 +844,131 @@ class TrailerApp {
       ai.aiLog('Historico de comandos ativado: tudo que voce pedir para o trailer sera guardado e reutilizado no contexto do LLM.', 'sys');
     }
 
+    // Auditor UI initialization
+    const auditor = this.services.auditor;
+    if (auditor) {
+      const auditorRunBtn = document.getElementById('auditor-run-btn');
+      const auditorStopBtn = document.getElementById('auditor-stop-btn');
+      const auditorLearningBtn = document.getElementById('auditor-learning-btn');
+      const auditorDot = document.getElementById('auditor-dot');
+      const errorFocusBtn = document.getElementById('error-focus-btn');
+      const errorSuggestBtn = document.getElementById('error-suggest-btn');
+      const errorApplyBtn = document.getElementById('error-apply-btn');
+      const suggestionApproveBtn = document.getElementById('suggestion-approve-btn');
+      const suggestionRejectBtn = document.getElementById('suggestion-reject-btn');
+      const errorFeedbackGood = document.getElementById('error-feedback-good');
+      const errorFeedbackBad = document.getElementById('error-feedback-bad');
+      const errorFeedbackStatus = document.getElementById('error-feedback-status');
+
+      if (auditorRunBtn && auditorStopBtn && auditorLearningBtn) {
+        auditorRunBtn.onclick = async () => {
+          auditorRunBtn.disabled = true;
+          auditorStopBtn.disabled = false;
+          if (auditorDot) auditorDot.classList.add('active');
+          
+          const errors = await auditor.auditProject();
+          this._updateAuditorUI(errors);
+          
+          auditorRunBtn.disabled = false;
+          auditorStopBtn.disabled = true;
+          if (auditorDot) auditorDot.classList.remove('active');
+        };
+
+        auditorStopBtn.onclick = () => {
+          auditor.resetAudit();
+          auditorRunBtn.disabled = false;
+          auditorStopBtn.disabled = true;
+          if (auditorDot) auditorDot.classList.remove('active');
+          this._clearAuditorUI();
+        };
+
+        auditorLearningBtn.onclick = () => {
+          this._showAuditorLearning();
+        };
+      }
+
+      if (errorFocusBtn) {
+        errorFocusBtn.onclick = () => {
+          const currentError = auditor.errors[auditor.currentErrorIndex - 1];
+          if (currentError) {
+            auditor.focusOnError(currentError);
+          }
+        };
+      }
+
+      if (errorSuggestBtn) {
+        errorSuggestBtn.onclick = async () => {
+          const currentError = auditor.errors[auditor.currentErrorIndex - 1];
+          if (currentError) {
+            errorSuggestBtn.disabled = true;
+            const suggestion = await auditor.suggestCorrection(currentError);
+            this._showSuggestion(suggestion);
+            errorSuggestBtn.disabled = false;
+          }
+        };
+      }
+
+      if (errorApplyBtn) {
+        errorApplyBtn.onclick = async () => {
+          const currentError = auditor.errors[auditor.currentErrorIndex - 1];
+          if (currentError) {
+            errorApplyBtn.disabled = true;
+            const suggestion = document.getElementById('suggestion-content').textContent;
+            const result = await auditor.applyCorrection(currentError, suggestion);
+            if (result.success) {
+              errorFeedbackStatus.textContent = 'Correção aplicada com sucesso!';
+              errorFeedbackStatus.style.color = '#15a05a';
+            } else {
+              errorFeedbackStatus.textContent = 'Erro ao aplicar correção: ' + result.error;
+              errorFeedbackStatus.style.color = '#e5484d';
+            }
+            errorApplyBtn.disabled = false;
+          }
+        };
+      }
+
+      if (suggestionApproveBtn && suggestionRejectBtn) {
+        suggestionApproveBtn.onclick = () => {
+          const currentError = auditor.errors[auditor.currentErrorIndex - 1];
+          if (currentError) {
+            auditor.recordFeedback(currentError, true);
+            errorFeedbackStatus.textContent = 'Feedback registrado: Aprovado';
+            errorFeedbackStatus.style.color = '#15a05a';
+            errorApplyBtn.disabled = false;
+          }
+        };
+
+        suggestionRejectBtn.onclick = () => {
+          const currentError = auditor.errors[auditor.currentErrorIndex - 1];
+          if (currentError) {
+            auditor.recordFeedback(currentError, false);
+            errorFeedbackStatus.textContent = 'Feedback registrado: Rejeitado';
+            errorFeedbackStatus.style.color = '#e5484d';
+          }
+        };
+      }
+
+      if (errorFeedbackGood && errorFeedbackBad) {
+        errorFeedbackGood.onclick = () => {
+          const currentError = auditor.errors[auditor.currentErrorIndex - 1];
+          if (currentError) {
+            auditor.recordFeedback(currentError, true);
+            errorFeedbackStatus.textContent = 'Feedback registrado: Correção correta';
+            errorFeedbackStatus.style.color = '#15a05a';
+          }
+        };
+
+        errorFeedbackBad.onclick = () => {
+          const currentError = auditor.errors[auditor.currentErrorIndex - 1];
+          if (currentError) {
+            auditor.recordFeedback(currentError, false);
+            errorFeedbackStatus.textContent = 'Feedback registrado: Correção incorreta';
+            errorFeedbackStatus.style.color = '#e5484d';
+          }
+        };
+      }
+    }
+
     window.addEventListener('resize', () => {
       const cam = this.sceneManager.getCamera();
       const ren = this.sceneManager.getRenderer();
@@ -1252,6 +1391,125 @@ class TrailerApp {
   renderSpecPanel(rootEl) {
     const { project } = this.services;
     if (project) project.renderSpecPanel(rootEl);
+  }
+
+  _updateAuditorUI(errors) {
+    const summary = document.getElementById('auditor-summary');
+    const errorList = document.getElementById('error-list');
+    const currentErrorPanel = document.getElementById('auditor-current-error');
+    
+    if (summary) {
+      summary.classList.remove('hidden');
+      const summaryData = this.services.auditor.getErrorsSummary();
+      document.getElementById('stat-total').textContent = summaryData.total;
+      document.getElementById('stat-critical').textContent = summaryData.critical;
+      document.getElementById('stat-warning').textContent = summaryData.warning;
+      document.getElementById('stat-info').textContent = summaryData.info;
+    }
+    
+    if (errorList) {
+      document.getElementById('auditor-errors').classList.remove('hidden');
+      errorList.innerHTML = '';
+      errors.forEach((error, index) => {
+        const errorItem = document.createElement('div');
+        errorItem.className = `error-item ${error.severity}`;
+        errorItem.innerHTML = `
+          <div style="font-weight:600; font-size:11px;">${error.id}</div>
+          <div style="font-size:10px; color:#4a5366;">${error.ruleCategory}</div>
+          <div style="font-size:10px; color:#77767b;">${error.message}</div>
+        `;
+        errorItem.onclick = () => {
+          this._showCurrentError(error, index);
+        };
+        errorList.appendChild(errorItem);
+      });
+    }
+    
+    if (errors.length > 0) {
+      this._showCurrentError(errors[0], 0);
+    }
+  }
+
+  _clearAuditorUI() {
+    const summary = document.getElementById('auditor-summary');
+    const errorList = document.getElementById('error-list');
+    const currentErrorPanel = document.getElementById('auditor-current-error');
+    const learningPanel = document.getElementById('auditor-learning');
+    
+    if (summary) summary.classList.add('hidden');
+    if (errorList) {
+      document.getElementById('auditor-errors').classList.add('hidden');
+      errorList.innerHTML = '';
+    }
+    if (currentErrorPanel) currentErrorPanel.classList.add('hidden');
+    if (learningPanel) learningPanel.classList.add('hidden');
+  }
+
+  _showCurrentError(error, index) {
+    const currentErrorPanel = document.getElementById('auditor-current-error');
+    if (!currentErrorPanel) return;
+    
+    currentErrorPanel.classList.remove('hidden');
+    document.getElementById('current-error-id').textContent = error.id;
+    document.getElementById('current-error-severity').textContent = error.severity;
+    document.getElementById('current-error-severity').className = `error-severity ${error.severity}`;
+    document.getElementById('current-error-category').textContent = error.ruleCategory;
+    document.getElementById('current-error-description').textContent = error.description;
+    document.getElementById('current-error-message').textContent = error.message;
+    
+    // Reset suggestion panel
+    document.getElementById('error-suggestion').classList.add('hidden');
+    document.getElementById('error-apply-btn').disabled = true;
+    document.getElementById('error-feedback-status').textContent = '';
+  }
+
+  _showSuggestion(suggestion) {
+    const suggestionPanel = document.getElementById('error-suggestion');
+    if (!suggestionPanel) return;
+    
+    suggestionPanel.classList.remove('hidden');
+    document.getElementById('suggestion-content').textContent = suggestion;
+  }
+
+  _showAuditorLearning() {
+    const learningPanel = document.getElementById('auditor-learning');
+    const summary = document.getElementById('auditor-summary');
+    const errorList = document.getElementById('auditor-errors');
+    const currentErrorPanel = document.getElementById('auditor-current-error');
+    
+    if (summary) summary.classList.add('hidden');
+    if (errorList) document.getElementById('auditor-errors').classList.add('hidden');
+    if (currentErrorPanel) currentErrorPanel.classList.add('hidden');
+    
+    if (learningPanel) {
+      learningPanel.classList.remove('hidden');
+      const stats = this.services.auditor.getLearningStats();
+      document.getElementById('learning-patterns').textContent = stats.totalPatterns;
+      document.getElementById('learning-feedback').textContent = stats.totalFeedback;
+      document.getElementById('learning-success-rate').textContent = (stats.successRate * 100).toFixed(1) + '%';
+      
+      const patternsList = document.getElementById('patterns-list');
+      patternsList.innerHTML = '';
+      stats.topPatterns.forEach(pattern => {
+        const patternItem = document.createElement('div');
+        patternItem.className = 'pattern-item';
+        patternItem.innerHTML = `
+          <div class="pattern-item-header">
+            <span class="pattern-id">${pattern.id}</span>
+            <span class="pattern-confidence">${(pattern.confidence * 100).toFixed(0)}%</span>
+          </div>
+          <div class="pattern-description">${pattern.description}</div>
+        `;
+        patternsList.appendChild(patternItem);
+      });
+    }
+  }
+
+  _updateProjectFromJSON(updatedProject) {
+    // Update project data and trigger re-render
+    this.project = updatedProject;
+    // In a real implementation, this would trigger a scene update
+    console.log('Projeto atualizado:', updatedProject);
   }
 
   _initFilesUI() {

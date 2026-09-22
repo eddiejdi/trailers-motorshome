@@ -15,9 +15,13 @@ export default class Chassis {
     const { THREE, M, W, BODY_W, L, CHASSIS_Y, chassisBeamH, chassisBeamW } = this;
     const chassisG = new THREE.Group();
 
-    const floor = new THREE.Mesh(new THREE.BoxGeometry(W, 0.04, L), M.chassis);
+    // Piso da cabine: preenche o envelope do body (não só a bitola do chassi).
+    const floorW = BODY_W || W;
+    const floor = new THREE.Mesh(new THREE.BoxGeometry(floorW, 0.04, L), M.chassis);
     floor.position.y = CHASSIS_Y + 0.04 + chassisBeamH + 0.02;
     floor.castShadow = true; floor.receiveShadow = true;
+    floor.userData.name = 'Piso principal';
+    floor.userData.kind = 'piso-principal';
     chassisG.add(floor);
 
     for (const sx of [-W / 2 + chassisBeamW / 2, W / 2 - chassisBeamW / 2]) {

@@ -12,6 +12,8 @@ TARGETS=(
   "src/constants/Dimensions.js"
   "src/services/PaletteService.js"
   "src/services/WeightService.js"
+  "src/services/SaveService.js"
+  "src/services/EditorService.js"
   "index.html"
 )
 
@@ -34,6 +36,11 @@ PATTERNS=(
   "PALLET_DATA\["
   "PALETTE_WEIGHTS\["
   "data-item=\"[a-z0-9_-]+\""
+  # HOOK coords absolutas: nunca reintroduzir offset de piso no interior
+  "interior\.position\.y\s*=\s*FLOOR_Y"
+  "interior\.position\.y\s*=\s*this\.FLOOR_Y"
+  "position\.y\s*\+=\s*FLOOR_Y"
+  "position\.y\s*\+=\s*floorY\s*-\s*b\.min\.y"
 )
 
 for pattern in "${PATTERNS[@]}"; do

@@ -139,39 +139,7 @@ export default class Labels {
     const labelsGroup = new THREE.Group();
     scene.add(labelsGroup);
     this.labelsGroup = labelsGroup;
-
-    const kX = dims.kX || 0.22;
-    const kZ = dims.kZ || Lt / 2 - 0.16;
-    const stairX = dims.stairX || BODY_W / 2 - 0.15 - 0.30 / 2;
-    const HATCH_Z = dims.HATCH_Z || -Lt / 2 + 0.08 + 0.34 * 3 + 0.34 / 2;
-    const bedX = dims.bedX || -Li / 2 + 0.05 + 0.99 / 2;
-    const bedZ = dims.bedZ || (-Lt / 2 + 0.05 + 0.80 + 0.03 + 1.60 / 2);
-    const mzInnerZ = -Lt / 2 - mzL / 2;
-    const colTopY = mzFloorH + 0.02;
-
-    this.label('CUBO BANHEIRO 0,80×0,80', -Li / 2 + 0.40, 2.20, -Lt / 2 + 0.40);
-    this.label('PORTA POTTI 365', -Li / 2 + 0.40, 0.80, -Lt / 2 + 0.40);
-    this.label('COZINHA LINEAR', kX, 2.20, kZ);
-    this.label('GELADEIRA 37L 12V', kX - 0.28, 0.80, kZ);
-    this.label('PIA 40cm', kX + 0.22, 1.30, kZ);
-    this.label('ARMARIOS-DEGRAU', stairX, 1.15, HATCH_Z + 0.40);
-    this.label('VAO MEZANINO (C ou Espaco)', 0.25, FLOOR_Y + 1.55, -Lt / 2 + 0.08);
-    this.label('CAMA SOLTEIRO 0,70×1,60', bedX, 0.85, bedZ);
-    this.label('CAMACASAL (MEZANINO)', 0, mzFloorH + 1.30, mzInnerZ);
-    this.label('FOGAREIRO EXTERNO', 0.35, 1.30, -Lt / 2 - 0.10);
-    this.label('PAINEl SOLAR 50W', 0, FLOOR_Y + WALL_H + 0.30, 0.20);
-    this.label('GALAO AGUA LIMPA 20L', kX + 0.28, 0.80, kZ);
-    this.label('BATERIA 12V', W / 2 - 0.25, 0.10, Lt / 2 - 0.30);
-
-    const nArrow = new THREE.Mesh(new THREE.ConeGeometry(0.10, 0.30, 4), new THREE.MeshBasicMaterial({ color: 0xaa0000 }));
-    nArrow.position.set(-3.5, 0.15, 0);
-    nArrow.rotation.x = Math.PI / 2;
-    nArrow.rotation.z = -Math.PI / 2;
-    scene.add(nArrow);
-    const nLabel = this.cotaText('N', 60);
-    nLabel.position.set(-3.5, 0.40, 0);
-    nLabel.scale.set(0.20, 0.20, 1);
-    scene.add(nLabel);
+    // Labels de peças/layout vêm do JSON do projeto — factory não hardcoda nomes.
 
     return { cotasGroup, labelsGroup };
   }

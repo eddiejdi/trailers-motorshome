@@ -55,6 +55,8 @@
     border-radius:12px;
     box-shadow:0 1px 3px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.12);
     overflow:hidden;
+    max-width:calc(100vw - 24px);
+    max-height:calc(100vh - 40px);
   }
   .ui-win .drag-bar {
     cursor:move; user-select:none;
@@ -154,6 +156,46 @@
   #btn-enter::before   { content:"🚪"; }
   #btn-reset::before   { content:"↺"; }
   #btn-save::before    { content:"💾"; }
+  #btn-night,
+  #btn-night-float {
+    background:#1a1c28 !important; color:#f0e6c8 !important;
+    border:1px solid #3a3f55 !important; font-weight:600;
+  }
+  #btn-night::before,
+  #btn-night-float::before { content:"🌙 "; }
+  #btn-night:hover,
+  #btn-night-float:hover { background:#2a2e42 !important; border-color:#c9a86c !important; }
+  #btn-night.active,
+  #btn-night-float.active {
+    background:#c9a86c !important; color:#1a1c28 !important; border-color:#e8c878 !important;
+  }
+  #btn-night.active::before,
+  #btn-night-float.active::before { content:"☀️ "; }
+  #btn-night-float, #btn-book-float {
+    position: fixed; right: 14px; z-index: 40;
+    padding: 8px 14px; border-radius: 20px; cursor: pointer;
+    font-size: 12px; font-family: var(--sans, sans-serif);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+  }
+  #btn-night-float { bottom: 18px; }
+  #btn-book-float {
+    bottom: 58px;
+    background: #1a2838 !important; color: #e8f0ff !important;
+    border: 1px solid #3a5570 !important; font-weight: 600;
+  }
+  #btn-book-float::before { content: "📷 "; }
+  #btn-book-float:hover { background: #243548 !important; border-color: #6a9cc8 !important; }
+  #btn-book-float.active, #btn-book.active {
+    background: #3584e4 !important; color: #fff !important; border-color: #62a0ea !important;
+  }
+  #btn-book::before { content: "📷 "; }
+  body.night-mode #hud,
+  body.night-mode .ui-win {
+    background: rgba(18, 20, 28, 0.92);
+    color: #e8e4d8;
+    border-color: #3a3f55;
+  }
+  body.night-mode #view-info { color: #d8d0c0; }
   #btn-new-project::before { content:"✨"; }
   #btn-open-project::before { content:"📂"; }
   #btn-download-project::before { content:"⬇"; }
@@ -554,9 +596,11 @@
   /* ============ EDITOR 3D — GNOME ============ */
   #editor {
     top:330px; right:16px; width:270px;
+    display:flex; flex-direction:column;
+    max-height:calc(100vh - 346px);
   }
   #editor .drag-bar { }
-  .ed-body { padding:10px 12px 12px; }
+  .ed-body { padding:10px 12px 12px; overflow-y:auto; }
   #sel-info {
     color:#5e5c64; font-size:11px; margin-bottom:9px;
     padding:7px 9px; background:#f0f0f0; border-radius:6px;
@@ -889,11 +933,324 @@
   .ui-win ::-webkit-scrollbar-thumb, #palette .grid::-webkit-scrollbar-thumb { background:#d5d0cc; border-radius:4px; }
   .ui-win ::-webkit-scrollbar-thumb:hover, #palette .grid::-webkit-scrollbar-thumb:hover { background:#aea99e; }
 
+  /* ============ AUDITOR DE ENGENHARIA ============ */
+  .auditor-header {
+    display: flex; align-items: center; gap: 8px;
+    background: #ebebeb;
+    color: #2e3436; font-size: 11px; font-weight: 700;
+    padding: 0 8px 0 12px; min-height: 40px;
+    border-bottom: 1px solid #d5d0cc;
+  }
+  .auditor-header .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #e5484d; animation: pulse 2s infinite;
+  }
+  .auditor-header .dot.active { background: #15a05a; }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  #auditor-body {
+    padding: 12px;
+    max-height: 500px;
+    overflow-y: auto;
+  }
+  .auditor-controls {
+    display: flex; gap: 8px; margin-bottom: 12px;
+  }
+  .auditor-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #d5d0cc;
+    border-radius: 6px;
+    background: #fafafa;
+    color: #2e3436;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .auditor-btn:hover { background: #ebebeb; }
+  .auditor-btn.primary {
+    background: #daf1fd;
+    color: #1c71d8;
+    border-color: #93c5ef;
+  }
+  .auditor-btn.primary:hover { background: #b6d8f8; }
+  .auditor-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .auditor-summary {
+    background: #f5f7fb;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  .summary-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .stat-item {
+    text-align: center;
+    padding: 8px;
+    background: #fafafa;
+    border-radius: 6px;
+    border: 1px solid #d5d0cc;
+  }
+  .stat-item.critical { border-color: #e5484d; background: #fdeced; }
+  .stat-item.warning { border-color: #e08600; background: #fff8e6; }
+  .stat-item.info { border-color: #2f6df6; background: #eaf1ff; }
+  .stat-label {
+    display: block;
+    font-size: 10px;
+    color: #77767b;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    color: #2e3436;
+  }
+  .auditor-errors {
+    margin-bottom: 12px;
+  }
+  .error-list {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  .error-item {
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    cursor: pointer;
+    border: 1px solid #d5d0cc;
+    background: #fafafa;
+    transition: all 0.12s;
+  }
+  .error-item:hover { background: #ebebeb; }
+  .error-item.critical { border-left: 3px solid #e5484d; }
+  .error-item.warning { border-left: 3px solid #e08600; }
+  .error-item.info { border-left: 3px solid #2f6df6; }
+  .error-item.selected { background: #eaf1ff; border-color: #2f6df6; }
+  .auditor-current-error {
+    background: #f5f7fb;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  .error-header {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .error-id {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: #77767b;
+  }
+  .error-severity {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .error-severity.critical { background: #fdeced; color: #e5484d; }
+  .error-severity.warning { background: #fff8e6; color: #e08600; }
+  .error-severity.info { background: #eaf1ff; color: #2f6df6; }
+  .error-category {
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: #ebebeb;
+    color: #2e3436;
+    font-size: 10px;
+  }
+  .error-description {
+    font-weight: 600;
+    color: #2e3436;
+    margin-bottom: 4px;
+  }
+  .error-message {
+    font-size: 12px;
+    color: #4a5366;
+    margin-bottom: 12px;
+  }
+  .error-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .error-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #d5d0cc;
+    border-radius: 6px;
+    background: #fafafa;
+    color: #2e3436;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .error-btn:hover { background: #ebebeb; }
+  .error-btn.primary {
+    background: #daf1fd;
+    color: #1c71d8;
+    border-color: #93c5ef;
+  }
+  .error-btn.primary:hover { background: #b6d8f8; }
+  .error-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .error-suggestion {
+    background: #fff8e6;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  .suggestion-header {
+    font-weight: 600;
+    color: #2e3436;
+    margin-bottom: 8px;
+  }
+  .suggestion-content {
+    font-size: 12px;
+    color: #4a5366;
+    margin-bottom: 12px;
+  }
+  .suggestion-actions {
+    display: flex;
+    gap: 8px;
+  }
+  .suggestion-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .suggestion-btn.approve {
+    background: #daf1fd;
+    color: #1c71d8;
+    border: 1px solid #93c5ef;
+  }
+  .suggestion-btn.approve:hover { background: #b6d8f8; }
+  .suggestion-btn.reject {
+    background: #fdeced;
+    color: #e5484d;
+    border: 1px solid #f8b8b8;
+  }
+  .suggestion-btn.reject:hover { background: #f8d0d0; }
+  .error-feedback {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #d5d0cc;
+  }
+  .feedback-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid #d5d0cc;
+    background: #fafafa;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.12s;
+  }
+  .feedback-btn:hover { background: #ebebeb; }
+  .feedback-btn.good:hover { background: #daf1fd; color: #1c71d8; }
+  .feedback-btn.bad:hover { background: #fdeced; color: #e5484d; }
+  .auditor-learning {
+    background: #f5f7fb;
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .learning-header {
+    font-weight: 600;
+    color: #2e3436;
+    margin-bottom: 12px;
+  }
+  .learning-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .learning-stat {
+    text-align: center;
+    padding: 8px;
+    background: #fafafa;
+    border-radius: 6px;
+    border: 1px solid #d5d0cc;
+  }
+  .learning-label {
+    display: block;
+    font-size: 10px;
+    color: #77767b;
+    margin-bottom: 4px;
+  }
+  .learning-value {
+    display: block;
+    font-size: 16px;
+    font-weight: 700;
+    color: #2e3436;
+  }
+  .learning-patterns {
+    margin-top: 12px;
+  }
+  .patterns-header {
+    font-weight: 600;
+    color: #2e3436;
+    margin-bottom: 8px;
+  }
+  .patterns-list {
+    max-height: 150px;
+    overflow-y: auto;
+  }
+  .pattern-item {
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    background: #fafafa;
+    border: 1px solid #d5d0cc;
+  }
+  .pattern-item-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .pattern-id {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: #77767b;
+  }
+  .pattern-confidence {
+    font-size: 10px;
+    font-weight: 600;
+    color: #15a05a;
+  }
+  .pattern-description {
+    font-size: 11px;
+    color: #4a5366;
+  }
+  .hidden { display: none !important; }
+
   /* Responsivo: empilha painéis em telas pequenas */
   @media (max-width: 720px) {
     #hud, #specs, #legend, #editor { position:absolute; }
     #specs { top:auto; bottom:auto; }
     #palette { top:auto; bottom:auto; }
+    #editor {
+      left:12px; right:12px; top:auto; bottom:12px;
+      width:auto; max-height:min(54vh, 420px);
+    }
   }
 
   /* ============ BOTÃO EXPORTAR — GNOME ============ */
@@ -1083,6 +1440,33 @@
   }
   .cut-btn-primary:hover { background:#2c72c7; }
   .cut-btn::before { font-size:13px; }
+
+  /* ============ PLAN 2D OVERLAY ============ */
+  #plan2d-overlay {
+    user-select:none;
+    touch-action:none;
+    -webkit-user-select:none;
+  }
+  #plan2d-overlay canvas {
+    user-select:none;
+    touch-action:none;
+    -webkit-user-select:none;
+  }
+  #plan2d-active-hint {
+    position:absolute; top:44px; right:16px; z-index:95;
+    background:rgba(47,109,246,0.92); color:#fff;
+    padding:6px 14px; border-radius:8px;
+    font-size:11px; font-family:var(--sans); font-weight:600;
+    box-shadow:0 2px 12px rgba(47,109,246,0.25);
+    display:none; align-items:center; gap:8px;
+    letter-spacing:0.3px;
+  }
+  #plan2d-active-hint .hint-exit {
+    background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.3);
+    border-radius:4px; padding:2px 8px; cursor:pointer; font-size:10px;
+    color:#fff; font-weight:600;
+  }
+  #plan2d-active-hint .hint-exit:hover { background:rgba(255,255,255,0.35); }
 </style>
 </head>
 <body>
@@ -1122,6 +1506,9 @@
           <div class="gnome-menu-item" data-action="view-isometrica"><span class="icon">◇</span>Isométrica</div>
           <div class="gnome-menu-item" data-action="view-entrar"><span class="icon">🚪</span>Entrar</div>
           <div class="gnome-menu-item" data-action="view-mezzanino"><span class="icon">🛏️</span>Mezanino</div>
+          <div class="gnome-menu-sep"></div>
+          <div class="gnome-menu-item" data-action="view-planta-2d"><span class="icon">⊞</span>Planta 2D<span class="shortcut">F2</span></div>
+          <div class="gnome-menu-item" data-action="view-elevacao-2d"><span class="icon">⊟</span>Elevação 2D<span class="shortcut">F3</span></div>
           <div class="gnome-menu-sep"></div>
           <div class="gnome-menu-item checked" data-action="toggle-walls"><span class="icon"></span>Paredes</div>
           <div class="gnome-menu-item checked" data-action="toggle-roof"><span class="icon"></span>Telhado</div>
@@ -1169,6 +1556,8 @@
           <button class="cat-btn active" data-cat="acessorios">acessórios</button>
           <button class="cat-btn active" data-cat="encanamento">encanamento</button>
           <button class="cat-btn active" data-cat="eletrica">elétrica</button>
+          <button id="btn-night" class="cat-btn" title="Modo noturno (N) — acende spots 12V">noturno</button>
+          <button id="btn-book" class="cat-btn" title="Gerar photo book (várias vistas dia/noite)">gerar book</button>
         </div>
       </div>
 
@@ -1341,6 +1730,14 @@
 
   <!-- Info de vista -->
   <div id="view-info" class="ui-win drag-bar"> vista: isométrica · ESC 1:50 </div>
+  <button type="button" id="btn-book-float" title="Gerar photo book">book</button>
+  <button type="button" id="btn-night-float" title="Modo noturno (N)">noturno</button>
+
+  <!-- Dica de modo 2D ativo -->
+  <div id="plan2d-active-hint">
+    Modo 2D ativo
+    <span class="hint-exit" id="plan2d-exit-btn">Voltar ao 3D (Esc)</span>
+  </div>
 
   <!-- Menu de contexto (clique direito no 3D) -->
   <div id="ctx-menu" role="menu" aria-label="Ações do objeto"></div>
@@ -1471,6 +1868,101 @@
         <button type="button" class="ai-feedback-btn good" id="ai-feedback-good" title="Marcar como acerto">👍</button>
         <button type="button" class="ai-feedback-btn bad" id="ai-feedback-bad" title="Marcar como erro">👎</button>
         <span id="ai-feedback-status"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Painel Auditor de Engenharia -->
+  <div id="auditor-panel" class="ui-win">
+    <div class="auditor-header drag-bar" id="auditor-header">
+      <span id="auditor-title">🔍 Auditor de Engenharia</span>
+      <span class="dot" id="auditor-dot"></span>
+      <button class="ui-win-close" data-close="auditor-panel" title="Fechar">×</button>
+    </div>
+    <div id="auditor-body">
+      <div class="auditor-controls">
+        <button id="auditor-run-btn" class="auditor-btn primary">▶ Iniciar Auditoria</button>
+        <button id="auditor-stop-btn" class="auditor-btn secondary" disabled>⏹ Parar</button>
+        <button id="auditor-learning-btn" class="auditor-btn tertiary">📊 Estatísticas</button>
+      </div>
+      
+      <div id="auditor-summary" class="auditor-summary hidden">
+        <div class="summary-stats">
+          <div class="stat-item">
+            <span class="stat-label">Total:</span>
+            <span class="stat-value" id="stat-total">0</span>
+          </div>
+          <div class="stat-item critical">
+            <span class="stat-label">Críticos:</span>
+            <span class="stat-value" id="stat-critical">0</span>
+          </div>
+          <div class="stat-item warning">
+            <span class="stat-label">Avisos:</span>
+            <span class="stat-value" id="stat-warning">0</span>
+          </div>
+          <div class="stat-item info">
+            <span class="stat-label">Info:</span>
+            <span class="stat-value" id="stat-info">0</span>
+          </div>
+        </div>
+      </div>
+      
+      <div id="auditor-errors" class="auditor-errors hidden">
+        <div class="error-list" id="error-list"></div>
+      </div>
+      
+      <div id="auditor-current-error" class="auditor-current-error hidden">
+        <div class="error-header">
+          <span class="error-id" id="current-error-id"></span>
+          <span class="error-severity" id="current-error-severity"></span>
+          <span class="error-category" id="current-error-category"></span>
+        </div>
+        <div class="error-description" id="current-error-description"></div>
+        <div class="error-message" id="current-error-message"></div>
+        
+        <div class="error-actions">
+          <button id="error-focus-btn" class="error-btn">🎯 Focar no Objeto</button>
+          <button id="error-suggest-btn" class="error-btn">💡 Sugerir Correção</button>
+          <button id="error-apply-btn" class="error-btn primary" disabled>✅ Aplicar Correção</button>
+        </div>
+        
+        <div id="error-suggestion" class="error-suggestion hidden">
+          <div class="suggestion-header">Sugestão de Correção:</div>
+          <div class="suggestion-content" id="suggestion-content"></div>
+          <div class="suggestion-actions">
+            <button id="suggestion-approve-btn" class="suggestion-btn approve">✅ Aprovar</button>
+            <button id="suggestion-reject-btn" class="suggestion-btn reject">❌ Rejeitar</button>
+          </div>
+        </div>
+        
+        <div class="error-feedback">
+          <span>Feedback da correção:</span>
+          <button type="button" class="feedback-btn good" id="error-feedback-good" title="Correção correta">👍</button>
+          <button type="button" class="feedback-btn bad" id="error-feedback-bad" title="Correção incorreta">👎</button>
+          <span id="error-feedback-status"></span>
+        </div>
+      </div>
+      
+      <div id="auditor-learning" class="auditor-learning hidden">
+        <div class="learning-header">Estatísticas de Aprendizado</div>
+        <div class="learning-stats">
+          <div class="learning-stat">
+            <span class="learning-label">Total de Padrões:</span>
+            <span class="learning-value" id="learning-patterns">0</span>
+          </div>
+          <div class="learning-stat">
+            <span class="learning-label">Total de Feedback:</span>
+            <span class="learning-value" id="learning-feedback">0</span>
+          </div>
+          <div class="learning-stat">
+            <span class="learning-label">Taxa de Sucesso:</span>
+            <span class="learning-value" id="learning-success-rate">0%</span>
+          </div>
+        </div>
+        <div class="learning-patterns">
+          <div class="patterns-header">Top Padrões Aprendidos:</div>
+          <div class="patterns-list" id="patterns-list"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -1619,6 +2111,14 @@ window.addEventListener('unhandledrejection', function(e) {
         el.style.transform = 'none';
       });
     } catch (e) {}
+    
+    // Set default position for auditor panel if not saved
+    const auditorPanel = document.getElementById('auditor-panel');
+    if (auditorPanel && !auditorPanel.style.left) {
+      auditorPanel.style.left = '20px';
+      auditorPanel.style.top = '340px';
+      auditorPanel.style.width = '380px';
+    }
   }
   function makeDraggable(el) {
     const bar = el.classList.contains('drag-bar') ? el : (el.querySelector('.drag-bar') || el);
@@ -3796,23 +4296,33 @@ document.addEventListener('keydown', function(e) {
 <script>
 (function() {
   let lastVersion = null;
+  let pollTimer = null;
   const DEV_POLL_MS = 3000;
   async function checkVersion() {
     try {
       const r = await fetch('/dev-version', { cache: 'no-store' });
+      if (!r.ok) throw new Error('GET /dev-version → HTTP ' + r.status);
       const d = await r.json();
-      console.log('[auto-reload] poll:', d.version);
       if (lastVersion && d.version !== lastVersion) {
-        console.log('[auto-reload] Versão mudou:', lastVersion, '->', d.version);
         location.reload();
       }
       lastVersion = d.version;
     } catch (e) {
-      console.log('[auto-reload] erro:', e.message);
+      if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+      const box = document.createElement('div');
+      box.style.cssText = 'position:fixed;bottom:12px;left:12px;right:12px;z-index:99999;background:#2b0000;color:#ffd9d9;border:1px solid #ff6b6b;border-radius:8px;padding:10px 12px;font:12px/1.35 monospace;white-space:pre-wrap;max-height:30vh;overflow:auto;cursor:pointer;';
+      box.textContent = '[auto-reload] FATAL: ' + e.message + '\nEndpoint /dev-version indisponível. Polling interrompido.\nClique para dispensar.';
+      box.onclick = () => {
+        navigator.clipboard.writeText(box.textContent).then(() => {
+          box.textContent = '[auto-reload] ERRO COPIADO PARA CLIPBOARD ✓\n' + box.textContent;
+        });
+      };
+      document.body.appendChild(box);
+      console.error('[auto-reload]', e.message);
     }
   }
   checkVersion();
-  setInterval(checkVersion, DEV_POLL_MS);
+  pollTimer = setInterval(checkVersion, DEV_POLL_MS);
   console.log('[auto-reload] ativo');
 })();
 </script>

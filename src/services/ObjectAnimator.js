@@ -285,7 +285,7 @@ export default class ObjectAnimator {
     if (kind === 'recpro-38' || kind === 'recpro-44' || kind === 'camper-40') return ANIMS.bedflip;
     if (kind === 'exaustor' || kind.indexOf('exaustor') === 0 || kind === 'vent-exaust') return ANIMS.fan;
     if (kind === 'claraboia-280' || kind === 'claraboia-400') return ANIMS.lift;
-    if (kind === 'plafon' || kind === 'led-strip' || kind === 'spot-led' ||
+    if (kind === 'plafon' || kind === 'led-strip' || kind === 'spot-led' || kind === 'luz-externa' ||
         kind === 'boiler' || kind === 'clima-evap') return ANIMS.light;
     if (kind === 'tanque' || kind === 'tanque-40' || kind === 'caixa-agua-80' || kind === 'caixa-agua-100' || kind === 'caixa-agua-130' || kind === 'caixa-agua-152' || kind === 'tanque-agua-30' || kind === 'reservatorio-40') return ANIMS.tank;
     if (kind === 'quadro' || kind === 'painel-dj') return ANIMS.electrical;
