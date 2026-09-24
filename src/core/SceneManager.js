@@ -20,7 +20,7 @@ export class SceneManager {
 
     // ── Scene ──
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xe8e6e0);
+    scene.background = new THREE.Color(0xd0ccd0);
     scene.fog = null;
     this._scene = scene;
 
@@ -41,6 +41,14 @@ export class SceneManager {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    if ('outputEncoding' in renderer && THREE.sRGBEncoding) {
+      renderer.outputEncoding = THREE.sRGBEncoding;
+    }
+    if ('toneMapping' in renderer && THREE.ACESFilmicToneMapping != null) {
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      // ACES+sRGB+env estouravam brancos — exposição reduzida
+      renderer.toneMappingExposure = 0.48;
+    }
     container.appendChild(renderer.domElement);
     this._renderer = renderer;
 
@@ -49,7 +57,7 @@ export class SceneManager {
     controls.enableDamping = true;
     controls.dampingFactor = 0.1;
     controls.minDistance = 2.0;
-    controls.maxDistance = 15;
+    controls.maxDistance = 22;
     // PI = órbita completa (inclui vista por baixo do chassi)
     controls.minPolarAngle = 0;
     controls.maxPolarAngle = Math.PI;
@@ -58,6 +66,9 @@ export class SceneManager {
 
     // ── Lighting (technical, uniform — no dramatic shadows) ──
     this._setupLighting();
+
+    // ── Env map (reflexos em tinta metálica / vidro / cromo) ──
+    this._setupEnvironment();
 
     // ── Ground + Grid ──
     this._setupGround();
@@ -75,11 +86,11 @@ export class SceneManager {
     this._fixtureLights = []; // PointLights criadas nos spots/plafons
     this._editableMeshesRef = null;
 
-    const amb = new THREE.AmbientLight(0xffffff, 0.75);
+    const amb = new THREE.AmbientLight(0xffffff, 0.25);
     scene.add(amb);
     this._amb = amb;
 
-    const dir = new THREE.DirectionalLight(0xffffff, 0.55);
+    const dir = new THREE.DirectionalLight(0xffffff, 0.28);
     dir.position.set(6, 10, 4);
     dir.castShadow = true;
     dir.shadow.mapSize.set(2048, 2048);
@@ -92,7 +103,7 @@ export class SceneManager {
     scene.add(dir);
     this._dir = dir;
 
-    const fill = new THREE.DirectionalLight(0xb8c8d8, 0.3);
+    const fill = new THREE.DirectionalLight(0xb8c8d8, 0.08);
     fill.position.set(-4, 5, -3);
     scene.add(fill);
     this._fill = fill;
@@ -104,13 +115,64 @@ export class SceneManager {
     this._moon = moon;
   }
 
+  /**
+   * Ambiente PMREM simples (céu + solo + “softbox”) para reflexos
+   * no carro/pintura. Genérico — não depende de projeto.
+   */
+  _setupEnvironment() {
+    const THREE = this._THREE;
+    const renderer = this._renderer;
+    const scene = this._scene;
+    if (!renderer || typeof THREE.PMREMGenerator !== 'function') return;
+    try {
+      const envScene = new THREE.Scene();
+      const sky = new THREE.Mesh(
+        new THREE.SphereGeometry(12, 24, 12),
+        new THREE.MeshBasicMaterial({ side: THREE.BackSide, color: 0x8f98a8 }),
+      );
+      envScene.add(sky);
+      const floor = new THREE.Mesh(
+        new THREE.PlaneGeometry(24, 24),
+        new THREE.MeshBasicMaterial({ color: 0x6a6558 }),
+      );
+      floor.rotation.x = -Math.PI / 2;
+      floor.position.y = -1.2;
+      envScene.add(floor);
+      const softbox = (x, y, z, w, h, color) => {
+        const m = new THREE.Mesh(
+          new THREE.PlaneGeometry(w, h),
+          new THREE.MeshBasicMaterial({ color }),
+        );
+        m.position.set(x, y, z);
+        m.lookAt(0, 0.6, 0);
+        envScene.add(m);
+      };
+      // softboxes mais discretos: reflexo branco estourava pintura/cromo
+      softbox(4, 6, 3, 5, 3, 0x5a606c);
+      softbox(-5, 4, -2, 4, 2, 0x4a505a);
+      softbox(0, 5, -6, 6, 2, 0x686458);
+      const pmrem = new THREE.PMREMGenerator(renderer);
+      const envMap = pmrem.fromScene(envScene, 0.04).texture;
+      scene.environment = envMap;
+      pmrem.dispose();
+      envScene.traverse((o) => {
+        if (o.isMesh) {
+          o.geometry && o.geometry.dispose && o.geometry.dispose();
+          o.material && o.material.dispose && o.material.dispose();
+        }
+      });
+    } catch (e) {
+      /* env opcional — falha não derruba o app */
+    }
+  }
+
   // ────────────── Ground + Grid ──────────────
   _setupGround() {
     const { _scene: scene, _THREE: THREE } = this;
 
     const ground = new THREE.Mesh(
       new THREE.PlaneGeometry(20, 20),
-      new THREE.MeshStandardMaterial({ color: 0xe0dcc8, roughness: 1 }),
+      new THREE.MeshStandardMaterial({ color: 0xc8c2ae, roughness: 1 }),
     );
     ground.rotation.x = -Math.PI / 2;
     ground.position.y = -0.001;
@@ -156,6 +218,9 @@ export class SceneManager {
       if (this._dir) { this._dir.intensity = 0.08; this._dir.color.setHex(0x334466); }
       if (this._fill) { this._fill.intensity = 0.05; this._fill.color.setHex(0x223355); }
       if (this._moon) { this._moon.intensity = 0.22; this._moon.color.setHex(0x8899bb); }
+      if (this._renderer && 'toneMappingExposure' in this._renderer) {
+        this._renderer.toneMappingExposure = 0.32;
+      }
       if (this._ground && this._ground.material) {
         this._ground.material.color.setHex(0x1a1c22);
         this._ground.material.needsUpdate = true;
@@ -166,14 +231,17 @@ export class SceneManager {
       }
       this._enableFixtureLights(true);
     } else {
-      scene.background = new THREE.Color(0xe8e6e0);
+      scene.background = new THREE.Color(0xd0ccd0);
       scene.fog = null;
-      if (this._amb) { this._amb.intensity = 0.75; this._amb.color.setHex(0xffffff); }
-      if (this._dir) { this._dir.intensity = 0.55; this._dir.color.setHex(0xffffff); }
-      if (this._fill) { this._fill.intensity = 0.3; this._fill.color.setHex(0xb8c8d8); }
+      if (this._amb) { this._amb.intensity = 0.30; this._amb.color.setHex(0xffffff); }
+      if (this._dir) { this._dir.intensity = 0.35; this._dir.color.setHex(0xffffff); }
+      if (this._fill) { this._fill.intensity = 0.12; this._fill.color.setHex(0xb8c8d8); }
       if (this._moon) this._moon.intensity = 0;
+      if (this._renderer && 'toneMappingExposure' in this._renderer) {
+        this._renderer.toneMappingExposure = 0.48;
+      }
       if (this._ground && this._ground.material) {
-        this._ground.material.color.setHex(0xe0dcc8);
+        this._ground.material.color.setHex(0xc8c2ae);
         this._ground.material.needsUpdate = true;
       }
       if (this._grid && this._grid.material) {

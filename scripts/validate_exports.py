@@ -49,6 +49,18 @@ def run_browser_checks_on(base_url: str) -> dict:
         page = browser.new_page()
         page.goto(base_url, wait_until="load", timeout=120000)
         page.wait_for_function("() => typeof window.cutCSV === 'function' && !!window.trailerApp", timeout=120000)
+        # aguarda scene_layout do disco (boot microtask)
+        page.wait_for_timeout(2500)
+        page.wait_for_function(
+            """() => {
+              const app = window.trailerApp;
+              if (!app || !Array.isArray(app.editableMeshes)) return false;
+              return app.editableMeshes.some(m => m && m.userData && (
+                m.userData.kind === 'porta' || String(m.userData.kind||'').indexOf('janela') === 0
+              ));
+            }""",
+            timeout=60000,
+        )
 
         result = page.evaluate(
             """

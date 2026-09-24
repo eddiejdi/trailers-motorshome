@@ -42,7 +42,8 @@
       "release: HB20 1:1 detalhado + engate atrelado na lança (esfera chassis)",
       "HB20 réplica 1:1 redrawing conforme ficha técnica oficial (3920×1680×1470, WB2500, RC165, 185/60R15)",
       "HB20 réplica 1:1 v3 — reconstruída com STEP=30mm, silhueta suavizada, engate atrelado",
-      "HB20 réplica v4 — STEP=25mm, curvas top_y/belt_y corrigidas"
+      "HB20 réplica v4 — STEP=25mm, curvas top_y/belt_y corrigidas",
+      "HB20 orientação só eixo Y (180°) + correção de exposição de cor do renderer"
     ],
     "stair_rebuild": {
       "at": "2026-09-20T23:37:07.131639+00:00",

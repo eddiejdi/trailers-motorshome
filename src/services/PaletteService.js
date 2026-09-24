@@ -96,19 +96,38 @@ export default class PaletteService {
       matOpts.emissive = parseInt(spec.emissive, 16) || spec.emissive;
       matOpts.emissiveIntensity = spec.emissiveIntensity ?? 0.3;
     }
+    if (spec.envMapIntensity != null) matOpts.envMapIntensity = spec.envMapIntensity;
+    if (spec.flatShading != null) matOpts.flatShading = !!spec.flatShading;
+    // clearcoat / physical paint (tinta automotiva) via MeshPhysicalMaterial
+    if (spec.clearcoat != null || spec.clearcoatRoughness != null || spec.sheen != null) {
+      const phys = new THREE.MeshPhysicalMaterial(matOpts);
+      if (spec.clearcoat != null) phys.clearcoat = spec.clearcoat;
+      if (spec.clearcoatRoughness != null) phys.clearcoatRoughness = spec.clearcoatRoughness;
+      if (spec.sheen != null) phys.sheen = spec.sheen;
+      if (spec.reflectivity != null) phys.reflectivity = spec.reflectivity;
+      return phys;
+    }
     return new THREE.MeshStandardMaterial(matOpts);
+  }
+
+  _finishMesh(mesh) {
+    if (!mesh) return mesh;
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    return mesh;
   }
 
   _buildBox(spec) {
     const mat = this._buildMaterial(spec);
     const [w, h, d] = spec.size;
-    return new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+    return this._finishMesh(new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat));
   }
 
   _buildCylinder(spec) {
     const mat = this._buildMaterial(spec);
     const [r1, r2, h, seg] = spec.args;
-    return new THREE.Mesh(new THREE.CylinderGeometry(r1, r2, h, seg), mat);
+    const radial = Math.max(8, Number(seg) || 16);
+    return this._finishMesh(new THREE.Mesh(new THREE.CylinderGeometry(r1, r2, h, radial), mat));
   }
 
   _buildPart(partSpec) {
@@ -129,9 +148,125 @@ export default class PaletteService {
       if (!m) continue;
       if (off) m.position.set(off[0] || 0, off[1] || 0, off[2] || 0);
       if (rot) m.rotation.set(rot[0] || 0, rot[1] || 0, rot[2] || 0);
+      m.castShadow = true;
+      m.receiveShadow = true;
       g.add(m);
     }
+    g.traverse((ch) => {
+      if (ch.isMesh) {
+        ch.castShadow = true;
+        ch.receiveShadow = true;
+      }
+    });
     return g;
+  }
+
+  /**
+   * Modelo externo genérico (GLB/GLTF). O JSON só declara url/escala —
+   * o frontend não sabe o que é "carro" ou "trailer".
+   * Retorna Group síncrono; geometria assíncrona via cache + clone.
+   */
+  _buildModel(spec) {
+    const holder = new THREE.Group();
+    const url = spec.url;
+    if (!url) return holder;
+    if (spec.pos) holder.position.set(spec.pos[0] || 0, spec.pos[1] || 0, spec.pos[2] || 0);
+    if (spec.rotation) holder.rotation.set(spec.rotation[0] || 0, spec.rotation[1] || 0, spec.rotation[2] || 0);
+    if (spec.scale != null) {
+      if (Array.isArray(spec.scale)) holder.scale.set(spec.scale[0] ?? 1, spec.scale[1] ?? 1, spec.scale[2] ?? 1);
+      else holder.scale.setScalar(Number(spec.scale) || 1);
+    }
+    holder.userData.modelUrl = url;
+    holder.userData.modelReady = false;
+
+    const attachTo = (holderRef, template) => {
+      try {
+        if (!template || !holderRef || holderRef.userData.modelReady) return;
+        const clone = template.clone(true);
+        clone.traverse((ch) => {
+          if (ch.isMesh) {
+            ch.castShadow = true;
+            ch.receiveShadow = true;
+            if (ch.material) {
+              const mats = Array.isArray(ch.material) ? ch.material : [ch.material];
+              mats.forEach((m) => {
+                if (!m) return;
+                if (m.name && /vidro|glass/i.test(m.name)) {
+                  m.transparent = true;
+                  m.opacity = Math.min(m.opacity ?? 1, 0.35);
+                  m.depthWrite = false;
+                }
+                // sem baseColorFactor no glTF → branco metálico default; evita estouro
+                if (m.color && m.metalness >= 0.95 && m.color.r > 0.95 && m.color.g > 0.95 && m.color.b > 0.95) {
+                  m.metalness = 0.15;
+                  m.roughness = 0.65;
+                }
+                if ('envMapIntensity' in m) m.envMapIntensity = Math.min(m.envMapIntensity ?? 1, 0.45);
+              });
+            }
+          }
+        });
+        if (typeof holderRef.clear === 'function') holderRef.clear();
+        else {
+          while (holderRef.children.length) holderRef.remove(holderRef.children[0]);
+        }
+        holderRef.add(clone);
+        holderRef.userData.modelReady = true;
+        holderRef.dispatchEvent({ type: 'model-loaded', url });
+      } catch (err) {
+        console.warn('[PaletteService] attach model failed', url, err);
+      }
+    };
+
+    if (typeof THREE.GLTFLoader !== 'function') {
+      console.warn('[PaletteService] GLTFLoader indisponível:', url);
+      return holder;
+    }
+
+    if (!PaletteService._modelCache) PaletteService._modelCache = new Map();
+    const cache = PaletteService._modelCache;
+
+    const cached = cache.get(url);
+    if (cached) {
+      if (cached.ready) attachTo(holder, cached.template);
+      else cached.waiters.push(holder);
+      return holder;
+    }
+
+    const entry = { ready: false, template: null, waiters: [holder] };
+    cache.set(url, entry);
+    const settle = (template) => {
+      entry.template = template;
+      entry.ready = true;
+      entry.waiters.splice(0).forEach((h) => attachTo(h, template));
+    };
+    try {
+      const loader = new THREE.GLTFLoader();
+      loader.load(
+        url,
+        (gltf) => {
+          const root = gltf.scene || (gltf.scenes && gltf.scenes[0]);
+          if (root) {
+            root.traverse((ch) => {
+              if (ch.isMesh) {
+                ch.castShadow = true;
+                ch.receiveShadow = true;
+              }
+            });
+          }
+          settle(root || null);
+        },
+        undefined,
+        (err) => {
+          console.warn('[PaletteService] falha ao carregar modelo', url, err);
+          settle(null);
+        }
+      );
+    } catch (err) {
+      console.warn('[PaletteService] GLTFLoader threw', url, err);
+      settle(null);
+    }
+    return holder;
   }
 
   _buildFromGeometry(spec) {
@@ -141,6 +276,10 @@ export default class PaletteService {
       case 'cylinder': return this._buildCylinder(spec);
       case 'group':   return this._buildGroup(spec);
       case 'factory': return this._buildFactory(spec);
+      case 'model':
+      case 'glb':
+      case 'gltf':
+        return this._buildModel(spec);
       default:        return null;
     }
   }
